@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx/8.0.171"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="app.controller.AvailServiceDialogController"
+      spacing="15" style="-fx-padding: 20;">
+
+    <Text text="Avail Health Service Transaction"
+          style="-fx-font-size: 18; -fx-font-weight: bold; -fx-fill: #2c3e50;"/>
+
+    <Separator/>
+
+    <!-- Step 1: Select Resident -->
+    <VBox spacing="8">
+        <Label text="Step 1: Select Resident" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Search Resident:" prefWidth="120"/>
+            <TextField fx:id="txtSearchResident" promptText="Enter name or ID" prefWidth="200"/>
+            <Button text="🔍 Search" onAction="#handleSearchResident"/>
+        </HBox>
+
+        <TableView fx:id="tableResidents" prefHeight="150">
+            <columns>
+                <TableColumn fx:id="colResidentId" text="ID" prefWidth="50"/>
+                <TableColumn fx:id="colResidentName" text="Name" prefWidth="150"/>
+                <TableColumn fx:id="colAge" text="Age" prefWidth="50"/>
+                <TableColumn fx:id="colSex" text="Sex" prefWidth="50"/>
+                <TableColumn fx:id="colContact" text="Contact" prefWidth="100"/>
+            </columns>
+        </TableView>
+
+        <Label fx:id="lblSelectedResident" text="No resident selected"
+               style="-fx-text-fill: #7f8c8d; -fx-font-style: italic;"/>
+    </VBox>
+
+    <Separator/>
+
+    <!-- Step 2: Select Service -->
+    <VBox spacing="8">
+        <Label text="Step 2: Select Health Service" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+
+        <ComboBox fx:id="comboService" promptText="Choose service..." prefWidth="400"/>
+
+        <HBox spacing="10">
+            <Label text="Service Fee:" style="-fx-font-weight: bold;"/>
+            <Label fx:id="lblServiceFee" text="₱0.00" style="-fx-text-fill: #27ae60;"/>
+        </HBox>
+    </VBox>
+
+    <Separator/>
+
+    <!-- Step 3: Assign Personnel -->
+    <VBox spacing="8">
+        <Label text="Step 3: Assign Health Personnel" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+
+        <ComboBox fx:id="comboPersonnel" promptText="Choose personnel..." prefWidth="400"/>
+    </VBox>
+
+    <Separator/>
+
+    <!-- Step 4: Additional Info -->
+    <VBox spacing="8">
+        <Label text="Step 4: Additional Information" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Date:" prefWidth="120"/>
+            <DatePicker fx:id="dateProvided" prefWidth="200"/>
+        </HBox>
+
+        <VBox spacing="5">
+            <Label text="Remarks (Optional):"/>
+            <TextArea fx:id="txtRemarks" promptText="Enter any additional notes..."
+                      prefHeight="80" wrapText="true"/>
+        </VBox>
+    </VBox>
+
+    <Separator/>
+
+    <!-- Status Message -->
+    <Label fx:id="lblStatus" visible="false" style="-fx-font-weight: bold;"/>
+
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="✓ Complete Transaction" onAction="#handleCompleteTransaction"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 10 30; -fx-font-weight: bold;"/>
+        <Button text="Cancel" onAction="#handleCancel"
+                style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 30;"/>
+    </HBox>
+
+</VBox>

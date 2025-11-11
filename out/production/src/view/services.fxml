@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="app.controller.ServiceController"
+            prefWidth="800.0" prefHeight="600.0">
+
+    <!-- Header -->
+    <top>
+        <Text text="Health Services Management"
+              style="-fx-font-size: 22; -fx-font-weight: bold; -fx-fill: #2c3e50;"
+              BorderPane.alignment="CENTER"/>
+    </top>
+
+    <!-- Main content -->
+    <center>
+        <VBox spacing="8.0">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <!-- Services Table -->
+            <TableView fx:id="tableServices" prefHeight="350" prefWidth="780">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+                    <TableColumn fx:id="colType" text="Service Type" prefWidth="200"/>
+                    <TableColumn fx:id="colFee" text="Fee" prefWidth="100"/>
+                    <TableColumn fx:id="colRemarks" text="Remarks" prefWidth="430"/>
+                </columns>
+            </TableView>
+
+            <!-- Input Fields -->
+            <HBox spacing="10">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+
+                <TextField fx:id="txtServiceType" promptText="Service Type" prefWidth="200"/>
+                <TextField fx:id="txtFee" promptText="Fee (0.00)" prefWidth="100"/>
+                <TextField fx:id="txtRemarks" promptText="Remarks" prefWidth="300"/>
+            </HBox>
+
+            <!-- Action Buttons -->
+            <HBox spacing="10" alignment="CENTER">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+
+                <Button text="Add" onAction="#addService"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+                <Button text="Update" onAction="#updateService"
+                        style="-fx-background-color: #2980b9; -fx-text-fill: white;"/>
+                <Button text="Delete" onAction="#deleteService"
+                        style="-fx-background-color: #c0392b; -fx-text-fill: white;"/>
+                <Button text="Refresh" onAction="#refreshServices"
+                        style="-fx-background-color: #7f8c8d; -fx-text-fill: white;"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>
