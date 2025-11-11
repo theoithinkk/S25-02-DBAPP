@@ -87,7 +87,7 @@ public class LoginController {
             Stage stage = new Stage();
             stage.setTitle("Barangay Health Services Management System - " +
                     SessionManager.getCurrentUser().getUsername());
-            stage.setScene(new Scene(root, 1000, 600));
+            stage.setScene(new Scene(root, 1400, 900));
             stage.setMaximized(false);
 
             // Close login window

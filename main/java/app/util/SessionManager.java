@@ -42,7 +42,7 @@ public class SessionManager {
     }
 
     /**
-     * Check if current user has admin role
+     * Checks if current user has admin role
      */
     public static boolean isAdmin() {
         return isLoggedIn() && currentUser.isAdmin();

@@ -11,7 +11,7 @@
 
     <!-- Sidebar Navigation -->
     <left>
-        <VBox prefWidth="180.0" spacing="10.0" style="-fx-background-color: #2c3e50;"
+        <VBox prefWidth="200.0" spacing="10.0" style="-fx-background-color: #2c3e50;"
               BorderPane.alignment="CENTER">
             <padding>
                 <Insets top="20.0" right="10.0" bottom="20.0" left="10.0"/>
@@ -26,25 +26,25 @@
             <!-- Separator -->
             <Text text="──────────────" style="-fx-fill: #34495e;"/>
 
-            <Button text="🏠 Dashboard" fx:id="btnDashboard" prefWidth="160"
+            <Button text="🏠 Dashboard" fx:id="btnDashboard" prefWidth="180"
                     onAction="#showDashboard" style="-fx-background-color: #34495e; -fx-text-fill: white;"/>
 
-            <Button text="👤 Residents" fx:id="btnResidents" prefWidth="160"
+            <Button text="👤 Residents" fx:id="btnResidents" prefWidth="180"
                     onAction="#showResidents" style="-fx-background-color: #34495e; -fx-text-fill: white;"/>
 
-            <Button text="💉 Health Services" fx:id="btnServices" prefWidth="160"
+            <Button text="💉 Health Services" fx:id="btnServices" prefWidth="180"
                     onAction="#showServices" style="-fx-background-color: #34495e; -fx-text-fill: white;"/>
 
-            <Button text="🧑‍⚕️ Personnel" fx:id="btnPersonnel" prefWidth="160"
+            <Button text="🧑‍⚕️ Personnel" fx:id="btnPersonnel" prefWidth="180"
                     onAction="#showPersonnel" style="-fx-background-color: #34495e; -fx-text-fill: white;"/>
 
-            <Button text="💊 Inventory" fx:id="btnInventory" prefWidth="160"
+            <Button text="💊 Inventory" fx:id="btnInventory" prefWidth="180"
                     onAction="#showInventory" style="-fx-background-color: #34495e; -fx-text-fill: white;"/>
 
-            <Button text="📋 Audit Log" fx:id="btnAuditLog" prefWidth="160"
+            <Button text="📋 Audit Log" fx:id="btnAuditLog" prefWidth="180"
                     onAction="#showAuditLog" style="-fx-background-color: #34495e; -fx-text-fill: white;"/>
 
-            <Button text="📄 Transactions" fx:id="btnTransactions" prefWidth="160"
+            <Button text="📄 Transactions" fx:id="btnTransactions" prefWidth="180"
                     onAction="#showTransactions" style="-fx-background-color: #34495e; -fx-text-fill: white;"/>
 
             <!-- Spacer to push logout button to bottom -->
