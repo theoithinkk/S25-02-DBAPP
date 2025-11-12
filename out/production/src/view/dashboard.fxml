@@ -16,8 +16,8 @@
                 <Insets top="15" right="15" bottom="10" left="15"/>
             </padding>
 
-            <Text text="Dashboard - Quick Actions"
-                  style="-fx-font-size: 22; -fx-font-weight: bold; -fx-fill: #2c3e50;"/>
+            <Text text="Dashboard"
+                  style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: #2c3e50;"/>
 
             <Text fx:id="txtWelcome" text="Welcome!"
                   style="-fx-font-size: 14; -fx-fill: #7f8c8d;"/>
@@ -61,7 +61,7 @@
             <Separator prefWidth="600"/>
 
             <!-- Transaction Buttons -->
-            <Text text="Quick Transactions"
+            <Text text="Transactions"
                   style="-fx-font-size: 18; -fx-font-weight: bold; -fx-fill: #2c3e50;"/>
 
             <GridPane hgap="20" vgap="20" alignment="CENTER">
@@ -74,7 +74,6 @@
                           wrappingWidth="200"/>
                     <Button text="Start Transaction" onAction="#handleAvailHealthService"
                             style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10 30; -fx-font-weight: bold;"/>
-                    <Text text="✓ Implemented" style="-fx-fill: #27ae60; -fx-font-size: 10;"/>
                 </VBox>
 
                 <VBox alignment="CENTER" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="0"
@@ -85,7 +84,6 @@
                           wrappingWidth="200"/>
                     <Button text="Coming Soon" onAction="#handleIssueMedicalSupplies"
                             style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 30;"/>
-                    <Text text="⏳ To be implemented" style="-fx-fill: #95a5a6; -fx-font-size: 10;"/>
                 </VBox>
 
                 <!-- Row 2 -->
@@ -97,7 +95,6 @@
                           wrappingWidth="200"/>
                     <Button text="Coming Soon" onAction="#handleRestockInventory"
                             style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 30;"/>
-                    <Text text="⏳ To be implemented" style="-fx-fill: #95a5a6; -fx-font-size: 10;"/>
                 </VBox>
 
                 <VBox alignment="CENTER" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="1"
@@ -108,7 +105,6 @@
                           wrappingWidth="200"/>
                     <Button text="Coming Soon" onAction="#handleLogClinicVisit"
                             style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 30;"/>
-                    <Text text="⏳ To be implemented" style="-fx-fill: #95a5a6; -fx-font-size: 10;"/>
                 </VBox>
             </GridPane>
 

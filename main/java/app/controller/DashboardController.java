@@ -6,10 +6,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
+import javafx.scene.control.ScrollPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.text.Text;
 
 import java.sql.*;
 
@@ -69,12 +69,12 @@ public class DashboardController {
     private void handleAvailHealthService() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/avail_service_dialog.fxml"));
-            VBox root = loader.load();
+            ScrollPane root = loader.load(); // Changed from VBox to ScrollPane
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Avail Health Service");
             dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.setScene(new Scene(root, 600, 700));
+            dialogStage.setScene(new Scene(root, 650, 750)); // Increased size for scrolling
             dialogStage.setResizable(false);
 
             // Refresh statistics when dialog closes

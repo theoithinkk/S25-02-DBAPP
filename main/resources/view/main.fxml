@@ -85,11 +85,16 @@
                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 
                 <!-- Hero Section -->
+
                 <VBox alignment="CENTER" spacing="15"
-                      style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667eea 0%, #764ba2 100%);
-                            -fx-background-radius: 20;
-                            -fx-padding: 50;
-                            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);">
+                      style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2);
+             -fx-background-radius: 20;
+             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);">
+
+                    <padding>
+                        <Insets top="50" right="50" bottom="50" left="50"/>
+                    </padding>
+
                     <Text text="🏥" style="-fx-font-size: 72;"/>
                     <Text text="Welcome to"
                           style="-fx-font-size: 18; -fx-fill: #e0e7ff; -fx-font-weight: 600;"/>
@@ -101,66 +106,8 @@
                           wrappingWidth="500" textAlignment="CENTER"/>
                 </VBox>
 
-                <!-- Feature Cards -->
-                <GridPane hgap="20" vgap="20" alignment="CENTER">
-
-                    <!-- Card 1 -->
-                    <VBox alignment="CENTER" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="0"
-                          style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);"
-                          prefWidth="220" prefHeight="180">
-                        <Text text="👥" style="-fx-font-size: 42;"/>
-                        <Text text="Manage Residents"
-                              style="-fx-font-size: 15; -fx-font-weight: bold; -fx-fill: #1e293b; -fx-text-alignment: center;"
-                              wrappingWidth="180" textAlignment="CENTER"/>
-                        <Text text="Track and maintain resident health records"
-                              style="-fx-font-size: 12; -fx-fill: #64748b; -fx-text-alignment: center;"
-                              wrappingWidth="180" textAlignment="CENTER"/>
-                    </VBox>
-
-                    <!-- Card 2 -->
-                    <VBox alignment="CENTER" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="0"
-                          style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);"
-                          prefWidth="220" prefHeight="180">
-                        <Text text="💊" style="-fx-font-size: 42;"/>
-                        <Text text="Health Services"
-                              style="-fx-font-size: 15; -fx-font-weight: bold; -fx-fill: #1e293b; -fx-text-alignment: center;"
-                              wrappingWidth="180" textAlignment="CENTER"/>
-                        <Text text="Provide and log healthcare services"
-                              style="-fx-font-size: 12; -fx-fill: #64748b; -fx-text-alignment: center;"
-                              wrappingWidth="180" textAlignment="CENTER"/>
-                    </VBox>
-
-                    <!-- Card 3 -->
-                    <VBox alignment="CENTER" spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="0"
-                          style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);"
-                          prefWidth="220" prefHeight="180">
-                        <Text text="📦" style="-fx-font-size: 42;"/>
-                        <Text text="Inventory"
-                              style="-fx-font-size: 15; -fx-font-weight: bold; -fx-fill: #1e293b; -fx-text-alignment: center;"
-                              wrappingWidth="180" textAlignment="CENTER"/>
-                        <Text text="Monitor medical supplies and equipment"
-                              style="-fx-font-size: 12; -fx-fill: #64748b; -fx-text-alignment: center;"
-                              wrappingWidth="180" textAlignment="CENTER"/>
-                    </VBox>
-
-                </GridPane>
-
-                <!-- Getting Started -->
-                <VBox alignment="CENTER" spacing="12" style="-fx-padding: 20 0 0 0;">
-                    <Text text="Getting Started"
-                          style="-fx-font-size: 18; -fx-font-weight: bold; -fx-fill: #1e293b;"/>
-                    <Text text="Select an option from the sidebar to begin managing your barangay health center"
-                          style="-fx-font-size: 14; -fx-fill: #64748b; -fx-text-alignment: center;"
-                          wrappingWidth="500" textAlignment="CENTER"/>
-
-                    <!-- Quick Action Button -->
-                    <Button text="📋 Go to Dashboard"
-                            onAction="#showDashboard"
-                            style="-fx-background-color: #667eea; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 12 30; -fx-background-radius: 10; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(102,126,234,0.4), 10, 0, 0, 3);"/>
-                </VBox>
-
                 <!-- Footer Info -->
-                <VBox alignment="CENTER" spacing="5" style="-fx-padding: 20 0 0 0;">
+                <VBox alignment="CENTER" spacing="5" style="-fx-padding: 40 0 0 0;">
                     <Text text="Barangay Health Services Management System"
                           style="-fx-font-size: 11; -fx-fill: #94a3b8;"/>
                     <Text text="Version 2.0 • © 2025"

@@ -347,11 +347,17 @@ public class TransactionController {
     }
 
     private void loadTransactions(TableView<ServiceTransaction> table) {
-        table.setItems(FXCollections.observableArrayList(transactionDAO.getAllTransactions()));
+        List<ServiceTransaction> list = transactionDAO.getAllTransactions();
+        // Sort by transaction ID descending (newest first)
+        list.sort((t1, t2) -> Integer.compare(t2.getTransactionId(), t1.getTransactionId()));
+        table.setItems(FXCollections.observableArrayList(list));
     }
 
     private void loadServiceInventory(TableView<ServiceInventory> table) {
-        table.setItems(FXCollections.observableArrayList(serviceInventoryDAO.getAllServiceInventory()));
+        List<ServiceInventory> list = serviceInventoryDAO.getAllServiceInventory();
+        // Sort by inventory ID descending (newest first)
+        list.sort((i1, i2) -> Integer.compare(i2.getInventoryId(), i1.getInventoryId()));
+        table.setItems(FXCollections.observableArrayList(list));
     }
 
     private void showAlert(Alert.AlertType type, String title, String message) {
