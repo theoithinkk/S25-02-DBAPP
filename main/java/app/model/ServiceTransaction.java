@@ -9,6 +9,7 @@ public class ServiceTransaction {
     private int personnelId;
     private Date dateProvided;
     private String remarks;
+    private TransactionStatus status;
 
     // Derived display fields
     private String residentName;
@@ -33,6 +34,9 @@ public class ServiceTransaction {
 
     public String getRemarks() { return remarks; }
     public void setRemarks(String remarks) { this.remarks = remarks; }
+
+    public TransactionStatus getStatus() { return status; }
+    public void setStatus(TransactionStatus status) { this.status = status; }
 
     public String getResidentName() { return residentName; }
     public void setResidentName(String name) { this.residentName = name; }

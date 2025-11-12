@@ -18,13 +18,13 @@ public class ServiceInventoryDAO {
         List<ServiceInventory> inventoryList = new ArrayList<>();
 
         String query = """
-            SELECT si.inventory_id, si.quantity, si.expiration,
+            SELECT si.inventory_id, si.item_id, si.service_id, si.transaction_id, si.quantity, si.expiration,
                    ci.item_name, hs.service_type, st.date_provided
             FROM ServiceInventory si
             LEFT JOIN ClinicInventory ci ON si.item_id = ci.item_id
             LEFT JOIN HealthServices hs ON si.service_id = hs.service_id
             LEFT JOIN ServiceTransactions st ON si.transaction_id = st.transaction_id
-            ORDER BY si.expiration ASC
+            ORDER BY si.inventory_id DESC
         """;
 
         try (Connection conn = DBConnection.getConnection();
@@ -34,6 +34,9 @@ public class ServiceInventoryDAO {
             while (rs.next()) {
                 ServiceInventory si = new ServiceInventory();
                 si.setInventoryId(rs.getInt("inventory_id"));
+                si.setItemId(rs.getInt("item_id"));
+                si.setServiceId(rs.getInt("service_id"));
+                si.setTransactionId(rs.getInt("transaction_id")); // CRITICAL: Load transaction_id
                 si.setQuantity(rs.getInt("quantity"));
                 si.setExpiration(rs.getDate("expiration"));
                 si.setItemName(rs.getString("item_name"));
@@ -63,14 +66,24 @@ public class ServiceInventoryDAO {
 
             ps.setInt(1, si.getItemId());
             ps.setInt(2, si.getServiceId());
-            ps.setInt(3, si.getTransactionId());
+            ps.setInt(3, si.getTransactionId()); // CRITICAL: Save transaction_id
             ps.setInt(4, si.getQuantity());
             ps.setDate(5, si.getExpiration());
 
-            ps.executeUpdate();
-            return true;
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("✓ ServiceInventory added: Transaction ID = " + si.getTransactionId() +
+                        ", Item ID = " + si.getItemId() + ", Qty = " + si.getQuantity());
+                return true;
+            }
+            return false;
 
         } catch (SQLException e) {
+            System.err.println("✗ Error adding ServiceInventory:");
+            System.err.println("  Transaction ID: " + si.getTransactionId());
+            System.err.println("  Item ID: " + si.getItemId());
+            System.err.println("  Service ID: " + si.getServiceId());
             e.printStackTrace();
             return false;
         }
