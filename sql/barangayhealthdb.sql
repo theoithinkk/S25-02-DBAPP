@@ -245,6 +245,12 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+ALTER TABLE ServiceTransactions
+ADD COLUMN visit_type VARCHAR(20),
+ADD COLUMN diagnosis TEXT,
+ADD COLUMN treatment TEXT,
+ADD COLUMN medical_notes TEXT;
+
 --
 -- Dumping data for table `users`
 --
