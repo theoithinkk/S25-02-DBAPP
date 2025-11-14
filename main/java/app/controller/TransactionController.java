@@ -4,13 +4,13 @@ import app.dao.*;
 import app.model.*;
 import app.util.SessionManager;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -24,6 +24,9 @@ public class TransactionController {
     private final ServiceTransactionDAO transactionDAO = new ServiceTransactionDAO();
     private final ClinicInventoryDAO inventoryDAO = new ClinicInventoryDAO();
     private final ServiceInventoryDAO serviceInventoryDAO = new ServiceInventoryDAO();
+    private final ClinicVisitsDAO clinicVisitsDAO = new ClinicVisitsDAO();
+    private final ResidentDAO residentsDAO = new ResidentDAO();
+    private final HealthPersonnelDAO personnelDAO = new HealthPersonnelDAO();
 
     @FXML
     private void initialize() {
@@ -45,6 +48,16 @@ public class TransactionController {
         try {
             VBox inventoryView = createServiceInventoryView();
             contentPane.getChildren().setAll(inventoryView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void showClinicVisits() {
+        try {
+            VBox clinicVisitsView = createClinicVisitsView();
+            contentPane.getChildren().setAll(clinicVisitsView);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -143,6 +156,60 @@ public class TransactionController {
         return vbox;
     }
 
+    private VBox createClinicVisitsView() {
+        VBox vbox = new VBox(15);
+        vbox.setPadding(new Insets(15));
+
+        Label title = new Label("Clinic Visits Management");
+        title.setStyle("-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+        Label subtitle = new Label("Log and manage clinic visits - walk-ins and scheduled appointments");
+        subtitle.setStyle("-fx-font-size: 13; -fx-text-fill: #7f8c8d; -fx-padding: 5 0 10 0;");
+
+        TableView<ClinicVisits> table = new TableView<>();
+        table.setPrefHeight(400);
+
+        // Define columns
+        TableColumn<ClinicVisits, Integer> colId = new TableColumn<>("Visit ID");
+        colId.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getVisitId()));
+        colId.setPrefWidth(80);
+
+        TableColumn<ClinicVisits, String> colResident = new TableColumn<>("Resident");
+        colResident.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getResidentName()));
+        colResident.setPrefWidth(150);
+
+        TableColumn<ClinicVisits, String> colPersonnel = new TableColumn<>("Health Personnel");
+        colPersonnel.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getPersonnelName()));
+        colPersonnel.setPrefWidth(150);
+
+        TableColumn<ClinicVisits, String> colVisitType = new TableColumn<>("Type");
+        colVisitType.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getVisitType()));
+        colVisitType.setPrefWidth(100);
+
+        TableColumn<ClinicVisits, String> colDiagnosis = new TableColumn<>("Diagnosis");
+        colDiagnosis.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getDiagnosis()));
+        colDiagnosis.setPrefWidth(150);
+
+        TableColumn<ClinicVisits, String> colTreatment = new TableColumn<>("Treatment");
+        colTreatment.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getTreatment()));
+        colTreatment.setPrefWidth(150);
+
+        TableColumn<ClinicVisits, Date> colDate = new TableColumn<>("Visit Date");
+        colDate.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getVisitDate()));
+        colDate.setPrefWidth(100);
+
+        table.getColumns().addAll(colId, colResident, colPersonnel, colVisitType, colDiagnosis, colTreatment, colDate);
+        loadClinicVisits(table);
+
+        Button btnRefresh = new Button("🔄 Refresh");
+        btnRefresh.setOnAction(e -> loadClinicVisits(table));
+
+        HBox buttonBox = new HBox(10, btnRefresh);
+
+        vbox.getChildren().addAll(title, subtitle, table, buttonBox);
+        return vbox;
+    }
+
     private VBox createServiceInventoryView() {
         VBox vbox = new VBox(15);
         vbox.setPadding(new Insets(15));
@@ -190,6 +257,131 @@ public class TransactionController {
         return vbox;
     }
 
+    // Clinic Visits Methods
+    private void loadClinicVisits(TableView<ClinicVisits> table) {
+        List<ClinicVisits> clinicVisits = clinicVisitsDAO.getAllClinicVisits();
+        table.setItems(FXCollections.observableArrayList(clinicVisits));
+    }
+
+    private void showAddClinicVisitDialog(TableView<ClinicVisits> table) {
+        Dialog<ClinicVisits> dialog = new Dialog<>();
+        dialog.setTitle("Log New Clinic Visit");
+        dialog.setHeaderText("Add a new clinic visit record");
+
+        ButtonType saveButtonType = new ButtonType("Save Visit", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        // Form fields
+        ComboBox<String> visitTypeCombo = new ComboBox<>(FXCollections.observableArrayList("SCHEDULED", "WALK_IN"));
+        visitTypeCombo.setValue("WALK_IN");
+
+        ComboBox<Resident> residentCombo = new ComboBox<>();
+        residentCombo.setPromptText("Select Resident");
+
+        ComboBox<HealthPersonnel> personnelCombo = new ComboBox<>();
+        personnelCombo.setPromptText("Select Health Personnel");
+
+        TextArea diagnosisArea = new TextArea();
+        diagnosisArea.setPromptText("Diagnosis");
+        diagnosisArea.setPrefRowCount(3);
+
+        TextArea treatmentArea = new TextArea();
+        treatmentArea.setPromptText("Treatment provided");
+        treatmentArea.setPrefRowCount(3);
+
+        TextArea notesArea = new TextArea();
+        notesArea.setPromptText("Additional notes");
+        notesArea.setPrefRowCount(2);
+
+        DatePicker visitDatePicker = new DatePicker(LocalDate.now());
+
+        // Load residents and personnel
+        residentCombo.setItems(FXCollections.observableArrayList(residentsDAO.getAllResidents()));
+        personnelCombo.setItems(FXCollections.observableArrayList(personnelDAO.getAllPersonnel()));
+
+        // Set converters
+        residentCombo.setConverter(new javafx.util.StringConverter<Resident>() {
+            @Override
+            public String toString(Resident resident) {
+                return resident == null ? "" : resident.getFirstName() + " " + resident.getLastName();
+            }
+            @Override
+            public Resident fromString(String string) { return null; }
+        });
+
+        personnelCombo.setConverter(new javafx.util.StringConverter<HealthPersonnel>() {
+            @Override
+            public String toString(HealthPersonnel personnel) {
+                return personnel == null ? "" : personnel.getFirstName() + " " + personnel.getLastName() + " - " + personnel.getRole();
+            }
+            @Override
+            public HealthPersonnel fromString(String string) { return null; }
+        });
+
+        // Add fields to grid
+        grid.add(new Label("Visit Type:"), 0, 0);
+        grid.add(visitTypeCombo, 1, 0);
+        grid.add(new Label("Resident:"), 0, 1);
+        grid.add(residentCombo, 1, 1);
+        grid.add(new Label("Health Personnel:"), 0, 2);
+        grid.add(personnelCombo, 1, 2);
+        grid.add(new Label("Diagnosis:"), 0, 3);
+        grid.add(diagnosisArea, 1, 3);
+        grid.add(new Label("Treatment:"), 0, 4);
+        grid.add(treatmentArea, 1, 4);
+        grid.add(new Label("Notes:"), 0, 5);
+        grid.add(notesArea, 1, 5);
+        grid.add(new Label("Visit Date:"), 0, 6);
+        grid.add(visitDatePicker, 1, 6);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Convert result to ClinicVisit
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                try {
+                    // Validate required fields
+                    if (residentCombo.getValue() == null || personnelCombo.getValue() == null) {
+                        showAlert(Alert.AlertType.ERROR, "Validation Error",
+                                "Please select both Resident and Health Personnel");
+                        return null;
+                    }
+
+                    // Create clinic visit
+                    ClinicVisits clinicVisit = new ClinicVisits();
+                    clinicVisit.setResidentId(residentCombo.getValue().getResidentId());
+                    clinicVisit.setPersonnelId(personnelCombo.getValue().getPersonnelId());
+                    clinicVisit.setVisitType(visitTypeCombo.getValue());
+                    clinicVisit.setDiagnosis(diagnosisArea.getText().trim());
+                    clinicVisit.setTreatment(treatmentArea.getText().trim());
+                    clinicVisit.setNotes(notesArea.getText().trim());
+                    clinicVisit.setVisitDate(Date.valueOf(visitDatePicker.getValue()));
+
+                    return clinicVisit;
+                } catch (Exception e) {
+                    showAlert(Alert.AlertType.ERROR, "Error", "Failed to create visit record: " + e.getMessage());
+                }
+            }
+            return null;
+        });
+
+        Optional<ClinicVisits> result = dialog.showAndWait();
+        result.ifPresent(clinicVisit -> {
+            if (clinicVisitsDAO.addClinicVisit(clinicVisit)) {
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Clinic visit logged successfully!");
+                loadClinicVisits(table);
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to save clinic visit.");
+            }
+        });
+    }
+
+    // Service Transactions Methods
     private void showAddInventoryDialog(ServiceTransaction transaction) {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Add Inventory to Transaction");
@@ -246,7 +438,7 @@ public class TransactionController {
 
             if (selectedItem == null) {
                 showAlert(Alert.AlertType.WARNING, "No Item Selected", "Please select an item.");
-                showAddInventoryDialog(transaction); // Re-open dialog
+                showAddInventoryDialog(transaction);
                 return;
             }
 
@@ -255,25 +447,23 @@ public class TransactionController {
                 quantity = Integer.parseInt(txtQuantity.getText().trim());
             } catch (NumberFormatException e) {
                 showAlert(Alert.AlertType.ERROR, "Invalid Quantity", "Please enter a valid number.");
-                showAddInventoryDialog(transaction); // Re-open dialog
+                showAddInventoryDialog(transaction);
                 return;
             }
 
-            // Validate quantity
             if (quantity <= 0) {
                 showAlert(Alert.AlertType.ERROR, "Invalid Quantity", "Quantity must be greater than 0.");
-                showAddInventoryDialog(transaction); // Re-open dialog
+                showAddInventoryDialog(transaction);
                 return;
             }
 
-            // CRITICAL: Check against actual current stock
             if (quantity > selectedItem.getQuantity()) {
                 showAlert(Alert.AlertType.ERROR, "Insufficient Stock",
                         "Cannot take " + quantity + " items.\n" +
                                 "You requested: " + quantity + "\n" +
                                 "Available stock: " + selectedItem.getQuantity() + "\n\n" +
                                 "Please enter a quantity of " + selectedItem.getQuantity() + " or less.");
-                showAddInventoryDialog(transaction); // Re-open dialog
+                showAddInventoryDialog(transaction);
                 return;
             }
 
@@ -348,14 +538,12 @@ public class TransactionController {
 
     private void loadTransactions(TableView<ServiceTransaction> table) {
         List<ServiceTransaction> list = transactionDAO.getAllTransactions();
-        // Sort by transaction ID descending (newest first)
         list.sort((t1, t2) -> Integer.compare(t2.getTransactionId(), t1.getTransactionId()));
         table.setItems(FXCollections.observableArrayList(list));
     }
 
     private void loadServiceInventory(TableView<ServiceInventory> table) {
         List<ServiceInventory> list = serviceInventoryDAO.getAllServiceInventory();
-        // Sort by inventory ID descending (newest first)
         list.sort((i1, i2) -> Integer.compare(i2.getInventoryId(), i1.getInventoryId()));
         table.setItems(FXCollections.observableArrayList(list));
     }
