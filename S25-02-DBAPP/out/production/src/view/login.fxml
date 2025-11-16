@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="app.controller.LoginController"
+            prefWidth="450.0" prefHeight="550.0"
+            style="-fx-background-color: #ecf0f1;">
+
+    <center>
+        <VBox alignment="CENTER" spacing="20" style="-fx-background-color: white; -fx-background-radius: 10;">
+            <padding>
+                <Insets top="40" right="40" bottom="40" left="40"/>
+            </padding>
+
+            <!-- Logo/Title -->
+            <Text text="🏥" style="-fx-font-size: 48;"/>
+            <Text text="Barangay Health System"
+                  style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: #2c3e50;"/>
+            <Text text="Please login to continue"
+                  style="-fx-font-size: 12; -fx-fill: #7f8c8d;"/>
+
+            <!-- Spacer -->
+            <Region prefHeight="20"/>
+
+            <!-- Username Field -->
+            <VBox spacing="5">
+                <Label text="Username" style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <TextField fx:id="txtUsername" promptText="Enter username" prefWidth="300"/>
+            </VBox>
+
+            <!-- Password Field -->
+            <VBox spacing="5">
+                <Label text="Password" style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <PasswordField fx:id="txtPassword" promptText="Enter password" prefWidth="300"/>
+            </VBox>
+
+            <!-- Error Message Label -->
+            <Label fx:id="lblError" textFill="red" style="-fx-font-size: 12;" visible="false"/>
+
+            <!-- Login Button -->
+            <Button text="Login" onAction="#handleLogin" prefWidth="300" prefHeight="40"
+                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 5;"/>
+
+            <!-- Create Account Button -->
+            <Button text="Create New Account" onAction="#handleCreateAccount" prefWidth="300" prefHeight="35"
+                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 12; -fx-background-radius: 5;"/>
+
+            <!-- Info Text -->
+            <Text text="Default Login: admin / admin123"
+                  style="-fx-font-size: 10; -fx-fill: #95a5a6;"/>
+
+        </VBox>
+    </center>
+
+    <!-- Bottom Info -->
+    <bottom>
+        <VBox alignment="CENTER" spacing="5">
+            <padding>
+                <Insets bottom="20"/>
+            </padding>
+            <Text text="Barangay Health Services Management System"
+                  style="-fx-font-size: 10; -fx-fill: #7f8c8d;"/>
+            <Text text="Version 1.0"
+                  style="-fx-font-size: 10; -fx-fill: #95a5a6;"/>
+        </VBox>
+    </bottom>
+</BorderPane>
