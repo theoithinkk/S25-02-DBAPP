@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<VBox prefHeight="600.0" prefWidth="800.0" spacing="15" style="-fx-background-color: #f5f7fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.PersonnelController">
+
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+
+    <!-- Header Card -->
+    <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+        <Text style="-fx-font-size: 42;" text="🧑" />
+        <VBox>
+            <Text style="-fx-font-size: 26; -fx-font-weight: bold; -fx-fill: #2c3e50;" text="Personnel Management" />
+            <Text style="-fx-font-size: 14; -fx-fill: #7f8c8d;" text="Add, View, And Manage Personnel Information" />
+        </VBox>
+    </HBox>
+
+    <!-- Table Card -->
+    <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);" VBox.vgrow="ALWAYS">
+
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Text style="-fx-font-size: 14; -fx-font-weight: bold; -fx-fill: #34495e;" text="Personnel Records" />
+            <VBox HBox.hgrow="ALWAYS" />
+            <Label fx:id="lblRecordCount" prefHeight="14.0" prefWidth="76.0" style="-fx-text-fill: #7f8c8d; -fx-font-size: 11;" text="0 personnel" />
+        </HBox>
+
+        <TableView fx:id="tablePersonnel" style="-fx-background-radius: 8; -fx-border-radius: 8;" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colId" prefWidth="50" text="ID" />
+                <TableColumn fx:id="colFirstName" prefWidth="120" text="First Name" />
+                <TableColumn fx:id="colLastName" prefWidth="120" text="Last Name" />
+                <TableColumn fx:id="colRole" prefWidth="140.33160400390625" text="Role" />
+                <TableColumn fx:id="colSpecialization" prefWidth="145.41635131835938" text="Specialization" />
+                <TableColumn fx:id="colContact" prefWidth="154.08367919921875" text="Contact" />
+            </columns>
+        </TableView>
+    </VBox>
+
+    <!-- Input Form Card -->
+    <VBox spacing="12" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+
+        <Text style="-fx-font-size: 14; -fx-font-weight: bold; -fx-fill: #34495e;" text="Personnel Information" />
+
+        <!-- Row 1 -->
+        <GridPane hgap="12" prefWidth="569.0" vgap="12">
+            <Label style="-fx-text-fill: #34495e; -fx-font-size: 12;" text="First Name *" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField fx:id="txtFirstName" prefWidth="170" promptText="Enter first name" style="-fx-background-radius: 6; -fx-border-color: #dfe6e9; -fx-border-radius: 6;" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+
+            <Label style="-fx-text-fill: #34495e; -fx-font-size: 12;" text="Last Name *" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <TextField fx:id="txtLastName" prefWidth="170" promptText="Enter last name" style="-fx-background-radius: 6; -fx-border-color: #dfe6e9; -fx-border-radius: 6;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <Label style="-fx-text-fill: #34495e; -fx-font-size: 12;" text="Contact Number" GridPane.columnIndex="2" />
+            <TextField fx:id="txtContact" prefWidth="130" promptText="09XXXXXXXXX" style="-fx-background-radius: 6; -fx-border-color: #dfe6e9; -fx-border-radius: 6;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+                <ColumnConstraints maxWidth="130.5" minWidth="0.0" prefWidth="130.5" />
+                <ColumnConstraints maxWidth="130.0" minWidth="0.0" prefWidth="0.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
+        </GridPane>
+
+        <!-- Row 2 -->
+        <GridPane hgap="12" vgap="12">
+
+            <Label style="-fx-text-fill: #34495e; -fx-font-size: 12;" text="Role *" />
+            <TextField fx:id="txtRole" prefWidth="170" promptText="Enter role" style="-fx-background-radius: 6; -fx-border-color: #dfe6e9; -fx-border-radius: 6;" GridPane.rowIndex="1" />
+            <Label style="-fx-text-fill: #34495e; -fx-font-size: 12;" text="Specialization *" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <TextField fx:id="txtSpecialization" prefWidth="352" promptText="Enter specialization" style="-fx-background-radius: 6; -fx-border-color: #dfe6e9; -fx-border-radius: 6;" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+
+            <Label fx:id="lblVulnerability" style="-fx-text-fill: #34495e; -fx-font-size: 12;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="0" />
+            <columnConstraints>
+                <ColumnConstraints maxWidth="177.0" minWidth="10.0" prefWidth="167.59188842773438" />
+                <ColumnConstraints maxWidth="340.0" minWidth="0.0" prefWidth="277.32781982421875" />
+                <ColumnConstraints maxWidth="165.05401611328125" minWidth="60.684173583984375" prefWidth="62.67218017578125" />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
+        </GridPane>
+
+        <Text style="-fx-font-size: 11; -fx-fill: #95a5a6;" text="* Required fields" />
+    </VBox>
+
+    <!-- Action Buttons -->
+    <HBox alignment="CENTER" spacing="10">
+        <Button onAction="#addPersonnel" prefHeight="40" prefWidth="140" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" text="✚ Add Personnel" />
+        <Button onAction="#updatePersonnel" prefHeight="40" prefWidth="120" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" text="✎ Update" />
+        <Button fx:id="btnDelete" onAction="#deletePersonnel" prefHeight="40" prefWidth="120" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" text="🗑 Delete" />
+        <Button onAction="#refreshPersonnel" prefHeight="40" prefWidth="120" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" text="🔄 Refresh" />
+        <Button onAction="#clearFields" prefHeight="40" prefWidth="100" style="-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;" text="✖ Clear" />
+    </HBox>
+</VBox>
