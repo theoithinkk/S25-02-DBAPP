@@ -8,7 +8,7 @@ public class DBConnection {
 
     private static final String URL = "jdbc:mysql://localhost:3306/barangayhealthdb";
     private static final String USER = "root";
-    private static final String PASSWORD = "12345"; // ← Change this if needed
+    private static final String PASSWORD = "th3oDORE2012%%%"; // ← Change this if needed
 
     /**
      * Gets a connection to the database

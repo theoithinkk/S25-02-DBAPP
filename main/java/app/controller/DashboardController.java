@@ -5,7 +5,6 @@ import app.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Modality;
@@ -102,19 +101,7 @@ public class DashboardController {
 
     @FXML
     private void handleLogClinicVisit() {
-        try {
-            Parent clinicVisitsRoot = FXMLLoader.load(getClass().getResource("/view/clinicvisits.fxml"));
-
-            Stage stage = new Stage();
-            stage.setTitle("Log Clinic Visit");
-            stage.setScene(new Scene(clinicVisitsRoot, 700, 750)); // Increased height to 750
-            stage.setResizable(false); // Changed to true so user can resize if needed
-            stage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert("Error", "Cannot load clinic visits form: " + e.getMessage());
-        }
+        showAlert("Coming Soon", "Logging Clinic Visits feature will be implemented soon.");
     }
 
     private void showAlert(String title, String message) {
