@@ -136,10 +136,12 @@ public class InventoryController {
         });
     }
 
+    @FXML
     private void clearFields() {
         txtItemName.clear();
         txtCategory.clear();
         txtQuantity.clear();
+        tableInventory.getSelectionModel().clearSelection();
     }
 
     private void showAlert(Alert.AlertType type, String title, String msg) {

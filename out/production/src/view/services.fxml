@@ -100,15 +100,15 @@
 
     <!-- Action Buttons -->
     <HBox spacing="10" alignment="CENTER">
-        <Button text="✚ Add Service" onAction="#addService" prefWidth="140" prefHeight="40"
+        <Button text="✨ Add Service" onAction="#addService" prefWidth="140.0" prefHeight="40.0"
                 style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
-        <Button text="✎ Update" onAction="#updateService" prefWidth="120" prefHeight="40"
+        <Button text="✎ Update" onAction="#updateService" prefWidth="120.0" prefHeight="40.0"
                 style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
-        <Button fx:id="btnDelete" text="🗑 Delete" onAction="#deleteService" prefWidth="120" prefHeight="40"
+        <Button fx:id="btnDelete" text="🗑 Delete" onAction="#deleteService" prefWidth="120.0" prefHeight="40.0"
                 style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
-        <Button text="🔄 Refresh" onAction="#refreshServices" prefWidth="120" prefHeight="40"
+        <Button text="🔄 Refresh" onAction="#refreshServices" prefWidth="120.0" prefHeight="40.0"
                 style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
-        <Button text="✖ Clear" onAction="#clearFields" prefWidth="100" prefHeight="40"
-                style="-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+        <Button text="✖ Clear" onAction="#clearFields" prefWidth="100.0" prefHeight="40.0"
+                style="-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
     </HBox>
 </VBox>
