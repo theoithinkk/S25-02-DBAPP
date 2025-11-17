@@ -100,6 +100,42 @@ public class InventoryController {
         tableInventory.setItems(obsList);
     }
 
+    @FXML
+    private void restockInventory(){
+        ClinicInventory selected = tableInventory.getSelectionModel().getSelectedItem();
+        if(selected==null){
+            showAlert(Alert.AlertType.WARNING, "No Selection", "Please select item to restock.");
+            return;
+        }
+
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Restocking...");
+        dialog.setHeaderText("Restocking: " + selected.getItemName());
+        dialog.setContentText("Enter new quantity: ");
+
+        dialog.showAndWait().ifPresent(input -> {
+            try{
+                int qty = Integer.parseInt(input);
+
+                if(qty <= 0){
+                    showAlert(Alert.AlertType.WARNING, "Invalid input", "Quantity must be greater than 0.");
+                    return;
+                }
+
+                selected.setQuantity(selected.getQuantity() + qty);
+
+                if(inventoryDAO.updateItem(selected)){
+                    showAlert(Alert.AlertType.INFORMATION, "Restocked", "Item was restocked successfully.");
+                    refreshInventory();
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Error", "Failed to restock item.");
+                }
+            } catch (NumberFormatException e){
+                showAlert(Alert.AlertType.ERROR, "Invalid input", "Please enter a valid input.");
+            }
+        });
+    }
+
     private void clearFields() {
         txtItemName.clear();
         txtCategory.clear();
