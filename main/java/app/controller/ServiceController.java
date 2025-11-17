@@ -1,8 +1,8 @@
-
 package app.controller;
 
 import app.dao.HealthServiceDAO;
 import app.model.HealthService;
+import app.model.User;
 import app.util.SessionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,11 +46,7 @@ public class ServiceController {
                 new javafx.beans.property.SimpleStringProperty(data.getValue().getRemarks()));
 
         // Configure permissions
-        if (btnDelete != null && !SessionManager.canDelete()) {
-            btnDelete.setDisable(true);
-            btnDelete.setOpacity(0.5);
-            btnDelete.setTooltip(new Tooltip("Only Admins can delete services"));
-        }
+        configurePermissions();
 
         refreshServices();
 
@@ -66,6 +62,16 @@ public class ServiceController {
 
         // Update next ID display
         updateNextIdDisplay();
+    }
+
+    private void configurePermissions() {
+        // Hide delete button for Personnel and Staff (only Admin can delete services)
+        if (btnDelete != null) {
+            boolean canDelete = SessionManager.getCurrentUser() != null &&
+                    SessionManager.getCurrentUser().canDeleteRecords();
+            btnDelete.setVisible(canDelete);
+            btnDelete.setManaged(canDelete);
+        }
     }
 
     @FXML
@@ -140,7 +146,8 @@ public class ServiceController {
     @FXML
     private void deleteService() {
         // Double-check permission
-        if (!SessionManager.canDelete()) {
+        User currentUser = SessionManager.getCurrentUser();
+        if (currentUser == null || !currentUser.canDeleteRecords()) {
             showAlert(Alert.AlertType.ERROR, "Access Denied", "Only Admins can delete services.");
             return;
         }

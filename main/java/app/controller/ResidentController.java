@@ -154,11 +154,12 @@ public class ResidentController {
         if (comboVulnerability != null) comboVulnerability.setVisible(showSensitiveData);
         if (lblVulnerability != null) lblVulnerability.setVisible(showSensitiveData);
 
-        // Disable delete button if user is not admin
-        if (btnDelete != null && !SessionManager.canDelete()) {
-            btnDelete.setDisable(true);
-            btnDelete.setOpacity(0.5);
-            btnDelete.setTooltip(new Tooltip("Only Admins can delete records"));
+        // Hide delete button for Personnel and Staff (only Admin can delete residents)
+        if (btnDelete != null) {
+            boolean canDelete = SessionManager.getCurrentUser() != null &&
+                    SessionManager.getCurrentUser().canDeleteRecords();
+            btnDelete.setVisible(canDelete);
+            btnDelete.setManaged(canDelete);
         }
     }
 

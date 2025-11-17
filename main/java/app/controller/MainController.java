@@ -44,6 +44,9 @@ public class MainController {
 
     /**
      * Configure which buttons are visible/enabled based on user role
+     * ADMIN: Full access to everything
+     * PERSONNEL: CR on everything, CRD on inventory, CRU on transactions, no access to personnel management
+     * STAFF: CR on everything, can generate reports, no access to personnel/inventory/transactions management
      */
     private void configureUIForRole() {
         User user = SessionManager.getCurrentUser();
@@ -56,38 +59,32 @@ public class MainController {
         System.out.println("Configuring UI for role: " + user.getRole());
 
         // All roles can access these
-        enableButton(btnDashboard, true);
-        enableButton(btnResidents, true);
-        enableButton(btnServices, true);
-        enableButton(btnReports, true); // ← ADD THIS LINE
+        setButtonVisibility(btnDashboard, true);
+        setButtonVisibility(btnResidents, true);
+        setButtonVisibility(btnServices, true);
+        setButtonVisibility(btnReports, true);
 
-        // Audit Log - Admin only
-        enableButton(btnAuditLog, user.isAdmin());
+        // Audit Log - Admin only (completely hide for others)
+        setButtonVisibility(btnAuditLog, user.canAccessAuditLog());
 
-        // Admin: Full access to everything
-        if (user.isAdmin()) {
-            enableButton(btnPersonnel, true);
-            enableButton(btnInventory, true);
-            enableButton(btnTransactions, true);
-        }
-        // Personnel: Can access transactions and inventory, not personnel management
-        else if (user.isPersonnel()) {
-            enableButton(btnPersonnel, false);
-            enableButton(btnInventory, true);
-            enableButton(btnTransactions, true);
-        }
-        // Staff: Limited access
-        else if (user.isStaff()) {
-            enableButton(btnPersonnel, false);
-            enableButton(btnInventory, false);
-            enableButton(btnTransactions, false);
-        }
+        // Personnel Management - Admin only
+        setButtonVisibility(btnPersonnel, user.isAdmin());
+
+        // Inventory - Admin and Personnel only (Staff cannot access)
+        setButtonVisibility(btnInventory, user.canManageInventory());
+
+        // Transactions - Admin and Personnel only (Staff cannot access)
+        setButtonVisibility(btnTransactions, user.canViewTransactions());
     }
 
-    private void enableButton(Button button, boolean enabled) {
+    /**
+     * Set button visibility and enable/disable state
+     * Makes button completely invisible if not allowed
+     */
+    private void setButtonVisibility(Button button, boolean visible) {
         if (button != null) {
-            button.setDisable(!enabled);
-            button.setOpacity(enabled ? 1.0 : 0.5);
+            button.setVisible(visible);
+            button.setManaged(visible); // Also affects layout
         }
     }
 
@@ -96,7 +93,7 @@ public class MainController {
             System.out.println("Loading view: " + fxmlFile);
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/" + fxmlFile));
-            javafx.scene.Node pane = loader.load(); // Changed to Node instead of AnchorPane
+            javafx.scene.Node pane = loader.load();
 
             contentArea.getChildren().clear();
             contentArea.getChildren().add(pane);
@@ -129,7 +126,8 @@ public class MainController {
 
     @FXML
     private void showAuditLog() {
-        if (!SessionManager.isAdmin()) {
+        User user = SessionManager.getCurrentUser();
+        if (user == null || !user.canAccessAuditLog()) {
             showAccessDenied("Only Admins can view audit logs");
             return;
         }
@@ -161,7 +159,8 @@ public class MainController {
 
     @FXML
     private void showInventory() {
-        if (!SessionManager.canManageInventory()) {
+        User user = SessionManager.getCurrentUser();
+        if (user == null || !user.canManageInventory()) {
             showAccessDenied("You don't have permission to manage inventory");
             return;
         }
@@ -171,7 +170,8 @@ public class MainController {
 
     @FXML
     private void showTransactions() {
-        if (!SessionManager.canManageTransactions()) {
+        User user = SessionManager.getCurrentUser();
+        if (user == null || !user.canViewTransactions()) {
             showAccessDenied("You don't have permission to manage transactions");
             return;
         }
@@ -234,6 +234,4 @@ public class MainController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-
 }

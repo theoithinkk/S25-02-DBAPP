@@ -2,7 +2,7 @@ package app.controller;
 
 import app.dao.HealthPersonnelDAO;
 import app.model.HealthPersonnel;
-import app.model.Resident;
+import app.model.User;
 import app.util.SessionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +20,6 @@ public class PersonnelController {
     @FXML private TableColumn<HealthPersonnel, String> colRole;
     @FXML private TableColumn<HealthPersonnel, String> colSpecialization;
     @FXML private TableColumn<HealthPersonnel, String> colContact;
-
 
     @FXML private TextField txtFirstName, txtLastName, txtRole, txtSpecialization, txtContact;
     @FXML private Label lblRecordCount;
@@ -85,22 +84,27 @@ public class PersonnelController {
     }
 
     private void configurePermissions() {
-        // Disable delete button if user is not admin
-        if (btnDelete != null && !SessionManager.canDelete()) {
-            btnDelete.setDisable(true);
-            btnDelete.setOpacity(0.5);
-            btnDelete.setTooltip(new Tooltip("Only Admins can delete records"));
+        // Hide delete button for Personnel and Staff (only Admin can delete personnel)
+        if (btnDelete != null) {
+            boolean canDelete = SessionManager.getCurrentUser() != null &&
+                    SessionManager.getCurrentUser().canDeleteRecords();
+            btnDelete.setVisible(canDelete);
+            btnDelete.setManaged(canDelete);
         }
     }
 
     @FXML
     private void addPersonnel() {
+        if (!validateInput()) {
+            return;
+        }
+
         HealthPersonnel p = new HealthPersonnel();
-        p.setFirstName(txtFirstName.getText());
-        p.setLastName(txtLastName.getText());
-        p.setRole(txtRole.getText());
-        p.setSpecialization(txtSpecialization.getText());
-        p.setContactNumber(txtContact.getText());
+        p.setFirstName(txtFirstName.getText().trim());
+        p.setLastName(txtLastName.getText().trim());
+        p.setRole(txtRole.getText().trim());
+        p.setSpecialization(txtSpecialization.getText().trim());
+        p.setContactNumber(txtContact.getText().trim());
 
         if (personnelDAO.addPersonnel(p)) {
             if (SessionManager.isLoggedIn()) {
@@ -151,6 +155,13 @@ public class PersonnelController {
 
     @FXML
     private void deletePersonnel() {
+        // Double-check permission
+        User currentUser = SessionManager.getCurrentUser();
+        if (currentUser == null || !currentUser.canDeleteRecords()) {
+            showAlert(Alert.AlertType.ERROR, "Access Denied", "Only Admins can delete personnel.");
+            return;
+        }
+
         HealthPersonnel selected = tablePersonnel.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
@@ -187,7 +198,7 @@ public class PersonnelController {
 
             // Update count
             if (lblRecordCount != null) {
-                lblRecordCount.setText(list.size() + "Personnel" + (list.size() != 1 ? "s" : ""));
+                lblRecordCount.setText(list.size() + " personnel" + (list.size() != 1 ? "s" : ""));
             }
 
             if (list.isEmpty()) {
@@ -209,6 +220,7 @@ public class PersonnelController {
         txtRole.clear();
         txtSpecialization.clear();
         txtContact.clear();
+        tablePersonnel.getSelectionModel().clearSelection();
     }
 
     private boolean validateInput() {
@@ -223,7 +235,7 @@ public class PersonnelController {
         if (txtRole.getText().trim().isEmpty()) {
             errors.append("• Role is required\n");
         }
-        if (txtSpecialization.getText() == null || txtSpecialization.getText().isEmpty()) {
+        if (txtSpecialization.getText() == null || txtSpecialization.getText().trim().isEmpty()) {
             errors.append("• Specialization is required\n");
         }
         if (!txtContact.getText().trim().isEmpty() && txtContact.getText().trim().length() != 11) {
