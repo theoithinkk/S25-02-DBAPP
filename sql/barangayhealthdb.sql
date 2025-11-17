@@ -224,6 +224,40 @@ INSERT INTO `servicetransactions` VALUES (1,1,NULL,1,'2025-11-09','Routine check
 UNLOCK TABLES;
 
 --
+-- Table structure for table `clinicvisits`
+--
+
+DROP TABLE IF EXISTS `clinicvisits`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `clinicvisits` (
+  `visit_id` int NOT NULL AUTO_INCREMENT,
+  `resident_id` int DEFAULT NULL,
+  `personnel_id` int DEFAULT NULL,
+  `visit_type` enum('SCHEDULED','WALK_IN') NOT NULL,
+  `diagnosis` text,
+  `treatment` text,
+  `notes` text,
+  `visit_date` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`visit_id`),
+  KEY `resident_id` (`resident_id`),
+  KEY `personnel_id` (`personnel_id`),
+  CONSTRAINT `clinicvisits_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `residents` (`resident_id`),
+  CONSTRAINT `clinicvisits_ibfk_2` FOREIGN KEY (`personnel_id`) REFERENCES `healthpersonnel` (`personnel_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `clinicvisits`
+--
+
+LOCK TABLES `clinicvisits` WRITE;
+/*!40000 ALTER TABLE `clinicvisits` DISABLE KEYS */;
+/*!40000 ALTER TABLE `clinicvisits` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
