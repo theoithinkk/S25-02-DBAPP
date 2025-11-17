@@ -2,6 +2,8 @@ package app.controller;
 
 import app.dao.*;
 import app.model.*;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -9,11 +11,29 @@ import javafx.stage.Stage;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClinicVisitsController {
 
-    @FXML private ComboBox<Resident> residentCombo;
-    @FXML private ComboBox<HealthPersonnel> personnelCombo;
+    // ========= NEW UI ELEMENTS (like AvailHealthService) =========
+    @FXML private TextField txtSearchPatient;
+    @FXML private TableView<Resident> tablePatients;
+    @FXML private TableColumn<Resident, Integer> colPatientId;
+    @FXML private TableColumn<Resident, String> colPatientName;
+    @FXML private TableColumn<Resident, Integer> colAge;
+    @FXML private TableColumn<Resident, String> colSex;
+    @FXML private TableColumn<Resident, String> colContact;
+    @FXML private Label lblSelectedPatient;
+
+    // ========= Personnel Search Table (NEW) =========
+    @FXML private TextField txtSearchPersonnel;
+    @FXML private TableView<HealthPersonnel> tablePersonnel;
+    @FXML private TableColumn<HealthPersonnel, Integer> colPersonnelId;
+    @FXML private TableColumn<HealthPersonnel, String> colPersonnelName;
+    @FXML private TableColumn<HealthPersonnel, String> colRole;
+
+    // ========= Existing fields =========
     @FXML private ComboBox<String> visitTypeCombo;
     @FXML private TextArea diagnosisArea;
     @FXML private TextArea treatmentArea;
@@ -21,120 +41,165 @@ public class ClinicVisitsController {
     @FXML private DatePicker visitDatePicker;
     @FXML private Label lblStatus;
 
+    private Resident selectedPatient = null;
+    private HealthPersonnel selectedPersonnel = null;
+
     private final ClinicVisitsDAO clinicVisitsDAO = new ClinicVisitsDAO();
     private final ResidentDAO residentsDAO = new ResidentDAO();
     private final HealthPersonnelDAO personnelDAO = new HealthPersonnelDAO();
 
     @FXML
     private void initialize() {
-        setupForm();
-    }
 
-    private void setupForm() {
-        // Load residents and personnel
-        residentCombo.setItems(FXCollections.observableArrayList(residentsDAO.getAllResidents()));
-        personnelCombo.setItems(FXCollections.observableArrayList(personnelDAO.getAllPersonnel()));
+        // ========== SETUP RESIDENT TABLE ==========
+        colPatientId.setCellValueFactory(data ->
+                new SimpleObjectProperty<>(data.getValue().getResidentId()));
+        colPatientName.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getFirstName() + " " + data.getValue().getLastName()));
+        colAge.setCellValueFactory(data ->
+                new SimpleObjectProperty<>(data.getValue().getAge()));
+        colSex.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getSex()));
+        colContact.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getContactNumber()));
 
-        // Set up visit type options
+        loadAllResidents();
+
+        tablePatients.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                selectedPatient = newV;
+                lblSelectedPatient.setText(
+                        "✓ Selected: " + newV.getFirstName() + " " + newV.getLastName() +
+                                " (ID: " + newV.getResidentId() + ")"
+                );
+            }
+        });
+
+
+        // ========== SETUP PERSONNEL TABLE ==========
+        colPersonnelId.setCellValueFactory(data ->
+                new SimpleObjectProperty<>(data.getValue().getPersonnelId()));
+        colPersonnelName.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getFirstName() + " " + data.getValue().getLastName()));
+        colRole.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getRole()));
+
+        loadAllPersonnel();
+
+        tablePersonnel.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                selectedPersonnel = newV;
+            }
+        });
+
+
+        // ========== OTHER FORM SETUP ==========
         visitTypeCombo.setItems(FXCollections.observableArrayList("WALK_IN", "SCHEDULED"));
         visitTypeCombo.setValue("WALK_IN");
 
-        // Set default date to today
         visitDatePicker.setValue(LocalDate.now());
-
-        // Set up converters for combo boxes
-        residentCombo.setConverter(new javafx.util.StringConverter<Resident>() {
-            @Override
-            public String toString(Resident resident) {
-                return resident == null ? "" : resident.getFirstName() + " " + resident.getLastName() +
-                        " (ID: " + resident.getResidentId() + ")";
-            }
-            @Override
-            public Resident fromString(String string) { return null; }
-        });
-
-        personnelCombo.setConverter(new javafx.util.StringConverter<HealthPersonnel>() {
-            @Override
-            public String toString(HealthPersonnel personnel) {
-                return personnel == null ? "" : personnel.getFirstName() + " " + personnel.getLastName() +
-                        " - " + personnel.getRole();
-            }
-            @Override
-            public HealthPersonnel fromString(String string) { return null; }
-        });
     }
 
+    // ===================== RESIDENT SEARCH =====================
+    @FXML
+    private void handleSearchPatient() {
+        String search = txtSearchPatient.getText().trim().toLowerCase();
+
+        List<Resident> all = residentsDAO.getAllResidents();
+
+        List<Resident> filtered = all.stream()
+                .filter(r ->
+                        r.getFirstName().toLowerCase().contains(search) ||
+                                r.getLastName().toLowerCase().contains(search) ||
+                                String.valueOf(r.getResidentId()).contains(search)
+                )
+                .collect(Collectors.toList());
+
+        tablePatients.setItems(FXCollections.observableArrayList(filtered));
+    }
+
+    private void loadAllResidents() {
+        tablePatients.setItems(FXCollections.observableArrayList(residentsDAO.getAllResidents()));
+    }
+
+    // ===================== PERSONNEL SEARCH =====================
+    @FXML
+    private void handleSearchPersonnel() {
+        String search = txtSearchPersonnel.getText().trim().toLowerCase();
+
+        List<HealthPersonnel> all = personnelDAO.getAllPersonnel();
+
+        List<HealthPersonnel> filtered = all.stream()
+                .filter(p ->
+                        p.getFirstName().toLowerCase().contains(search) ||
+                                p.getLastName().toLowerCase().contains(search) ||
+                                p.getRole().toLowerCase().contains(search) ||
+                                String.valueOf(p.getPersonnelId()).contains(search)
+                )
+                .collect(Collectors.toList());
+
+        tablePersonnel.setItems(FXCollections.observableArrayList(filtered));
+    }
+
+    private void loadAllPersonnel() {
+        tablePersonnel.setItems(FXCollections.observableArrayList(personnelDAO.getAllPersonnel()));
+    }
+
+    // ===================== SAVE VISIT =====================
     @FXML
     private void handleSaveVisit() {
-        // Validation
-        if (residentCombo.getValue() == null) {
-            showStatus("Please select a patient", true);
+        if (selectedPatient == null) {
+            showStatus("Please select a resident", true);
             return;
         }
-
-        if (personnelCombo.getValue() == null) {
+        if (selectedPersonnel == null) {
             showStatus("Please select attending personnel", true);
             return;
         }
-
         if (diagnosisArea.getText().trim().isEmpty()) {
-            showStatus("Please enter a diagnosis", true);
+            showStatus("Diagnosis required", true);
             return;
         }
-
         if (visitDatePicker.getValue() == null) {
-            showStatus("Please select visit date", true);
+            showStatus("Select visit date", true);
             return;
         }
 
-        // Create clinic visit
-        ClinicVisits clinicVisit = new ClinicVisits();
-        clinicVisit.setResidentId(residentCombo.getValue().getResidentId());
-        clinicVisit.setPersonnelId(personnelCombo.getValue().getPersonnelId());
-        clinicVisit.setVisitType(visitTypeCombo.getValue());
-        clinicVisit.setDiagnosis(diagnosisArea.getText().trim());
-        clinicVisit.setTreatment(treatmentArea.getText().trim());
-        clinicVisit.setNotes(notesArea.getText().trim());
-        clinicVisit.setVisitDate(Date.valueOf(visitDatePicker.getValue()));
+        ClinicVisits visit = new ClinicVisits();
+        visit.setResidentId(selectedPatient.getResidentId());
+        visit.setPersonnelId(selectedPersonnel.getPersonnelId());
+        visit.setVisitType(visitTypeCombo.getValue());
+        visit.setDiagnosis(diagnosisArea.getText().trim());
+        visit.setTreatment(treatmentArea.getText().trim());
+        visit.setNotes(notesArea.getText().trim());
+        visit.setVisitDate(Date.valueOf(visitDatePicker.getValue()));
 
-        // Save to database
-        if (clinicVisitsDAO.addClinicVisit(clinicVisit)) {
-            showStatus("✓ Clinic visit recorded successfully!", false);
+        if (clinicVisitsDAO.addClinicVisit(visit)) {
+            showStatus("✓ Clinic visit saved!", false);
             clearForm();
-
-            // Show success alert
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Success");
-            alert.setHeaderText("Clinic Visit Recorded");
-            alert.setContentText("The clinic visit has been successfully recorded in the system.");
-            alert.showAndWait();
-
         } else {
-            showStatus("Failed to save clinic visit. Please try again.", true);
+            showStatus("Failed to save visit", true);
         }
     }
 
     @FXML
     private void handleCancel() {
-        Stage stage = (Stage) residentCombo.getScene().getWindow();
+        Stage stage = (Stage) txtSearchPatient.getScene().getWindow();
         stage.close();
     }
 
     private void clearForm() {
-        residentCombo.setValue(null);
-        personnelCombo.setValue(null);
-        visitTypeCombo.setValue("WALK_IN");
+        selectedPatient = null;
+        selectedPersonnel = null;
+
         diagnosisArea.clear();
         treatmentArea.clear();
         notesArea.clear();
         visitDatePicker.setValue(LocalDate.now());
     }
 
-    private void showStatus(String message, boolean isError) {
-        lblStatus.setText(message);
-        lblStatus.setStyle(isError ?
-                "-fx-text-fill: #e74c3c; -fx-background-color: #fdeded; -fx-border-color: #e74c3c; -fx-padding: 10; -fx-background-radius: 5;" :
-                "-fx-text-fill: #27ae60; -fx-background-color: #edf7ed; -fx-border-color: #27ae60; -fx-padding: 10; -fx-background-radius: 5;");
-        lblStatus.setVisible(true);
+    private void showStatus(String msg, boolean error) {
+        lblStatus.setText(msg);
+        lblStatus.setStyle(error ? "-fx-text-fill: red;" : "-fx-text-fill: green;");
     }
 }
