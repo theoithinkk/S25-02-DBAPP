@@ -25,6 +25,7 @@ public class MainController {
     @FXML private Button btnPersonnel;
     @FXML private Button btnInventory;
     @FXML private Button btnTransactions;
+    @FXML private Button btnReports;
 
     /**
      * Called after login to initialize UI based on user role
@@ -58,6 +59,7 @@ public class MainController {
         enableButton(btnDashboard, true);
         enableButton(btnResidents, true);
         enableButton(btnServices, true);
+        enableButton(btnReports, true); // ← ADD THIS LINE
 
         // Audit Log - Admin only
         enableButton(btnAuditLog, user.isAdmin());
@@ -70,11 +72,11 @@ public class MainController {
         }
         // Personnel: Can access transactions and inventory, not personnel management
         else if (user.isPersonnel()) {
-            enableButton(btnPersonnel, false); // Cannot manage other personnel
+            enableButton(btnPersonnel, false);
             enableButton(btnInventory, true);
             enableButton(btnTransactions, true);
         }
-        // Staff: Limited access - can only encode residents and services
+        // Staff: Limited access
         else if (user.isStaff()) {
             enableButton(btnPersonnel, false);
             enableButton(btnInventory, false);
@@ -178,6 +180,12 @@ public class MainController {
     }
 
     @FXML
+    private void showReports() {
+        System.out.println("=== Show Reports ===");
+        loadView("reports.fxml");
+    }
+
+    @FXML
     private void handleLogout() {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Logout");
@@ -226,4 +234,6 @@ public class MainController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+
 }

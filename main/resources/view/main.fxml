@@ -57,6 +57,10 @@
                     onAction="#showTransactions"
                     style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
 
+            <Button text="📊 Reports" fx:id="btnReports" prefWidth="195"
+                    onAction="#showReports"
+                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+
             <Button text="📋 Audit Log" fx:id="btnAuditLog" prefWidth="195"
                     onAction="#showAuditLog"
                     style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
@@ -85,18 +89,13 @@
                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 
                 <!-- Hero Section -->
-
                 <VBox alignment="CENTER" spacing="15"
-                      style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2);
-             -fx-background-radius: 20;
-             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);">
-
-                    <padding>
-                        <Insets top="50" right="50" bottom="50" left="50"/>
-                    </padding>
-
-                    <Text text="🏥" style="-fx-font-size: 72;"/>
-                    <Text text="Welcome to"
+                      style="-fx-background-color: linear-gradient(to bottom right, #667eea 0%, #764ba2 100%);
+                            -fx-background-radius: 20;
+                            -fx-padding: 50;
+                            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);">
+                    <Text text='🏥' style='-fx-font-size: 72;'/>
+                <Text text="Welcome to"
                           style="-fx-font-size: 18; -fx-fill: #e0e7ff; -fx-font-weight: 600;"/>
                     <Text text="Barangay Health Management System"
                           style="-fx-font-size: 32; -fx-font-weight: bold; -fx-fill: white; -fx-text-alignment: center;"
