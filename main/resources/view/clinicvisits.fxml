@@ -82,6 +82,10 @@
                     <TableColumn fx:id="colRole" prefWidth="120" text="Role" />
                 </columns>
             </TableView>
+
+            <Label fx:id="lblSelectedPersonnel" text="No personnel selected"
+                   style="-fx-text-fill: #9ca3af; -fx-font-size: 13; -fx-font-style: italic; -fx-padding: 5 0 0 0;"/>
+
         </VBox>
 
         <!-- STEP 3: Visit Details -->
@@ -140,7 +144,8 @@
         </VBox>
 
         <!-- STATUS LABEL -->
-        <Label fx:id="lblStatus" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-padding: 12; -fx-background-radius: 8;" visible="false" />
+        <Label fx:id="lblStatus"
+               style="-fx-font-weight: bold; -fx-font-size: 14; -fx-padding: 12; -fx-background-radius: 8;"/>
 
         <!-- ACTION BUTTONS -->
         <HBox alignment="CENTER" spacing="12" style="-fx-padding: 10 0 20 0;">

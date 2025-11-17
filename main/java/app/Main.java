@@ -11,9 +11,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // COMMENT OUT music initialization for now
-        // BackgroundMusicPlayer.initialize();
-
         Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
         primaryStage.setTitle("Barangay Health System");
         primaryStage.setScene(new Scene(root, 400, 500));
