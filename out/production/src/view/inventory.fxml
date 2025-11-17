@@ -9,31 +9,34 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="app.controller.InventoryController"
-      spacing="10" padding="15">
+<VBox spacing="10" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.InventoryController">
 
-    <Label text="Clinic Inventory" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+    <padding>
+        <Insets bottom="15" left="15" right="15" top="15" />
+    </padding>
+
+    <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Clinic Inventory" />
 
     <TableView fx:id="tableInventory">
         <columns>
-            <TableColumn fx:id="colId" text="ID" prefWidth="40"/>
-            <TableColumn fx:id="colName" text="Item Name" prefWidth="200"/>
-            <TableColumn fx:id="colCategory" text="Category" prefWidth="150"/>
-            <TableColumn fx:id="colQuantity" text="Quantity" prefWidth="80"/>
+            <TableColumn fx:id="colId" prefWidth="40" text="ID" />
+            <TableColumn fx:id="colName" prefWidth="200" text="Item Name" />
+            <TableColumn fx:id="colCategory" prefWidth="150" text="Category" />
+            <TableColumn fx:id="colQuantity" prefWidth="80" text="Quantity" />
         </columns>
     </TableView>
 
     <HBox spacing="10">
-        <TextField fx:id="txtItemName" promptText="Item Name"/>
-        <TextField fx:id="txtCategory" promptText="Category"/>
-        <TextField fx:id="txtQuantity" promptText="Quantity"/>
+        <TextField fx:id="txtItemName" promptText="Item Name" />
+        <TextField fx:id="txtCategory" promptText="Category" />
+        <TextField fx:id="txtQuantity" promptText="Quantity" />
     </HBox>
 
     <HBox spacing="10">
-        <Button text="Add" onAction="#addItem"/>
-        <Button text="Update" onAction="#updateItem"/>
-        <Button text="Delete" onAction="#deleteItem"/>
-        <Button text="Refresh" onAction="#refreshInventory"/>
+        <Button onAction="#addItem" text="Add" />
+        <Button onAction="#updateItem" text="Update" />
+        <Button onAction="#deleteItem" text="Delete" />
+        <Button onAction="#refreshInventory" text="Refresh" />
+      <Button onAction="#restockInventory" text="Restock" />
     </HBox>
 </VBox>
