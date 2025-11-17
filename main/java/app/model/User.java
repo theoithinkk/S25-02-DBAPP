@@ -74,16 +74,61 @@ public class User {
     }
 
     // Permission checking methods
-    public boolean canDelete() {
-        return isAdmin(); // Only Admin can delete
+
+    /**
+     * Can delete residents, services, and personnel records
+     * Only Admin can delete these
+     */
+    public boolean canDeleteRecords() {
+        return isAdmin();
     }
 
-    public boolean canManageTransactions() {
-        return isAdmin() || isPersonnel(); // Admin and Personnel can manage transactions
+    /**
+     * Can delete inventory items
+     * Admin and Personnel can delete inventory
+     */
+    public boolean canDeleteInventory() {
+        return isAdmin() || isPersonnel();
     }
 
+    /**
+     * Can update service transactions
+     * Admin and Personnel can update transactions
+     */
+    public boolean canUpdateTransactions() {
+        return isAdmin() || isPersonnel();
+    }
+
+    /**
+     * Can delete service transactions
+     * Only Admin can delete transactions
+     */
+    public boolean canDeleteTransactions() {
+        return isAdmin();
+    }
+
+    /**
+     * Can manage inventory (view, add, update)
+     * Admin and Personnel can manage inventory (not Staff)
+     */
     public boolean canManageInventory() {
-        return isAdmin() || isPersonnel(); // Admin and Personnel can manage inventory
+        return isAdmin() || isPersonnel();
+    }
+
+    /**
+     * Can view transactions
+     * Admin and Personnel can view transactions (not Staff)
+     */
+    public boolean canViewTransactions() {
+        return isAdmin() || isPersonnel();
+    }
+
+    /**
+     * Can access audit log
+     * Only Admin can access audit log
+     */
+    public boolean canAccessAuditLog() {
+        return isAdmin();
     }
 
     @Override

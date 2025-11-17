@@ -63,23 +63,58 @@ public class SessionManager {
     }
 
     /**
-     * Check if current user can delete records
+     * Check if current user can delete records (residents, services, personnel)
+     * Only Admin can delete these
      */
     public static boolean canDelete() {
-        return isLoggedIn() && currentUser.canDelete();
+        return isLoggedIn() && currentUser.canDeleteRecords();
     }
 
     /**
-     * Check if current user can manage transactions
+     * Check if current user can delete inventory items
+     * Admin and Personnel can delete inventory
      */
-    public static boolean canManageTransactions() {
-        return isLoggedIn() && currentUser.canManageTransactions();
+    public static boolean canDeleteInventory() {
+        return isLoggedIn() && currentUser.canDeleteInventory();
+    }
+
+    /**
+     * Check if current user can update transactions
+     * Admin and Personnel can update transactions
+     */
+    public static boolean canUpdateTransactions() {
+        return isLoggedIn() && currentUser.canUpdateTransactions();
+    }
+
+    /**
+     * Check if current user can delete transactions
+     * Only Admin can delete transactions
+     */
+    public static boolean canDeleteTransactions() {
+        return isLoggedIn() && currentUser.canDeleteTransactions();
     }
 
     /**
      * Check if current user can manage inventory
+     * Admin and Personnel can manage inventory
      */
     public static boolean canManageInventory() {
         return isLoggedIn() && currentUser.canManageInventory();
+    }
+
+    /**
+     * Check if current user can view/manage transactions
+     * Admin and Personnel can view transactions
+     */
+    public static boolean canManageTransactions() {
+        return isLoggedIn() && currentUser.canViewTransactions();
+    }
+
+    /**
+     * Check if current user can access audit log
+     * Only Admin can access audit log
+     */
+    public static boolean canAccessAuditLog() {
+        return isLoggedIn() && currentUser.canAccessAuditLog();
     }
 }

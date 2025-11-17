@@ -20,6 +20,8 @@ import java.util.Optional;
 public class TransactionController {
 
     @FXML private StackPane contentPane;
+    @FXML private Button btnUpdate;
+    @FXML private Button btnDelete;
 
     private final ServiceTransactionDAO transactionDAO = new ServiceTransactionDAO();
     private final ClinicInventoryDAO inventoryDAO = new ClinicInventoryDAO();
@@ -130,9 +132,17 @@ public class TransactionController {
             }
         });
 
-        Button btnDelete = new Button("🗑️ Delete Transaction");
-        btnDelete.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-pref-width: 280;");
-        btnDelete.setOnAction(e -> {
+        // CONFIGURE UPDATE BUTTON VISIBILITY - ADD THIS BLOCK
+        User currentUser = SessionManager.getCurrentUser();
+        if (currentUser != null) {
+            boolean canUpdate = currentUser.canUpdateTransactions();
+            btnUpdateStatus.setVisible(canUpdate);
+            btnUpdateStatus.setManaged(canUpdate);
+        }
+
+        Button btnDeleteTransaction = new Button("🗑️ Delete Transaction");
+        btnDeleteTransaction.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-pref-width: 280;");
+        btnDeleteTransaction.setOnAction(e -> {
             ServiceTransaction selected = table.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 deleteTransaction(selected, table);
@@ -141,16 +151,18 @@ public class TransactionController {
             }
         });
 
-        if (!SessionManager.canDelete()) {
-            btnDelete.setDisable(true);
-            btnDelete.setOpacity(0.5);
+        // CONFIGURE DELETE BUTTON VISIBILITY - REPLACE THE OLD PERMISSION CHECK
+        if (currentUser != null) {
+            boolean canDelete = currentUser.canDeleteTransactions();
+            btnDeleteTransaction.setVisible(canDelete);
+            btnDeleteTransaction.setManaged(canDelete);
         }
 
         Button btnRefresh = new Button("🔄 Refresh");
         btnRefresh.setStyle("-fx-padding: 10 20; -fx-pref-width: 280;");
         btnRefresh.setOnAction(e -> loadTransactions(table));
 
-        buttonBox.getChildren().addAll(btnAddInventory, btnUpdateStatus, btnDelete, btnRefresh);
+        buttonBox.getChildren().addAll(btnAddInventory, btnUpdateStatus, btnDeleteTransaction, btnRefresh);
 
         vbox.getChildren().addAll(title, subtitle, table, buttonBox);
         return vbox;
@@ -505,6 +517,14 @@ public class TransactionController {
     }
 
     private void updateTransactionStatus(ServiceTransaction transaction, TableView<ServiceTransaction> table) {
+        // ADD THIS PERMISSION CHECK AT THE BEGINNING
+        User currentUser = SessionManager.getCurrentUser();
+        if (currentUser == null || !currentUser.canUpdateTransactions()) {
+            showAlert(Alert.AlertType.ERROR, "Access Denied", "Only Admins and Personnel can update transactions.");
+            return;
+        }
+        // END OF ADDED CODE
+
         ChoiceDialog<TransactionStatus> dialog = new ChoiceDialog<>(transaction.getStatus(), TransactionStatus.values());
         dialog.setTitle("Update Status");
         dialog.setHeaderText("Transaction ID: " + transaction.getTransactionId());
@@ -522,6 +542,14 @@ public class TransactionController {
     }
 
     private void deleteTransaction(ServiceTransaction transaction, TableView<ServiceTransaction> table) {
+        // ADD THIS PERMISSION CHECK AT THE BEGINNING
+        User currentUser = SessionManager.getCurrentUser();
+        if (currentUser == null || !currentUser.canDeleteTransactions()) {
+            showAlert(Alert.AlertType.ERROR, "Access Denied", "Only Admins can delete transactions.");
+            return;
+        }
+        // END OF ADDED CODE
+
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Delete Transaction");
         confirm.setHeaderText("Delete Transaction ID: " + transaction.getTransactionId() + "?");
