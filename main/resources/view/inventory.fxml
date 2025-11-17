@@ -1,42 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
 
-<VBox spacing="10" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.InventoryController">
+<VBox xmlns="http://javafx.com/javafx/8.0.171"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="app.controller.InventoryController"
+      spacing="15"
+      style="-fx-background-color: #f5f7fa;"
+      prefWidth="800.0" prefHeight="600.0">
 
     <padding>
-        <Insets bottom="15" left="15" right="15" top="15" />
+        <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Clinic Inventory" />
-
-    <TableView fx:id="tableInventory">
-        <columns>
-            <TableColumn fx:id="colId" prefWidth="40" text="ID" />
-            <TableColumn fx:id="colName" prefWidth="200" text="Item Name" />
-            <TableColumn fx:id="colCategory" prefWidth="150" text="Category" />
-            <TableColumn fx:id="colQuantity" prefWidth="80" text="Quantity" />
-        </columns>
-    </TableView>
-
-    <HBox spacing="10">
-        <TextField fx:id="txtItemName" promptText="Item Name" />
-        <TextField fx:id="txtCategory" promptText="Category" />
-        <TextField fx:id="txtQuantity" promptText="Quantity" />
+    <!-- Header Card -->
+    <HBox alignment="CENTER_LEFT" spacing="20"
+          style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+        <Text text="💊" style="-fx-font-size: 42;"/>
+        <VBox>
+            <Text text="Clinic Inventory Management"
+                  style="-fx-font-size: 26; -fx-font-weight: bold; -fx-fill: #2c3e50;"/>
+            <Text text="Track and manage medical supplies and equipment"
+                  style="-fx-font-size: 14; -fx-fill: #7f8c8d;"/>
+        </VBox>
     </HBox>
 
-    <HBox spacing="10">
-        <Button onAction="#addItem" text="Add" />
-        <Button onAction="#updateItem" text="Update" />
-        <Button onAction="#deleteItem" text="Delete" />
-        <Button onAction="#refreshInventory" text="Refresh" />
-      <Button onAction="#restockInventory" text="Restock" />
+    <!-- Table Card -->
+    <VBox spacing="10" VBox.vgrow="ALWAYS"
+          style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Text text="Inventory Items" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-fill: #34495e;"/>
+            <VBox HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblItemCount" text="0 items"
+                   style="-fx-text-fill: #7f8c8d; -fx-font-size: 11;"/>
+        </HBox>
+
+        <TableView fx:id="tableInventory" VBox.vgrow="ALWAYS"
+                   style="-fx-background-radius: 8; -fx-border-radius: 8;">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+                <TableColumn fx:id="colName" text="Item Name" prefWidth="250"/>
+                <TableColumn fx:id="colCategory" text="Category" prefWidth="180"/>
+                <TableColumn fx:id="colQuantity" text="Quantity" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <!-- Input Form Card -->
+    <VBox spacing="12"
+          style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+
+        <Text text="Item Information" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-fill: #34495e;"/>
+
+        <!-- Input Row -->
+        <GridPane hgap="12" vgap="12">
+            <Label text="Item Name *" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                   style="-fx-text-fill: #34495e; -fx-font-size: 12;"/>
+            <TextField fx:id="txtItemName" promptText="e.g., Paracetamol"
+                       GridPane.columnIndex="0" GridPane.rowIndex="1" prefWidth="280"
+                       style="-fx-background-radius: 6; -fx-border-color: #dfe6e9; -fx-border-radius: 6;"/>
+
+            <Label text="Category *" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                   style="-fx-text-fill: #34495e; -fx-font-size: 12;"/>
+            <TextField fx:id="txtCategory" promptText="e.g., Medicine, Equipment"
+                       GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200"
+                       style="-fx-background-radius: 6; -fx-border-color: #dfe6e9; -fx-border-radius: 6;"/>
+
+            <Label text="Quantity *" GridPane.columnIndex="2" GridPane.rowIndex="0"
+                   style="-fx-text-fill: #34495e; -fx-font-size: 12;"/>
+            <TextField fx:id="txtQuantity" promptText="0"
+                       GridPane.columnIndex="2" GridPane.rowIndex="1" prefWidth="120"
+                       style="-fx-background-radius: 6; -fx-border-color: #dfe6e9; -fx-border-radius: 6;"/>
+        </GridPane>
+
+        <Text text="* Required fields" style="-fx-font-size: 11; -fx-fill: #95a5a6;"/>
+    </VBox>
+
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="✚ Add Item" onAction="#addItem" prefWidth="140" prefHeight="40"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+        <Button text="✎ Update" onAction="#updateItem" prefWidth="120" prefHeight="40"
+                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+        <Button text="🗑 Delete" onAction="#deleteItem" prefWidth="120" prefHeight="40"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+        <Button text="📦 Restock" onAction="#restockInventory" prefWidth="120" prefHeight="40"
+                style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+        <Button text="🔄 Refresh" onAction="#refreshInventory" prefWidth="120" prefHeight="40"
+                style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
     </HBox>
 </VBox>
