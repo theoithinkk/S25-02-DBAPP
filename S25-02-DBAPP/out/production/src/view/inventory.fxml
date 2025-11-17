@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="app.controller.InventoryController"
+      spacing="10" padding="15">
+
+    <Label text="Clinic Inventory" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+
+    <TableView fx:id="tableInventory">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="40"/>
+            <TableColumn fx:id="colName" text="Item Name" prefWidth="200"/>
+            <TableColumn fx:id="colCategory" text="Category" prefWidth="150"/>
+            <TableColumn fx:id="colQuantity" text="Quantity" prefWidth="80"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <TextField fx:id="txtItemName" promptText="Item Name"/>
+        <TextField fx:id="txtCategory" promptText="Category"/>
+        <TextField fx:id="txtQuantity" promptText="Quantity"/>
+    </HBox>
+
+    <HBox spacing="10">
+        <Button text="Add" onAction="#addItem"/>
+        <Button text="Update" onAction="#updateItem"/>
+        <Button text="Delete" onAction="#deleteItem"/>
+        <Button text="Refresh" onAction="#refreshInventory"/>
+    </HBox>
+</VBox>

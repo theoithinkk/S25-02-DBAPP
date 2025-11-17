@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="app.controller.MainController">
+
+    <!-- Sidebar Navigation -->
+    <left>
+        <VBox prefWidth="220.0" spacing="8.0"
+              style="-fx-background-color: linear-gradient(to bottom, #1e293b 0%, #0f172a 100%);"
+              BorderPane.alignment="CENTER">
+            <padding>
+                <Insets top="25.0" right="12.0" bottom="25.0" left="12.0"/>
+            </padding>
+
+            <!-- Logo/Brand -->
+            <VBox alignment="CENTER" spacing="8" style="-fx-padding: 0 0 15 0;">
+                <Text text="🏥" style="-fx-font-size: 42;"/>
+                <Text text="Barangay Health" style="-fx-fill: white; -fx-font-size: 17; -fx-font-weight: bold;"/>
+                <Text text="Management System" style="-fx-fill: #94a3b8; -fx-font-size: 11;"/>
+            </VBox>
+
+            <!-- Welcome Text -->
+            <Label fx:id="txtWelcome" text="Welcome, User"
+                   style="-fx-text-fill: #cbd5e1; -fx-font-size: 12; -fx-padding: 10 0 5 0; -fx-wrap-text: true;" wrapText="true"/>
+
+            <!-- Separator -->
+            <Separator style="-fx-background-color: #334155;"/>
+
+            <!-- Navigation Buttons -->
+            <Button text="🏠 Dashboard" fx:id="btnDashboard" prefWidth="195"
+                    onAction="#showDashboard"
+                    style="-fx-background-color: #475569; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+            <Button text="👤 Residents" fx:id="btnResidents" prefWidth="195"
+                    onAction="#showResidents"
+                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+            <Button text="💉 Health Services" fx:id="btnServices" prefWidth="195"
+                    onAction="#showServices"
+                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+            <Button text="🧑‍⚕️ Personnel" fx:id="btnPersonnel" prefWidth="195"
+                    onAction="#showPersonnel"
+                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+            <Button text="💊 Inventory" fx:id="btnInventory" prefWidth="195"
+                    onAction="#showInventory"
+                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+            <Button text="📄 Transactions" fx:id="btnTransactions" prefWidth="195"
+                    onAction="#showTransactions"
+                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+            <Button text="📋 Audit Log" fx:id="btnAuditLog" prefWidth="195"
+                    onAction="#showAuditLog"
+                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+            <!-- Spacer -->
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Separator -->
+            <Separator style="-fx-background-color: #334155;"/>
+
+            <!-- Logout Button -->
+            <Button text="🚪 Logout" prefWidth="195"
+                    onAction="#handleLogout"
+                    style="-fx-background-color: #dc2626; -fx-text-fill: white; -fx-font-weight: bold; -fx-alignment: CENTER; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+        </VBox>
+    </left>
+
+    <!-- Main Display Area with Welcome Screen -->
+    <center>
+        <AnchorPane fx:id="contentArea" style="-fx-background-color: #f8fafc;">
+
+            <!-- Welcome Screen (Default View) -->
+            <VBox alignment="CENTER" spacing="25" style="-fx-padding: 40;"
+                  AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+
+                <!-- Hero Section -->
+
+                <VBox alignment="CENTER" spacing="15"
+                      style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2);
+             -fx-background-radius: 20;
+             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);">
+
+                    <padding>
+                        <Insets top="50" right="50" bottom="50" left="50"/>
+                    </padding>
+
+                    <Text text="🏥" style="-fx-font-size: 72;"/>
+                    <Text text="Welcome to"
+                          style="-fx-font-size: 18; -fx-fill: #e0e7ff; -fx-font-weight: 600;"/>
+                    <Text text="Barangay Health Management System"
+                          style="-fx-font-size: 32; -fx-font-weight: bold; -fx-fill: white; -fx-text-alignment: center;"
+                          wrappingWidth="600" textAlignment="CENTER"/>
+                    <Text text="Your comprehensive solution for community healthcare management"
+                          style="-fx-font-size: 15; -fx-fill: #c7d2fe; -fx-text-alignment: center;"
+                          wrappingWidth="500" textAlignment="CENTER"/>
+                </VBox>
+
+                <!-- Footer Info -->
+                <VBox alignment="CENTER" spacing="5" style="-fx-padding: 40 0 0 0;">
+                    <Text text="Barangay Health Services Management System"
+                          style="-fx-font-size: 11; -fx-fill: #94a3b8;"/>
+                    <Text text="Version 2.0 • © 2025"
+                          style="-fx-font-size: 10; -fx-fill: #cbd5e1;"/>
+                </VBox>
+
+            </VBox>
+
+        </AnchorPane>
+    </center>
+</BorderPane>
