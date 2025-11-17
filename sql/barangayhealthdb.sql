@@ -30,7 +30,7 @@ CREATE TABLE `auditlog` (
   PRIMARY KEY (`log_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `auditlog_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,8 +39,36 @@ CREATE TABLE `auditlog` (
 
 LOCK TABLES `auditlog` WRITE;
 /*!40000 ALTER TABLE `auditlog` DISABLE KEYS */;
-INSERT INTO `auditlog` VALUES (1,1,'LOGIN','2025-11-10 09:44:42'),(2,1,'LOGIN','2025-11-10 09:45:50'),(3,1,'LOGIN','2025-11-10 09:47:17'),(4,1,'LOGIN','2025-11-10 09:48:53'),(5,1,'LOGIN','2025-11-10 09:51:53'),(6,1,'LOGIN','2025-11-10 09:52:14'),(7,1,'UPDATE_RESIDENT: 18','2025-11-10 09:52:27'),(8,1,'UPDATE_RESIDENT: 20','2025-11-10 09:52:42'),(9,1,'LOGIN','2025-11-10 10:00:34'),(10,1,'ADD_RESIDENT: Big Ced','2025-11-10 10:01:07'),(11,1,'ADD_RESIDENT: Hello R','2025-11-10 10:02:43'),(12,1,'LOGIN','2025-11-10 10:03:47'),(13,1,'ADD_RESIDENT: Kim Ver','2025-11-10 10:04:08'),(14,1,'LOGIN','2025-11-10 10:10:27'),(15,1,'LOGIN','2025-11-10 10:11:41'),(16,5,'LOGIN','2025-11-10 10:12:17'),(17,1,'LOGIN','2025-11-10 10:12:53'),(18,1,'LOGIN','2025-11-10 10:17:15'),(19,1,'LOGIN','2025-11-10 10:19:24'),(20,5,'LOGIN','2025-11-10 23:22:33'),(21,1,'LOGIN','2025-11-10 23:22:58'),(22,1,'LOGIN','2025-11-10 23:56:01'),(23,1,'LOGIN','2025-11-10 23:57:28'),(24,1,'LOGIN','2025-11-10 23:59:14'),(25,1,'LOGIN','2025-11-11 00:01:58'),(26,1,'LOGIN','2025-11-11 00:02:57'),(27,1,'LOGIN','2025-11-11 00:06:16'),(28,1,'LOGIN','2025-11-11 00:11:18'),(29,6,'CHANGE_PASSWORD','2025-11-11 00:11:45'),(30,1,'LOGIN','2025-11-11 00:18:59'),(31,1,'DELETE_USER: 9','2025-11-11 00:19:29');
+INSERT INTO `auditlog` VALUES (1,1,'LOGIN','2025-11-10 09:44:42'),(2,1,'LOGIN','2025-11-10 09:45:50'),(3,1,'LOGIN','2025-11-10 09:47:17'),(4,1,'LOGIN','2025-11-10 09:48:53'),(5,1,'LOGIN','2025-11-10 09:51:53'),(6,1,'LOGIN','2025-11-10 09:52:14'),(7,1,'UPDATE_RESIDENT: 18','2025-11-10 09:52:27'),(8,1,'UPDATE_RESIDENT: 20','2025-11-10 09:52:42'),(9,1,'LOGIN','2025-11-10 10:00:34'),(10,1,'ADD_RESIDENT: Big Ced','2025-11-10 10:01:07'),(11,1,'ADD_RESIDENT: Hello R','2025-11-10 10:02:43'),(12,1,'LOGIN','2025-11-10 10:03:47'),(13,1,'ADD_RESIDENT: Kim Ver','2025-11-10 10:04:08'),(14,1,'LOGIN','2025-11-10 10:10:27'),(15,1,'LOGIN','2025-11-10 10:11:41'),(16,5,'LOGIN','2025-11-10 10:12:17'),(17,1,'LOGIN','2025-11-10 10:12:53'),(18,1,'LOGIN','2025-11-10 10:17:15'),(19,1,'LOGIN','2025-11-10 10:19:24'),(20,5,'LOGIN','2025-11-10 23:22:33'),(21,1,'LOGIN','2025-11-10 23:22:58'),(22,1,'LOGIN','2025-11-10 23:56:01'),(23,1,'LOGIN','2025-11-10 23:57:28'),(24,1,'LOGIN','2025-11-10 23:59:14'),(25,1,'LOGIN','2025-11-11 00:01:58'),(26,1,'LOGIN','2025-11-11 00:02:57'),(27,1,'LOGIN','2025-11-11 00:06:16'),(28,1,'LOGIN','2025-11-11 00:11:18'),(29,6,'CHANGE_PASSWORD','2025-11-11 00:11:45'),(30,1,'LOGIN','2025-11-11 00:18:59'),(31,1,'DELETE_USER: 9','2025-11-11 00:19:29'),(32,3,'LOGIN','2025-11-17 01:48:26'),(33,3,'LOGIN','2025-11-17 01:53:19'),(34,3,'AVAIL_SERVICE: Resident Kim Ver availed Medical Consultation by Linda Santos','2025-11-17 01:53:27');
 /*!40000 ALTER TABLE `auditlog` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `clinic_visits`
+--
+
+DROP TABLE IF EXISTS `clinic_visits`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `clinic_visits` (
+  `visit_id` int NOT NULL AUTO_INCREMENT,
+  `person_id` int NOT NULL,
+  `visit_type` enum('walk-in','scheduled') NOT NULL,
+  `visit_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `notes` text,
+  PRIMARY KEY (`visit_id`),
+  KEY `person_id` (`person_id`),
+  CONSTRAINT `clinic_visits_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `clinic_visits`
+--
+
+LOCK TABLES `clinic_visits` WRITE;
+/*!40000 ALTER TABLE `clinic_visits` DISABLE KEYS */;
+/*!40000 ALTER TABLE `clinic_visits` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -67,6 +95,41 @@ LOCK TABLES `clinicinventory` WRITE;
 /*!40000 ALTER TABLE `clinicinventory` DISABLE KEYS */;
 INSERT INTO `clinicinventory` VALUES (1,'Paracetamol','Medicine',200),(2,'Paracetamol 500mg','Medicine',500),(3,'Amoxicillin 500mg','Medicine',300),(4,'Betadine Solution','Medical Supply',50),(5,'Cotton Balls','Medical Supply',200),(6,'Syringe 5ml','Medical Equipment',100),(7,'Face Masks','PPE',1000),(8,'Alcohol 70%','Medical Supply',80),(9,'Bandages','Medical Supply',150),(10,'Thermometer','Medical Equipment',10),(11,'Blood Pressure Monitor','Medical Equipment',5),(12,'Paracetamol 500mg','Medicine',500),(13,'Amoxicillin 500mg','Medicine',300),(14,'Betadine Solution','Medical Supply',50),(15,'Cotton Balls','Medical Supply',200),(16,'Syringe 5ml','Medical Equipment',100),(17,'Face Masks','PPE',1000),(18,'Alcohol 70%','Medical Supply',80),(19,'Bandages','Medical Supply',150),(20,'Thermometer','Medical Equipment',10),(21,'Blood Pressure Monitor','Medical Equipment',5);
 /*!40000 ALTER TABLE `clinicinventory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `clinicvisits`
+--
+
+DROP TABLE IF EXISTS `clinicvisits`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `clinicvisits` (
+  `visit_id` int NOT NULL AUTO_INCREMENT,
+  `resident_id` int DEFAULT NULL,
+  `personnel_id` int DEFAULT NULL,
+  `visit_type` enum('SCHEDULED','WALK_IN') NOT NULL,
+  `diagnosis` text,
+  `treatment` text,
+  `notes` text,
+  `visit_date` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`visit_id`),
+  KEY `resident_id` (`resident_id`),
+  KEY `personnel_id` (`personnel_id`),
+  CONSTRAINT `clinicvisits_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `residents` (`resident_id`),
+  CONSTRAINT `clinicvisits_ibfk_2` FOREIGN KEY (`personnel_id`) REFERENCES `healthpersonnel` (`personnel_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `clinicvisits`
+--
+
+LOCK TABLES `clinicvisits` WRITE;
+/*!40000 ALTER TABLE `clinicvisits` DISABLE KEYS */;
+INSERT INTO `clinicvisits` VALUES (1,6,3,'WALK_IN','3','3','3','2025-11-17','2025-11-17 01:48:42'),(2,4,5,'WALK_IN','3','2','1','2025-11-17','2025-11-17 01:53:37');
+/*!40000 ALTER TABLE `clinicvisits` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -203,6 +266,11 @@ CREATE TABLE `servicetransactions` (
   `personnel_id` int DEFAULT NULL,
   `date_provided` date DEFAULT NULL,
   `remarks` text,
+  `visit_type` varchar(20) DEFAULT NULL,
+  `diagnosis` text,
+  `treatment` text,
+  `medical_notes` text,
+  `status` varchar(50) DEFAULT 'COMPLETED',
   PRIMARY KEY (`transaction_id`),
   KEY `service_id` (`service_id`),
   KEY `resident_id` (`resident_id`),
@@ -210,7 +278,7 @@ CREATE TABLE `servicetransactions` (
   CONSTRAINT `servicetransactions_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `healthservices` (`service_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `servicetransactions_ibfk_2` FOREIGN KEY (`resident_id`) REFERENCES `residents` (`resident_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `servicetransactions_ibfk_3` FOREIGN KEY (`personnel_id`) REFERENCES `healthpersonnel` (`personnel_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -219,42 +287,8 @@ CREATE TABLE `servicetransactions` (
 
 LOCK TABLES `servicetransactions` WRITE;
 /*!40000 ALTER TABLE `servicetransactions` DISABLE KEYS */;
-INSERT INTO `servicetransactions` VALUES (1,1,NULL,1,'2025-11-09','Routine check-up'),(2,1,NULL,1,'2024-11-01','Patient complains of fever and headache'),(3,2,2,2,'2024-11-02','Flu vaccine administered'),(4,3,2,1,'2024-11-03','First trimester checkup - normal'),(5,5,3,2,'2024-11-04','BP: 140/90 - slightly elevated'),(6,4,4,3,'2024-11-05','Dental scaling completed'),(7,7,7,2,'2024-11-06','Deworming medication given'),(8,1,NULL,1,'2024-11-01','Patient complains of fever and headache'),(9,2,2,2,'2024-11-02','Flu vaccine administered'),(10,3,2,1,'2024-11-03','First trimester checkup - normal'),(11,5,3,2,'2024-11-04','BP: 140/90 - slightly elevated'),(12,4,4,3,'2024-11-05','Dental scaling completed'),(13,7,7,2,'2024-11-06','Deworming medication given');
+INSERT INTO `servicetransactions` VALUES (1,1,NULL,1,'2025-11-09','Routine check-up',NULL,NULL,NULL,NULL,'COMPLETED'),(2,1,NULL,1,'2024-11-01','Patient complains of fever and headache',NULL,NULL,NULL,NULL,'COMPLETED'),(3,2,2,2,'2024-11-02','Flu vaccine administered',NULL,NULL,NULL,NULL,'COMPLETED'),(4,3,2,1,'2024-11-03','First trimester checkup - normal',NULL,NULL,NULL,NULL,'COMPLETED'),(5,5,3,2,'2024-11-04','BP: 140/90 - slightly elevated',NULL,NULL,NULL,NULL,'COMPLETED'),(6,4,4,3,'2024-11-05','Dental scaling completed',NULL,NULL,NULL,NULL,'COMPLETED'),(7,7,7,2,'2024-11-06','Deworming medication given',NULL,NULL,NULL,NULL,'COMPLETED'),(8,1,NULL,1,'2024-11-01','Patient complains of fever and headache',NULL,NULL,NULL,NULL,'COMPLETED'),(9,2,2,2,'2024-11-02','Flu vaccine administered',NULL,NULL,NULL,NULL,'COMPLETED'),(10,3,2,1,'2024-11-03','First trimester checkup - normal',NULL,NULL,NULL,NULL,'COMPLETED'),(11,5,3,2,'2024-11-04','BP: 140/90 - slightly elevated',NULL,NULL,NULL,NULL,'COMPLETED'),(12,4,4,3,'2024-11-05','Dental scaling completed',NULL,NULL,NULL,NULL,'COMPLETED'),(13,7,7,2,'2024-11-06','Deworming medication given',NULL,NULL,NULL,NULL,'COMPLETED'),(14,9,1,10,'2025-11-17','',NULL,NULL,NULL,NULL,'PENDING');
 /*!40000 ALTER TABLE `servicetransactions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `clinicvisits`
---
-
-DROP TABLE IF EXISTS `clinicvisits`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `clinicvisits` (
-  `visit_id` int NOT NULL AUTO_INCREMENT,
-  `resident_id` int DEFAULT NULL,
-  `personnel_id` int DEFAULT NULL,
-  `visit_type` enum('SCHEDULED','WALK_IN') NOT NULL,
-  `diagnosis` text,
-  `treatment` text,
-  `notes` text,
-  `visit_date` date NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`visit_id`),
-  KEY `resident_id` (`resident_id`),
-  KEY `personnel_id` (`personnel_id`),
-  CONSTRAINT `clinicvisits_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `residents` (`resident_id`),
-  CONSTRAINT `clinicvisits_ibfk_2` FOREIGN KEY (`personnel_id`) REFERENCES `healthpersonnel` (`personnel_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `clinicvisits`
---
-
-LOCK TABLES `clinicvisits` WRITE;
-/*!40000 ALTER TABLE `clinicvisits` DISABLE KEYS */;
-/*!40000 ALTER TABLE `clinicvisits` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -279,12 +313,6 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-ALTER TABLE ServiceTransactions
-ADD COLUMN visit_type VARCHAR(20),
-ADD COLUMN diagnosis TEXT,
-ADD COLUMN treatment TEXT,
-ADD COLUMN medical_notes TEXT;
-
 --
 -- Dumping data for table `users`
 --
@@ -304,4 +332,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-11  8:40:16
+-- Dump completed on 2025-11-17  9:58:15
