@@ -1,13 +1,11 @@
 package app.controller;
 
 import app.model.User;
+import app.util.BackgroundMusicPlayer;
 import app.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -27,6 +25,11 @@ public class MainController {
     @FXML private Button btnTransactions;
     @FXML private Button btnReports;
 
+    // Music controls
+    @FXML private Button btnMuteMusic;
+    @FXML private Slider volumeSlider;
+    @FXML private Label lblVolume;
+
     /**
      * Called after login to initialize UI based on user role
      */
@@ -35,11 +38,79 @@ public class MainController {
 
         // Update welcome text
         if (txtWelcome != null) {
-            txtWelcome.setText("Welcome, " + user.getUsername() + " (" + user.getRole() + ")");
+            txtWelcome.setText(user.getUsername());
         }
 
         // Configure UI based on role
         configureUIForRole();
+
+        // Initialize music controls
+        initializeMusicControls();
+
+        // **LOAD DASHBOARD AS DEFAULT PAGE**
+        showDashboard();
+    }
+
+    /**
+     * Initialize music controls (volume slider and mute button)
+     */
+    private void initializeMusicControls() {
+        // Check if music is available
+        if (!BackgroundMusicPlayer.isAvailable()) {
+            // Hide music controls if media module is not available
+            if (btnMuteMusic != null) {
+                btnMuteMusic.setVisible(false);
+                btnMuteMusic.setManaged(false);
+            }
+            if (volumeSlider != null) {
+                volumeSlider.setVisible(false);
+                volumeSlider.setManaged(false);
+            }
+            if (lblVolume != null) {
+                lblVolume.setVisible(false);
+                lblVolume.setManaged(false);
+            }
+            System.out.println("⚠ Music controls hidden (JavaFX Media module not available)");
+            return;
+        }
+
+        // Setup volume slider
+        if (volumeSlider != null) {
+            volumeSlider.setValue(BackgroundMusicPlayer.getVolume() * 100);
+            volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                BackgroundMusicPlayer.setVolume(newVal.doubleValue() / 100.0);
+                if (lblVolume != null) {
+                    lblVolume.setText(String.format("%.0f%%", newVal.doubleValue()));
+                }
+            });
+        }
+
+        // Update mute button
+        updateMusicButton();
+    }
+
+    /**
+     * Toggle music mute/unmute
+     */
+    @FXML
+    private void toggleMusic() {
+        BackgroundMusicPlayer.toggleMute();
+        updateMusicButton();
+    }
+
+    /**
+     * Update music button text and style based on mute state
+     */
+    private void updateMusicButton() {
+        if (btnMuteMusic != null) {
+            if (BackgroundMusicPlayer.isMuted()) {
+                btnMuteMusic.setText("🔇 Unmute");
+                btnMuteMusic.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-size: 11; -fx-padding: 5 10; -fx-background-radius: 5; -fx-cursor: hand;");
+            } else {
+                btnMuteMusic.setText("🔊 Mute");
+                btnMuteMusic.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 11; -fx-padding: 5 10; -fx-background-radius: 5; -fx-cursor: hand;");
+            }
+        }
     }
 
     /**
@@ -204,6 +275,9 @@ public class MainController {
             // Clear session
             SessionManager.clearSession();
 
+            // Stop music
+            BackgroundMusicPlayer.dispose();
+
             // Load login page
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
             javafx.scene.Parent root = loader.load();
@@ -218,6 +292,9 @@ public class MainController {
 
             // Show login window
             stage.show();
+
+            // Restart music for next login
+            BackgroundMusicPlayer.initialize();
 
             System.out.println("✓ Logged out successfully");
 

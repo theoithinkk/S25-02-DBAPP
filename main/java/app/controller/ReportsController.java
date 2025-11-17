@@ -33,17 +33,17 @@ public class ReportsController {
     }
 
     private VBox createReportSelectionView() {
-        VBox vbox = new VBox(20);
-        vbox.setPadding(new Insets(20));
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(10));
         vbox.setStyle("-fx-background-color: #f5f7fa;");
 
         Label title = new Label("Report Generation");
-        title.setStyle("-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        title.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         Label subtitle = new Label("Select a report type to generate");
-        subtitle.setStyle("-fx-font-size: 14; -fx-text-fill: #7f8c8d;");
+        subtitle.setStyle("-fx-font-size: 11; -fx-text-fill: #7f8c8d;");
 
-        // Report Cards
+        // Report Cards - More Compact
         VBox card1 = createReportCard("📊 Health Service Issuance Report",
                 "Total and average health services availed for a given month",
                 "#3498db", this::showHealthServiceReport);
@@ -65,22 +65,22 @@ public class ReportsController {
     }
 
     private VBox createReportCard(String title, String description, String color, Runnable action) {
-        VBox card = new VBox(12);
-        card.setPadding(new Insets(20));
-        card.setStyle("-fx-background-color: white; -fx-background-radius: 12; " +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); " +
+        VBox card = new VBox(8);
+        card.setPadding(new Insets(12));
+        card.setStyle("-fx-background-color: white; -fx-background-radius: 8; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 1); " +
                 "-fx-cursor: hand;");
 
         Label lblTitle = new Label(title);
-        lblTitle.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        lblTitle.setStyle("-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         Label lblDesc = new Label(description);
-        lblDesc.setStyle("-fx-font-size: 13; -fx-text-fill: #7f8c8d; -fx-wrap-text: true;");
+        lblDesc.setStyle("-fx-font-size: 11; -fx-text-fill: #7f8c8d; -fx-wrap-text: true;");
         lblDesc.setWrapText(true);
 
         Button btnGenerate = new Button("Generate Report");
         btnGenerate.setStyle("-fx-background-color: " + color + "; -fx-text-fill: white; " +
-                "-fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8;");
+                "-fx-font-weight: bold; -fx-padding: 6 16; -fx-background-radius: 6; -fx-font-size: 11;");
         btnGenerate.setOnAction(e -> action.run());
 
         card.getChildren().addAll(lblTitle, lblDesc, btnGenerate);

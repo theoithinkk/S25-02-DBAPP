@@ -1,34 +1,29 @@
 package app;
 
+import app.util.BackgroundMusicPlayer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.scene.Parent;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage stage) throws Exception {
-        System.out.println("=== Starting Barangay Health Management System ===");
+    public void start(Stage primaryStage) throws Exception {
+        // COMMENT OUT music initialization for now
+        // BackgroundMusicPlayer.initialize();
 
-        try {
-            // Load LOGIN page instead of main page
-            Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
-            Scene scene = new Scene(root, 450, 550);  // Bigger login window
-            stage.setTitle("Login - Barangay Health System");
-            stage.setScene(scene);
-            stage.setResizable(false); // Lock login window size
-            stage.show();
+        Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+        primaryStage.setTitle("Barangay Health System");
+        primaryStage.setScene(new Scene(root, 400, 500));
+        primaryStage.show();
+    }
 
-            System.out.println("✓ Login page loaded successfully!");
-
-        } catch (Exception e) {
-            System.err.println("✗ Failed to start application!");
-            System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
-            throw e;
-        }
+    @Override
+    public void stop() {
+        // Clean up music player when app closes
+        BackgroundMusicPlayer.dispose();
     }
 
     public static void main(String[] args) {

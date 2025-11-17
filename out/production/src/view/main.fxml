@@ -3,118 +3,133 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.171"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="app.controller.MainController">
+            fx:controller="app.controller.MainController"
+            prefHeight="750.0" prefWidth="1200.0"
+            style="-fx-background-color: #f0f4f8;">
 
-    <!-- Sidebar Navigation -->
+    <!-- Elegant Top Bar with Gradient -->
+    <top>
+        <VBox style="-fx-background-color: linear-gradient(to right, #667eea 0%, #764ba2 100%); -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);">
+            <!-- Main Header -->
+            <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 20 30;">
+                <Text text="🏥" style="-fx-font-size: 32;"/>
+                <VBox>
+                    <Text text="Barangay Health Management System"
+                          style="-fx-font-size: 22; -fx-font-weight: bold; -fx-fill: white;"/>
+                    <Text text="Comprehensive Healthcare Solutions"
+                          style="-fx-font-size: 12; -fx-fill: rgba(255,255,255,0.8);"/>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- User Info Card -->
+                <VBox alignment="CENTER_RIGHT" spacing="5"
+                      style="-fx-background-color: rgba(255,255,255,0.15); -fx-padding: 10 20; -fx-background-radius: 10; -fx-border-color: rgba(255,255,255,0.3); -fx-border-width: 1; -fx-border-radius: 10;">
+                    <HBox spacing="8" alignment="CENTER">
+                        <Text text="👤" style="-fx-font-size: 16;"/>
+                        <Label fx:id="txtWelcome" text="Welcome, User"
+                               style="-fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold;"/>
+                    </HBox>
+                    <Button text="🚪 Logout" onAction="#handleLogout"
+                            style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-size: 11; -fx-padding: 6 20; -fx-background-radius: 15; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Music Controls Bar -->
+            <HBox alignment="CENTER" spacing="15"
+                  style="-fx-background-color: rgba(0,0,0,0.2); -fx-padding: 8 30;">
+                <Text text="🎵" style="-fx-font-size: 14; -fx-fill: white;"/>
+                <Label text="Background Music" style="-fx-text-fill: white; -fx-font-size: 11; -fx-font-weight: bold;"/>
+
+                <Button fx:id="btnMuteMusic" text="🔊 Mute" onAction="#toggleMusic"
+                        prefWidth="70" prefHeight="24"
+                        style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 10; -fx-background-radius: 12; -fx-cursor: hand; -fx-font-weight: bold; -fx-border-color: rgba(255,255,255,0.3); -fx-border-radius: 12;"/>
+
+                <HBox spacing="8" alignment="CENTER">
+                    <Label text="Volume" style="-fx-text-fill: white; -fx-font-size: 10;"/>
+                    <Slider fx:id="volumeSlider" min="0" max="100" value="30"
+                            prefWidth="120" showTickMarks="false"
+                            style="-fx-pref-height: 18;"/>
+                    <Label fx:id="lblVolume" text="30%"
+                           style="-fx-text-fill: white; -fx-font-size: 10; -fx-min-width: 35; -fx-font-weight: bold;"/>
+                </HBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <HBox spacing="5" alignment="CENTER">
+                    <Text text="⏰" style="-fx-font-size: 12; -fx-fill: white;"/>
+                    <Label fx:id="lblDateTime" text="Monday, Nov 17, 2025"
+                           style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 10;"/>
+                </HBox>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Elegant Sidebar -->
     <left>
-        <VBox prefWidth="220.0" spacing="8.0"
-              style="-fx-background-color: linear-gradient(to bottom, #1e293b 0%, #0f172a 100%);"
-              BorderPane.alignment="CENTER">
-            <padding>
-                <Insets top="25.0" right="12.0" bottom="25.0" left="12.0"/>
-            </padding>
+        <VBox spacing="8"
+              style="-fx-background-color: #ffffff; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 2, 0);"
+              prefWidth="240">
 
-            <!-- Logo/Brand -->
-            <VBox alignment="CENTER" spacing="8" style="-fx-padding: 0 0 15 0;">
-                <Text text="🏥" style="-fx-font-size: 42;"/>
-                <Text text="Barangay Health" style="-fx-fill: white; -fx-font-size: 17; -fx-font-weight: bold;"/>
-                <Text text="Management System" style="-fx-fill: #94a3b8; -fx-font-size: 11;"/>
+            <VBox alignment="CENTER" spacing="5" style="-fx-padding: 0 0 15 0;">
+                <Text text="📋" style="-fx-font-size: 28;"/>
+                <Label text="Navigation Menu"
+                       style="-fx-text-fill: #2d3748; -fx-font-size: 14; -fx-font-weight: bold;"/>
+                <Separator prefWidth="200" style="-fx-background-color: #e2e8f0;"/>
             </VBox>
 
-            <!-- Welcome Text -->
-            <Label fx:id="txtWelcome" text="Welcome, User"
-                   style="-fx-text-fill: #cbd5e1; -fx-font-size: 12; -fx-padding: 10 0 5 0; -fx-wrap-text: true;" wrapText="true"/>
+            <!-- Navigation Buttons with Icons -->
+            <Button fx:id="btnDashboard" text="🏠  Dashboard" onAction="#showDashboard"
+                    maxWidth="Infinity" prefHeight="45"
+                    styleClass="nav-button"
+                    style="-fx-background-color: linear-gradient(to right, #667eea, #764ba2); -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-effect: dropshadow(gaussian, rgba(102,126,234,0.4), 8, 0, 0, 2);"/>
 
-            <!-- Separator -->
-            <Separator style="-fx-background-color: #334155;"/>
+            <Button fx:id="btnResidents" text="👤  Residents" onAction="#showResidents"
+                    maxWidth="Infinity" prefHeight="45"
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
 
-            <!-- Navigation Buttons -->
-            <Button text="🏠 Dashboard" fx:id="btnDashboard" prefWidth="195"
-                    onAction="#showDashboard"
-                    style="-fx-background-color: #475569; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+            <Button fx:id="btnServices" text="💉  Services" onAction="#showServices"
+                    maxWidth="Infinity" prefHeight="45"
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
 
-            <Button text="👤 Residents" fx:id="btnResidents" prefWidth="195"
-                    onAction="#showResidents"
-                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+            <Button fx:id="btnPersonnel" text="🧑  Personnel" onAction="#showPersonnel"
+                    maxWidth="Infinity" prefHeight="45"
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
 
-            <Button text="💉 Health Services" fx:id="btnServices" prefWidth="195"
-                    onAction="#showServices"
-                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+            <Button fx:id="btnInventory" text="💊  Inventory" onAction="#showInventory"
+                    maxWidth="Infinity" prefHeight="45"
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
 
-            <Button text="🧑‍⚕️ Personnel" fx:id="btnPersonnel" prefWidth="195"
-                    onAction="#showPersonnel"
-                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+            <Button fx:id="btnTransactions" text="💳  Transactions" onAction="#showTransactions"
+                    maxWidth="Infinity" prefHeight="45"
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
 
-            <Button text="💊 Inventory" fx:id="btnInventory" prefWidth="195"
-                    onAction="#showInventory"
-                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+            <Button fx:id="btnAuditLog" text="📋  Audit Log" onAction="#showAuditLog"
+                    maxWidth="Infinity" prefHeight="45"
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
 
-            <Button text="📄 Transactions" fx:id="btnTransactions" prefWidth="195"
-                    onAction="#showTransactions"
-                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
+            <Button fx:id="btnReports" text="📊  Reports" onAction="#showReports"
+                    maxWidth="Infinity" prefHeight="45"
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
 
-            <Button text="📊 Reports" fx:id="btnReports" prefWidth="195"
-                    onAction="#showReports"
-                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
-
-            <Button text="📋 Audit Log" fx:id="btnAuditLog" prefWidth="195"
-                    onAction="#showAuditLog"
-                    style="-fx-background-color: transparent; -fx-text-fill: #cbd5e1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
-
-            <!-- Spacer -->
             <Region VBox.vgrow="ALWAYS"/>
 
-            <!-- Separator -->
-            <Separator style="-fx-background-color: #334155;"/>
-
-            <!-- Logout Button -->
-            <Button text="🚪 Logout" prefWidth="195"
-                    onAction="#handleLogout"
-                    style="-fx-background-color: #dc2626; -fx-text-fill: white; -fx-font-weight: bold; -fx-alignment: CENTER; -fx-padding: 12 15; -fx-font-size: 13; -fx-background-radius: 8; -fx-cursor: hand;"/>
-
+            <Label text="Version 1.0.0"
+                   style="-fx-text-fill: #a0aec0; -fx-font-size: 9; -fx-padding: 10 0 0 0;" alignment="CENTER"/>
         </VBox>
     </left>
 
-    <!-- Main Display Area with Welcome Screen -->
+    <!-- Main Content Area -->
     <center>
-        <AnchorPane fx:id="contentArea" style="-fx-background-color: #f8fafc;">
-
-            <!-- Welcome Screen (Default View) -->
-            <VBox alignment="CENTER" spacing="25" style="-fx-padding: 40;"
-                  AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
-                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-
-                <!-- Hero Section -->
-                <VBox alignment="CENTER" spacing="15"
-                      style="-fx-background-color: linear-gradient(to bottom right, #667eea 0%, #764ba2 100%);
-                            -fx-background-radius: 20;
-                            -fx-padding: 50;
-                            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);">
-                    <Text text='🏥' style='-fx-font-size: 72;'/>
-                <Text text="Welcome to"
-                          style="-fx-font-size: 18; -fx-fill: #e0e7ff; -fx-font-weight: 600;"/>
-                    <Text text="Barangay Health Management System"
-                          style="-fx-font-size: 32; -fx-font-weight: bold; -fx-fill: white; -fx-text-alignment: center;"
-                          wrappingWidth="600" textAlignment="CENTER"/>
-                    <Text text="Your comprehensive solution for community healthcare management"
-                          style="-fx-font-size: 15; -fx-fill: #c7d2fe; -fx-text-alignment: center;"
-                          wrappingWidth="500" textAlignment="CENTER"/>
-                </VBox>
-
-                <!-- Footer Info -->
-                <VBox alignment="CENTER" spacing="5" style="-fx-padding: 40 0 0 0;">
-                    <Text text="Barangay Health Services Management System"
-                          style="-fx-font-size: 11; -fx-fill: #94a3b8;"/>
-                    <Text text="Version 2.0 • © 2025"
-                          style="-fx-font-size: 10; -fx-fill: #cbd5e1;"/>
-                </VBox>
-
-            </VBox>
-
+        <AnchorPane fx:id="contentArea"
+                    style="-fx-background-color: #f0f4f8;">
+            <!-- Dashboard landing page will be loaded here -->
         </AnchorPane>
     </center>
+
 </BorderPane>

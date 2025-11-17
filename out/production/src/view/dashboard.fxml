@@ -1,100 +1,122 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.DashboardController">
+<VBox xmlns="http://javafx.com/javafx/8.0.171"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="app.controller.DashboardController"
+      style="-fx-background-color: #f0f4f8;"
+      spacing="12">
 
-    <top>
-        <VBox spacing="10">
-            <padding>
-                <Insets bottom="10" left="15" right="15" top="15" />
-            </padding>
+    <padding>
+        <Insets top="12" right="15" bottom="12" left="15"/>
+    </padding>
 
-            <Text style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: #2c3e50;" text="Dashboard" />
+    <!-- Welcome Header -->
+    <VBox spacing="3">
+        <Text text="Dashboard" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: #2d3748;"/>
+        <Text fx:id="txtWelcome" text="Welcome!" style="-fx-font-size: 14; -fx-fill: #4a5568;"/>
+    </VBox>
 
-            <Text fx:id="txtWelcome" style="-fx-font-size: 14; -fx-fill: #7f8c8d;" text="Welcome!" />
+    <HBox spacing="15" alignment="CENTER">
+        <!-- Residents Card -->
+        <VBox alignment="CENTER" spacing="6"
+              style="-fx-background-color: #3498db; -fx-background-radius: 10; -fx-padding: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);"
+              HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="110">
+            <Text text="👥" style="-fx-font-size: 28;"/>
+            <Text fx:id="txtResidentCount" text="0" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-fill: white;"/>
+            <Text text="Total Residents" style="-fx-font-size: 12; -fx-fill: white; -fx-font-weight: 600;"/>
         </VBox>
-    </top>
 
-    <center>
-        <VBox alignment="CENTER" spacing="20">
-            <padding>
-                <Insets bottom="20" left="40" right="40" top="20" />
-            </padding>
+        <!-- Services Card -->
+        <VBox alignment="CENTER" spacing="6"
+              style="-fx-background-color: #27ae60; -fx-background-radius: 10; -fx-padding: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);"
+              HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="110">
+            <Text text="💉" style="-fx-font-size: 28;"/>
+            <Text fx:id="txtServiceCount" text="0" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-fill: white;"/>
+            <Text text="Health Services" style="-fx-font-size: 12; -fx-fill: white; -fx-font-weight: 600;"/>
+        </VBox>
 
-            <!-- Quick Statistics -->
-            <HBox alignment="CENTER" spacing="20">
-                <VBox alignment="CENTER" spacing="5" style="-fx-background-color: #3498db; -fx-background-radius: 10; -fx-padding: 20;">
-                    <Text style="-fx-font-size: 32;" text="👥" />
-                    <Text fx:id="txtResidentCount" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: white;" text="0" />
-                    <Text style="-fx-fill: white; -fx-font-size: 12;" text="Total Residents" />
-                </VBox>
+        <!-- Transactions Card  -->
+        <VBox alignment="CENTER" spacing="6"
+              style="-fx-background-color: #a562d9; -fx-background-radius: 10; -fx-padding: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);"
+              HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="110">
+            <Text text="📋" style="-fx-font-size: 28;"/>
+            <Text fx:id="txtTransactionCount" text="0" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-fill: white;"/>
+            <Text text="Transactions Today" style="-fx-font-size: 12; -fx-fill: white; -fx-font-weight: 600; -fx-text-alignment: center;" wrappingWidth="120"/>
+        </VBox>
+    </HBox>
 
-                <VBox alignment="CENTER" spacing="5" style="-fx-background-color: #27ae60; -fx-background-radius: 10; -fx-padding: 20;">
-                    <Text style="-fx-font-size: 32;" text="💉" />
-                    <Text fx:id="txtServiceCount" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: white;" text="0" />
-                    <Text style="-fx-fill: white; -fx-font-size: 12;" text="Health Services" />
-                </VBox>
+    <!-- Transactions Section -->
+    <VBox spacing="10" VBox.vgrow="ALWAYS">
+        <Text text="Quick Actions" style="-fx-font-size: 17; -fx-font-weight: bold; -fx-fill: #2d3748;"/>
 
-                <VBox alignment="CENTER" spacing="5" style="-fx-background-color: #e74c3c; -fx-background-radius: 10; -fx-padding: 20;">
-                    <Text style="-fx-font-size: 32;" text="📋" />
-                    <Text fx:id="txtTransactionCount" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: white;" text="0" />
-                    <Text style="-fx-fill: white; -fx-font-size: 12;" text="Transactions Today" />
-                </VBox>
-            </HBox>
+        <!-- Transaction Grid -->
+        <GridPane hgap="12" vgap="12" VBox.vgrow="ALWAYS">
+            <!-- Avail Health Service -->
+            <VBox GridPane.columnIndex="0" GridPane.rowIndex="0"
+                  alignment="CENTER" spacing="8"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2); -fx-border-color: #3498db; -fx-border-width: 2; -fx-border-radius: 10;"
+                  GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                <Text text="💊" style="-fx-font-size: 32;"/>
+                <Text text="Avail Health Service"
+                      style="-fx-font-size: 14; -fx-font-weight: bold; -fx-fill: #2d3748; -fx-text-alignment: center;"
+                      wrappingWidth="160"/>
+                <Button text="Start Transaction" onAction="#handleAvailHealthService"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 8 20; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-size: 12;"/>
+            </VBox>
 
-            <!-- Separator -->
-            <Separator prefWidth="600" />
+            <!-- Issue Medical Supplies -->
+            <VBox GridPane.columnIndex="1" GridPane.rowIndex="0"
+                  alignment="CENTER" spacing="8"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2); -fx-border-color: #95a5a6; -fx-border-width: 2; -fx-border-radius: 10;"
+                  GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                <Text text="📦" style="-fx-font-size: 32;"/>
+                <Text text="Issue Medical Supplies"
+                      style="-fx-font-size: 14; -fx-font-weight: bold; -fx-fill: #2d3748; -fx-text-alignment: center;"
+                      wrappingWidth="160"/>
+                <Button text="Coming Soon" onAction="#handleIssueMedicalSupplies"
+                        style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 8 20; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-size: 12;"/>
+            </VBox>
 
-            <!-- Transaction Buttons -->
-            <Text style="-fx-font-size: 18; -fx-font-weight: bold; -fx-fill: #2c3e50;" text="Transactions" />
+            <!-- Restock Inventory -->
+            <VBox GridPane.columnIndex="0" GridPane.rowIndex="1"
+                  alignment="CENTER" spacing="8"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2); -fx-border-color: #95a5a6; -fx-border-width: 2; -fx-border-radius: 10;"
+                  GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                <Text text="📥" style="-fx-font-size: 32;"/>
+                <Text text="Restock Clinic Inventory"
+                      style="-fx-font-size: 14; -fx-font-weight: bold; -fx-fill: #2d3748; -fx-text-alignment: center;"
+                      wrappingWidth="160"/>
+                <Button text="Coming Soon" onAction="#handleRestockInventory"
+                        style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 8 20; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-size: 12;"/>
+            </VBox>
 
-            <GridPane alignment="CENTER" hgap="20" vgap="20">
-                <!-- Row 1 -->
-                <VBox alignment="CENTER" spacing="10" style="-fx-border-color: #3498db; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 30;" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                    <Text style="-fx-font-size: 48;" text="💊" />
-                    <Text style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-alignment: center;" text="Availing a Health Service" wrappingWidth="200" />
-                    <Button onAction="#handleAvailHealthService" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10 30; -fx-font-weight: bold;" text="Start Transaction" />
-                </VBox>
+            <!-- Log Clinic Visit -->
+            <VBox GridPane.columnIndex="1" GridPane.rowIndex="1"
+                  alignment="CENTER" spacing="8"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2); -fx-border-color: #3498db; -fx-border-width: 2; -fx-border-radius: 10;"
+                  GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                <Text text="🏥" style="-fx-font-size: 32;"/>
+                <Text text="Log Clinic Visit"
+                      style="-fx-font-size: 14; -fx-font-weight: bold; -fx-fill: #2d3748; -fx-text-alignment: center;"
+                      wrappingWidth="160"/>
+                <Button text="Start Transaction" onAction="#handleLogClinicVisit"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 8 20; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-size: 12;"/>
+            </VBox>
 
-                <VBox alignment="CENTER" spacing="10" style="-fx-border-color: #95a5a6; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 30;" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                    <Text style="-fx-font-size: 48;" text="📦" />
-                    <Text style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-alignment: center;" text="Issuing Medical Supplies" wrappingWidth="200" />
-                    <Button onAction="#handleIssueMedicalSupplies" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 30;" text="Coming Soon" />
-                </VBox>
-
-                <!-- Row 2 -->
-                <VBox alignment="CENTER" spacing="10" style="-fx-border-color: #95a5a6; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 30;" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                    <Text style="-fx-font-size: 48;" text="📥" />
-                    <Text style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-alignment: center;" text="Restocking Barangay Clinic Inventory" wrappingWidth="200" />
-                    <Button onAction="#handleRestockInventory" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 30;" text="Coming Soon" />
-                </VBox>
-
-                <VBox alignment="CENTER" spacing="10" style="-fx-border-color: #95a5a6; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 30;" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                    <Text style="-fx-font-size: 48;" text="🏥" />
-                    <Text style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-alignment: center;" text="Logging Clinic Visits" wrappingWidth="200" />
-                    <Button onAction="#handleLogClinicVisit" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10 30;" text="Start Transaction" />
-                </VBox>
             <columnConstraints>
-               <ColumnConstraints />
-               <ColumnConstraints />
+                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
             </columnConstraints>
             <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
+                <RowConstraints percentHeight="50" vgrow="ALWAYS"/>
+                <RowConstraints percentHeight="50" vgrow="ALWAYS"/>
             </rowConstraints>
-            </GridPane>
+        </GridPane>
+    </VBox>
 
-        </VBox>
-    </center>
-
-</BorderPane>
+</VBox>

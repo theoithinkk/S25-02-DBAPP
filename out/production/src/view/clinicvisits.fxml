@@ -5,80 +5,147 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane fitToWidth="true" style="-fx-background: #f5f7fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.ClinicVisitsController">
+<ScrollPane fitToWidth="true" style="-fx-background: #f5f7fa; -fx-background-color: #f5f7fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.ClinicVisitsController">
 
-    <VBox spacing="20" style="-fx-padding: 20; -fx-background-color: #f5f7fa;">
+    <VBox spacing="18" style="-fx-background-color: #f5f7fa; -fx-padding: 20;">
 
-        <!-- Header -->
-        <VBox alignment="CENTER" spacing="10" style="-fx-background-color: #27ae60; -fx-background-radius: 10; -fx-padding: 20;">
-            <Text style="-fx-font-size: 36;" text="🏥" />
-            <Text style="-fx-font-size: 24; -fx-font-weight: bold; -fx-fill: white;" text="Log Clinic Visit" />
-            <Text style="-fx-font-size: 14; -fx-fill: #e0f7e9;" text="Record a new clinic visit" />
+        <!-- HEADER -->
+        <VBox alignment="CENTER" spacing="10" style="-fx-background-color: linear-gradient(to right, #57C785, #EDDD53); -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0, 0, 3);">
+            <Text style="-fx-font-size: 48;" text="🏥" />
+            <Text style="-fx-font-size: 26; -fx-font-weight: bold; -fx-fill: white;" text="Log Clinic Visit" />
+            <Text style="-fx-font-size: 14; -fx-fill: #e0ffe8;" text="Record patient visits in 4 simple steps" />
         </VBox>
 
-        <!-- Patient & Staff Information -->
-        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+        <!-- STEP 1: Select Patient -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
 
-            <Text style="-fx-font-size: 16; -fx-font-weight: bold; -fx-fill: #2c3e50;" text="Patient and Staff Information" />
-
-            <HBox alignment="CENTER_LEFT" spacing="20">
-                <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label style="-fx-font-weight: bold;" text="Patient *" />
-                    <ComboBox fx:id="residentCombo" prefHeight="35" prefWidth="300" style="-fx-font-size: 14;" />
-                </VBox>
-
-                <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label style="-fx-font-weight: bold;" text="Health Personnel *" />
-                    <ComboBox fx:id="personnelCombo" prefHeight="35" prefWidth="300" style="-fx-font-size: 14;" />
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #3b82f6; -fx-background-radius: 25; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;">
+                    <Text style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;" text="1" />
+                </StackPane>
+                <VBox>
+                    <Text style="-fx-font-size: 17; -fx-font-weight: bold; -fx-fill: #1f2937;" text="Select Patient" />
+                    <Text style="-fx-font-size: 12; -fx-fill: #6b7280;" text="Search and select the patient" />
                 </VBox>
             </HBox>
 
-            <HBox alignment="CENTER_LEFT" spacing="20">
-                <VBox spacing="5">
-                    <Label style="-fx-font-weight: bold;" text="Visit Type" />
-                    <ComboBox fx:id="visitTypeCombo" prefHeight="35" prefWidth="150" style="-fx-font-size: 14;" />
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <TextField fx:id="txtSearchPatient" prefHeight="38" promptText="🔍 Type name or ID to search..." style="-fx-font-size: 14; -fx-padding: 8 12; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-border-width: 1.5;" HBox.hgrow="ALWAYS" />
+                <Button onAction="#handleSearchPatient" prefHeight="38" prefWidth="90" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" text="Search" />
+            </HBox>
+
+            <TableView fx:id="tablePatients" prefHeight="160" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e5e7eb;">
+                <columns>
+                    <TableColumn fx:id="colPatientId" prefWidth="60" text="ID" />
+                    <TableColumn fx:id="colPatientName" prefWidth="180" text="Full Name" />
+                    <TableColumn fx:id="colAge" prefWidth="60" text="Age" />
+                    <TableColumn fx:id="colSex" prefWidth="50" text="Sex" />
+                    <TableColumn fx:id="colContact" prefWidth="130" text="Contact Number" />
+                </columns>
+            </TableView>
+
+            <Label fx:id="lblSelectedPatient" style="-fx-text-fill: #9ca3af; -fx-font-size: 13; -fx-font-style: italic; -fx-padding: 5 0 0 0;" text="No patient selected" />
+        </VBox>
+
+        <!-- STEP 2: Assign Health Personnel -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #10b981; -fx-background-radius: 25; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;">
+                    <Text style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;" text="2" />
+                </StackPane>
+                <VBox>
+                    <Text style="-fx-font-size: 17; -fx-font-weight: bold; -fx-fill: #1f2937;" text="Assign Health Personnel" />
+                    <Text style="-fx-font-size: 12; -fx-fill: #6b7280;" text="Select the attending healthcare provider" />
+                </VBox>
+            </HBox>
+
+            <!-- Personnel Search Section -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <TextField fx:id="txtSearchPersonnel" prefHeight="38" promptText="🔍 Search personnel by name or role..." style="-fx-font-size: 14; -fx-padding: 8 12; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-border-width: 1.5;" HBox.hgrow="ALWAYS" />
+                <Button onAction="#handleSearchPersonnel" prefHeight="38" prefWidth="90" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" text="Search" />
+            </HBox>
+
+            <TableView fx:id="tablePersonnel" prefHeight="160" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e5e7eb;">
+                <columns>
+                    <TableColumn fx:id="colPersonnelId" prefWidth="60" text="ID" />
+                    <TableColumn fx:id="colPersonnelName" prefWidth="180" text="Full Name" />
+                    <TableColumn fx:id="colRole" prefWidth="120" text="Role" />
+                </columns>
+            </TableView>
+        </VBox>
+
+        <!-- STEP 3: Visit Details -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #f59e0b; -fx-background-radius: 25; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;">
+                    <Text style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;" text="3" />
+                </StackPane>
+                <VBox>
+                    <Text style="-fx-font-size: 17; -fx-font-weight: bold; -fx-fill: #1f2937;" text="Visit Details" />
+                    <Text style="-fx-font-size: 12; -fx-fill: #6b7280;" text="Specify the type and date of the visit" />
+                </VBox>
+            </HBox>
+
+            <HBox spacing="20">
+                <VBox prefWidth="200" spacing="8">
+                    <Label style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;" text="Visit Type" />
+                    <ComboBox fx:id="visitTypeCombo" prefHeight="38" style="-fx-font-size: 14;" />
                 </VBox>
 
-                <VBox spacing="5">
-                    <Label style="-fx-font-weight: bold;" text="Visit Date *" />
-                    <DatePicker fx:id="visitDatePicker" prefHeight="35" prefWidth="150" style="-fx-font-size: 14;" />
+                <VBox prefWidth="200" spacing="8">
+                    <Label style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;" text="Visit Date *" />
+                    <DatePicker fx:id="visitDatePicker" prefHeight="38" style="-fx-font-size: 14;" />
                 </VBox>
             </HBox>
         </VBox>
 
-        <!-- Medical Information -->
-        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+        <!-- STEP 4: Medical Information -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
 
-            <Text style="-fx-font-size: 16; -fx-font-weight: bold; -fx-fill: #2c3e50;" text="Medical Information" />
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #8b5cf6; -fx-background-radius: 25; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;">
+                    <Text style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;" text="4" />
+                </StackPane>
+                <VBox>
+                    <Text style="-fx-font-size: 17; -fx-font-weight: bold; -fx-fill: #1f2937;" text="Medical Information" />
+                    <Text style="-fx-font-size: 12; -fx-fill: #6b7280;" text="Enter diagnosis, treatment, and notes" />
+                </VBox>
+            </HBox>
 
-            <VBox spacing="5">
-                <Label style="-fx-font-weight: bold;" text="Diagnosis *" />
-                <TextArea fx:id="diagnosisArea" prefHeight="80" promptText="Enter diagnosis, symptoms, and observations..." style="-fx-font-size: 14;" />
+            <VBox spacing="10">
+                <Label style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;" text="Diagnosis *" />
+                <TextArea fx:id="diagnosisArea" prefHeight="80" promptText="Enter diagnosis, symptoms, and observations..." style="-fx-font-size: 14; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8;" wrapText="true" />
             </VBox>
 
-            <VBox spacing="5">
-                <Label style="-fx-font-weight: bold;" text="Treatment Provided" />
-                <TextArea fx:id="treatmentArea" prefHeight="80" promptText="Describe treatment, procedures, or medications prescribed..." style="-fx-font-size: 14;" />
+            <VBox spacing="10">
+                <Label style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;" text="Treatment Provided" />
+                <TextArea fx:id="treatmentArea" prefHeight="80" promptText="Describe treatments or medications..." style="-fx-font-size: 14; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8;" wrapText="true" />
             </VBox>
 
-            <VBox spacing="5">
-                <Label style="-fx-font-weight: bold;" text="Additional Notes" />
-                <TextArea fx:id="notesArea" prefHeight="60" promptText="Any follow-up instructions or additional information..." style="-fx-font-size: 14;" />
+            <VBox spacing="10">
+                <Label style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;" text="Additional Notes" />
+                <TextArea fx:id="notesArea" prefHeight="60" promptText="Any extra notes or follow-up instructions..." style="-fx-font-size: 14; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8;" wrapText="true" />
             </VBox>
         </VBox>
 
-        <!-- Status Message -->
-        <Label fx:id="lblStatus" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-padding: 12; -fx-background-radius: 5; -fx-alignment: center;" visible="false" />
+        <!-- STATUS LABEL -->
+        <Label fx:id="lblStatus" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-padding: 12; -fx-background-radius: 8;" visible="false" />
 
-        <!-- Action Buttons -->
-        <HBox alignment="CENTER" spacing="15" style="-fx-padding: 20 0 20 0;">
-            <Button onAction="#handleSaveVisit" prefHeight="40" prefWidth="150" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 5;" text="💾 Save Visit" />
-            <Button onAction="#handleCancel" prefHeight="40" prefWidth="100" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 5;" text="✖ Cancel" />
+        <!-- ACTION BUTTONS -->
+        <HBox alignment="CENTER" spacing="12" style="-fx-padding: 10 0 20 0;">
+            <Button onAction="#handleSaveVisit" prefHeight="48" prefWidth="220" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(16,185,129,0.4), 8, 0, 0, 2);" text="💾 Save Visit" />
+            <Button onAction="#handleCancel" prefHeight="48" prefWidth="120" style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;" text="✖ Cancel" />
         </HBox>
 
     </VBox>
