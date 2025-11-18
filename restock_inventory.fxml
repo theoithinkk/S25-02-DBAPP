@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="app.controller.RestockInventoryController"
+            fitToWidth="true"
+            prefHeight="600"
+            style="-fx-background: #f5f7fa; -fx-background-color: #f5f7fa;">
+
+    <VBox spacing="18"
+          style="-fx-background-color: #f5f7fa; -fx-padding: 20;">
+
+        <!-- HEADER -->
+        <VBox alignment="CENTER" spacing="10"
+              style="-fx-background-color: linear-gradient(to right, #06b6d4 0%, #3b82f6 100%);
+                     -fx-background-radius: 15; -fx-padding: 25;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0, 0, 3);">
+            <Text text="📥" style="-fx-font-size: 48;"/>
+            <Text text="Restock Clinic Inventory"
+                  style="-fx-font-size: 26; -fx-font-weight: bold; -fx-fill: white;"/>
+            <Text text="Add new supplies to the barangay clinic"
+                  style="-fx-font-size: 14; -fx-fill: #e0f2fe;"/>
+        </VBox>
+
+        <!-- Step 1: Select Inventory Item -->
+        <VBox spacing="15"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #3b82f6; -fx-background-radius: 25;
+                                  -fx-min-width: 40; -fx-min-height: 40;">
+                    <Text text="1" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;"/>
+                </StackPane>
+
+                <VBox>
+                    <Text text="Select Item to Restock" style="-fx-font-size: 17; -fx-font-weight: bold;"/>
+                    <Text text="Choose an item from the clinic inventory list"
+                          style="-fx-font-size: 12; -fx-fill: #6b7280;"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="10">
+                <TextField fx:id="txtSearchItem" promptText="🔍 Search item name..."
+                           HBox.hgrow="ALWAYS" prefHeight="38"
+                           style="-fx-font-size: 14; -fx-padding: 8 12;
+                                  -fx-background-radius: 8; -fx-border-color: #e5e7eb;
+                                  -fx-border-radius: 8; -fx-border-width: 1.5;"/>
+                <Button text="Search" onAction="#handleSearchItem" prefWidth="90" prefHeight="38"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-background-radius: 8;"/>
+            </HBox>
+
+            <TableView fx:id="tableInventory" prefHeight="180"
+                       style="-fx-background-radius: 8; -fx-border-radius: 8;
+                              -fx-border-color: #e5e7eb;">
+                <columns>
+                    <TableColumn fx:id="colItemId" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="colItemName" text="Item Name" prefWidth="200"/>
+                    <TableColumn fx:id="colCategory" text="Category" prefWidth="120"/>
+                    <TableColumn fx:id="colStock" text="Current Stock" prefWidth="120"/>
+                </columns>
+            </TableView>
+
+            <Label fx:id="lblSelectedItem"
+                   text="No item selected"
+                   style="-fx-text-fill: #9ca3af; -fx-font-size: 13; -fx-font-style: italic;"/>
+        </VBox>
+
+        <!-- Step 2: Enter Restock Amount -->
+        <VBox spacing="15"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #10b981; -fx-background-radius: 25;
+                                  -fx-min-width: 40; -fx-min-height: 40;">
+                    <Text text="2" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;"/>
+                </StackPane>
+
+                <VBox>
+                    <Text text="Enter Quantity" style="-fx-font-size: 17; -fx-font-weight: bold;"/>
+                    <Text text="Add the amount of stock to be inserted"
+                          style="-fx-font-size: 12; -fx-fill: #6b7280;"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="8">
+                <Label text="Quantity to Add" style="-fx-font-size: 13; -fx-text-fill: #6b7280;"/>
+                <TextField fx:id="txtQuantity" promptText="Enter quantity..." prefHeight="38"
+                           style="-fx-font-size: 14; -fx-background-radius: 8;
+                                  -fx-border-color: #e5e7eb; -fx-border-radius: 8;"/>
+            </VBox>
+        </VBox>
+
+        <!-- Step 3: Personnel -->
+        <VBox spacing="15"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #f59e0b; -fx-background-radius: 25;
+                                  -fx-min-width: 40; -fx-min-height: 40;">
+                    <Text text="3" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;"/>
+                </StackPane>
+
+                <VBox>
+                    <Text text="Restocked By" style="-fx-font-size: 17; -fx-font-weight: bold;"/>
+                    <Text text="Select personnel responsible for restocking"
+                          style="-fx-font-size: 12; -fx-fill: #6b7280;"/>
+                </VBox>
+            </HBox>
+
+            <ComboBox fx:id="comboPersonnel" promptText="Choose personnel..."
+                      prefWidth="350" prefHeight="38"
+                      style="-fx-font-size: 14;"/>
+        </VBox>
+
+        <!-- Step 4: Remarks -->
+        <VBox spacing="15"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #8b5cf6; -fx-background-radius: 25;
+                                  -fx-min-width: 40; -fx-min-height: 40;">
+                    <Text text="4" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;"/>
+                </StackPane>
+
+                <VBox>
+                    <Text text="Remarks (Optional)" style="-fx-font-size: 17; -fx-font-weight: bold;"/>
+                    <Text text="Add additional notes about this restock"
+                          style="-fx-font-size: 12; -fx-fill: #6b7280;"/>
+                </VBox>
+            </HBox>
+
+            <TextArea fx:id="txtRemarks" promptText="Enter remarks..."
+                      prefHeight="100" wrapText="true"
+                      style="-fx-font-size: 14; -fx-background-radius: 8;
+                             -fx-border-color: #e5e7eb; -fx-border-radius: 8;"/>
+        </VBox>
+
+        <!-- Status -->
+        <Label fx:id="lblStatus" visible="false"
+               style="-fx-font-weight: bold; -fx-font-size: 14; -fx-padding: 12;
+                      -fx-background-radius: 8;"/>
+
+        <!-- Submit Buttons -->
+        <HBox spacing="12" alignment="CENTER" style="-fx-padding: 10 0 20 0;">
+            <Button text="✓ Restock"
+                    onAction="#handleRestock"
+                    prefWidth="180" prefHeight="48"
+                    style="-fx-background-color: #10b981; -fx-text-fill: white;
+                           -fx-font-size: 15; -fx-font-weight: bold;
+                           -fx-background-radius: 10; -fx-cursor: hand;"/>
+            <Button text="✖ Cancel"
+                    onAction="#handleCancel"
+                    prefWidth="120" prefHeight="48"
+                    style="-fx-background-color: #6b7280; -fx-text-fill: white;
+                           -fx-font-size: 15; -fx-font-weight: bold;
+                           -fx-background-radius: 10;"/>
+        </HBox>
+
+    </VBox>
+</ScrollPane>
