@@ -7,6 +7,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.effect.DropShadow?>
 
 <VBox prefHeight="700.0"
       prefWidth="900.0"
@@ -20,11 +23,19 @@
         <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
 
-    <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
-        <Text style="-fx-font-size: 42;" text="📄" />
+    <HBox alignment="CENTER_LEFT" spacing="20"
+          style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+        <ImageView fitHeight="42" fitWidth="42" preserveRatio="true">
+            <effect>
+                <DropShadow radius="3" spread="0.05" color="rgba(0,0,0,0.15)" offsetX="1" offsetY="1" />
+            </effect>
+            <Image url="@/images/transactions.png" />
+        </ImageView>
         <VBox>
-            <Text style="-fx-font-size: 26; -fx-font-weight: bold; -fx-fill: #2c3e50;" text="Transaction Management Center" />
-            <Text style="-fx-font-size: 14; -fx-fill: #7f8c8d;" text="Manage all transactions - services, inventory, and clinic visits" />
+            <Text text="Transaction Management Center"
+                  style="-fx-font-size: 26; -fx-font-weight: bold; -fx-fill: #2c3e50;"/>
+            <Text text="Manage all transactions - services, inventory, and clinic visits"
+                  style="-fx-font-size: 14; -fx-fill: #7f8c8d;"/>
         </VBox>
     </HBox>
 

@@ -4,6 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.effect.DropShadow?>
 
 <VBox xmlns="http://javafx.com/javafx/8.0.171"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -18,7 +21,12 @@
     <!-- Header Card -->
     <HBox alignment="CENTER_LEFT" spacing="12"
           style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1);">
-        <Text text="📊" style="-fx-font-size: 28;"/>
+        <ImageView fitHeight="28" fitWidth="28" preserveRatio="true">
+            <effect>
+                <DropShadow radius="2" spread="0.05" color="rgba(0,0,0,0.12)" offsetX="1" offsetY="1" />
+            </effect>
+            <Image url="@/images/reports.png" />
+        </ImageView>
         <VBox>
             <Text text="Report Generation Center"
                   style="-fx-font-size: 18; -fx-font-weight: bold; -fx-fill: #2c3e50;"/>
