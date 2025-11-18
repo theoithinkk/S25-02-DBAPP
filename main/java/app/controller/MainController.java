@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.io.IOException;
+import javafx.application.Platform;
 
 public class MainController {
 
@@ -49,8 +50,29 @@ public class MainController {
         // Initialize music controls
         initializeMusicControls();
 
+        setFullscreen();
+
         // **LOAD DASHBOARD AS DEFAULT PAGE**
         showDashboard();
+    }
+
+    /**
+     * Set the window to fullscreen/maximized for all devices
+     */
+    private void setFullscreen() {
+        // Use Platform.runLater to ensure the stage is available
+        Platform.runLater(() -> {
+            Stage stage = (Stage) contentArea.getScene().getWindow();
+
+            // Option A: Maximized (fills screen but shows taskbar) - RECOMMENDED
+            stage.setMaximized(true);
+
+            // Option B: True fullscreen (hides everything) - for kiosk mode
+            // stage.setFullScreen(true);
+            // stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH); // Disable ESC exit
+
+            System.out.println("✓ Window set to fullscreen mode");
+        });
     }
 
     /**
@@ -313,4 +335,5 @@ public class MainController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
 }

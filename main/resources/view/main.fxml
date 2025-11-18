@@ -9,10 +9,8 @@
 <BorderPane xmlns="http://javafx.com/javafx/8.0.171"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="app.controller.MainController"
-            prefHeight="750.0" prefWidth="1200.0"
             style="-fx-background-color: #f0f4f8;">
 
-    <!-- Elegant Top Bar with Gradient -->
     <top>
         <VBox style="-fx-background-color: linear-gradient(to right, #667eea 0%, #764ba2 100%); -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);">
             <!-- Main Header -->
@@ -124,12 +122,16 @@
         </VBox>
     </left>
 
-    <!-- Main Content Area -->
     <center>
-        <AnchorPane fx:id="contentArea"
-                    style="-fx-background-color: #f0f4f8;">
-            <!-- Dashboard landing page will be loaded here -->
-        </AnchorPane>
+        <ScrollPane fitToWidth="true" fitToHeight="true"
+                    hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
+                    style="-fx-background: #f0f4f8; -fx-border-color: transparent; -fx-padding: 0;">
+            <content>
+                <AnchorPane fx:id="contentArea"
+                            style="-fx-background-color: #f0f4f8;">
+                </AnchorPane>
+            </content>
+        </ScrollPane>
     </center>
 
 </BorderPane>
