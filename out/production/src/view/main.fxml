@@ -5,19 +5,23 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.171"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="app.controller.MainController"
-            prefHeight="750.0" prefWidth="1200.0"
             style="-fx-background-color: #f0f4f8;">
 
-    <!-- Elegant Top Bar with Gradient -->
     <top>
         <VBox style="-fx-background-color: linear-gradient(to right, #667eea 0%, #764ba2 100%); -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);">
             <!-- Main Header -->
             <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 20 30;">
-                <Text text="🏥" style="-fx-font-size: 32;"/>
+                <ImageView fitHeight="32" fitWidth="32" preserveRatio="true">
+                    <effect>
+                        <DropShadow radius="4" color="rgba(0,0,0,0.2)" offsetX="1" offsetY="1" />
+                    </effect>
+                    <Image url="@/images/health-management-system.png" />
+                </ImageView>
                 <VBox>
                     <Text text="Barangay Health Management System"
                           style="-fx-font-size: 22; -fx-font-weight: bold; -fx-fill: white;"/>
@@ -31,24 +35,43 @@
                 <VBox alignment="CENTER_RIGHT" spacing="5"
                       style="-fx-background-color: rgba(255,255,255,0.15); -fx-padding: 10 20; -fx-background-radius: 10; -fx-border-color: rgba(255,255,255,0.3); -fx-border-width: 1; -fx-border-radius: 10;">
                     <HBox spacing="8" alignment="CENTER">
-                        <Text text="👤" style="-fx-font-size: 16;"/>
+                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                            <effect>
+                                <DropShadow radius="2" color="rgba(0,0,0,0.2)" offsetX="1" offsetY="1" />
+                            </effect>
+                            <Image url="@/images/user.png" />
+                        </ImageView>
                         <Label fx:id="txtWelcome" text="Welcome, User"
                                style="-fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold;"/>
                     </HBox>
-                    <Button text="🚪 Logout" onAction="#handleLogout"
-                            style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-size: 11; -fx-padding: 6 20; -fx-background-radius: 15; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                    <Button text="Logout" onAction="#handleLogout"
+                            style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-size: 11; -fx-padding: 6 20; -fx-background-radius: 15; -fx-cursor: hand; -fx-font-weight: bold;">
+                        <graphic>
+                            <ImageView fitHeight="12" fitWidth="12" preserveRatio="true">
+                                <Image url="@/images/logout.png" />
+                            </ImageView>
+                        </graphic>
+                    </Button>
                 </VBox>
             </HBox>
 
             <!-- Music Controls Bar -->
             <HBox alignment="CENTER" spacing="15"
                   style="-fx-background-color: rgba(0,0,0,0.2); -fx-padding: 8 30;">
-                <Text text="🎵" style="-fx-font-size: 14; -fx-fill: white;"/>
+                <ImageView fitHeight="14" fitWidth="14" preserveRatio="true">
+                    <Image url="@/images/music.png" />
+                </ImageView>
                 <Label text="Background Music" style="-fx-text-fill: white; -fx-font-size: 11; -fx-font-weight: bold;"/>
 
-                <Button fx:id="btnMuteMusic" text="🔊 Mute" onAction="#toggleMusic"
+                <Button fx:id="btnMuteMusic" text="Mute" onAction="#toggleMusic"
                         prefWidth="70" prefHeight="24"
-                        style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 10; -fx-background-radius: 12; -fx-cursor: hand; -fx-font-weight: bold; -fx-border-color: rgba(255,255,255,0.3); -fx-border-radius: 12;"/>
+                        style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 10; -fx-background-radius: 12; -fx-cursor: hand; -fx-font-weight: bold; -fx-border-color: rgba(255,255,255,0.3); -fx-border-radius: 12;">
+                    <graphic>
+                        <ImageView fitHeight="12" fitWidth="12" preserveRatio="true">
+                            <Image url="@/images/volume.png" />
+                        </ImageView>
+                    </graphic>
+                </Button>
 
                 <HBox spacing="8" alignment="CENTER">
                     <Label text="Volume" style="-fx-text-fill: white; -fx-font-size: 10;"/>
@@ -62,7 +85,9 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <HBox spacing="5" alignment="CENTER">
-                    <Text text="⏰" style="-fx-font-size: 12; -fx-fill: white;"/>
+                    <ImageView fitHeight="12" fitWidth="12" preserveRatio="true">
+                        <Image url="@/images/clock.png" />
+                    </ImageView>
                     <Label fx:id="lblDateTime" text="Monday, Nov 17, 2025"
                            style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 10;"/>
                 </HBox>
@@ -77,45 +102,100 @@
               prefWidth="240">
 
             <VBox alignment="CENTER" spacing="5" style="-fx-padding: 0 0 15 0;">
-                <Text text="📋" style="-fx-font-size: 28;"/>
+                <ImageView fitHeight="28" fitWidth="28" preserveRatio="true">
+                    <effect>
+                        <DropShadow radius="3" color="rgba(0,0,0,0.15)" offsetX="1" offsetY="1" />
+                    </effect>
+                    <Image url="@/images/navigation-bar.png" />
+                </ImageView>
                 <Label text="Navigation Menu"
                        style="-fx-text-fill: #2d3748; -fx-font-size: 14; -fx-font-weight: bold;"/>
                 <Separator prefWidth="200" style="-fx-background-color: #e2e8f0;"/>
             </VBox>
 
             <!-- Navigation Buttons with Icons -->
-            <Button fx:id="btnDashboard" text="🏠  Dashboard" onAction="#showDashboard"
+            <Button fx:id="btnDashboard" text="Dashboard" onAction="#showDashboard"
                     maxWidth="Infinity" prefHeight="45"
-                    styleClass="nav-button"
-                    style="-fx-background-color: linear-gradient(to right, #667eea, #764ba2); -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-effect: dropshadow(gaussian, rgba(102,126,234,0.4), 8, 0, 0, 2);"/>
+                    style="-fx-background-color: linear-gradient(to right, #667eea, #764ba2); -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-effect: dropshadow(gaussian, rgba(102,126,234,0.4), 8, 0, 0, 2;">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                        <effect>
+                            <DropShadow radius="2" color="rgba(0,0,0,0.2)" offsetX="1" offsetY="1" />
+                        </effect>
+                        <Image url="@/images/dashboard.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
 
-            <Button fx:id="btnResidents" text="👤  Residents" onAction="#showResidents"
+            <Button fx:id="btnResidents" text="Residents" onAction="#showResidents"
                     maxWidth="Infinity" prefHeight="45"
-                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                        <Image url="@/images/residents.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
 
-            <Button fx:id="btnServices" text="💉  Services" onAction="#showServices"
+            <Button fx:id="btnServices" text="Services" onAction="#showServices"
                     maxWidth="Infinity" prefHeight="45"
-                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                        <Image url="@/images/services.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
 
-            <Button fx:id="btnPersonnel" text="🧑  Personnel" onAction="#showPersonnel"
+            <Button fx:id="btnPersonnel" text="Personnel" onAction="#showPersonnel"
                     maxWidth="Infinity" prefHeight="45"
-                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                        <Image url="@/images/personnel.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
 
-            <Button fx:id="btnInventory" text="💊  Inventory" onAction="#showInventory"
+            <Button fx:id="btnInventory" text="Inventory" onAction="#showInventory"
                     maxWidth="Infinity" prefHeight="45"
-                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                        <Image url="@/images/inventory.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
 
-            <Button fx:id="btnTransactions" text="💳  Transactions" onAction="#showTransactions"
+            <Button fx:id="btnTransactions" text="Transactions" onAction="#showTransactions"
                     maxWidth="Infinity" prefHeight="45"
-                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                        <Image url="@/images/transactions.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
 
-            <Button fx:id="btnAuditLog" text="📋  Audit Log" onAction="#showAuditLog"
+            <Button fx:id="btnAuditLog" text="Audit Log" onAction="#showAuditLog"
                     maxWidth="Infinity" prefHeight="45"
-                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                        <Image url="@/images/audit-log.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
 
-            <Button fx:id="btnReports" text="📊  Reports" onAction="#showReports"
+            <Button fx:id="btnReports" text="Reports" onAction="#showReports"
                     maxWidth="Infinity" prefHeight="45"
-                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;"/>
+                    style="-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                        <Image url="@/images/reports.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
 
             <Region VBox.vgrow="ALWAYS"/>
 
@@ -124,12 +204,16 @@
         </VBox>
     </left>
 
-    <!-- Main Content Area -->
     <center>
-        <AnchorPane fx:id="contentArea"
-                    style="-fx-background-color: #f0f4f8;">
-            <!-- Dashboard landing page will be loaded here -->
-        </AnchorPane>
+        <ScrollPane fitToWidth="true" fitToHeight="true"
+                    hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
+                    style="-fx-background: #f0f4f8; -fx-border-color: transparent; -fx-padding: 0;">
+            <content>
+                <AnchorPane fx:id="contentArea"
+                            style="-fx-background-color: #f0f4f8;">
+                </AnchorPane>
+            </content>
+        </ScrollPane>
     </center>
 
 </BorderPane>

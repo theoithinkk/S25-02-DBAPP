@@ -183,6 +183,26 @@ public class MainController {
         }
     }
 
+    /**
+     * Set active button style and reset others
+     */
+    private void setActiveButton(Button activeButton) {
+        // Reset all buttons to inactive style
+        Button[] allButtons = {btnDashboard, btnResidents, btnServices, btnPersonnel,
+                btnInventory, btnTransactions, btnAuditLog, btnReports};
+
+        for (Button button : allButtons) {
+            if (button != null && button.isVisible()) {
+                button.setStyle("-fx-background-color: #f7fafc; -fx-text-fill: #4a5568; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1;");
+            }
+        }
+
+        // Set active button style
+        if (activeButton != null && activeButton.isVisible()) {
+            activeButton.setStyle("-fx-background-color: linear-gradient(to right, #667eea, #764ba2); -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 20; -fx-effect: dropshadow(gaussian, rgba(102,126,234,0.4), 8, 0, 0, 2);");
+        }
+    }
+
     private void loadView(String fxmlFile) {
         try {
             System.out.println("Loading view: " + fxmlFile);
@@ -216,6 +236,7 @@ public class MainController {
     @FXML
     private void showDashboard() {
         System.out.println("=== Show Dashboard ===");
+        setActiveButton(btnDashboard);
         loadView("dashboard.fxml");
     }
 
@@ -227,18 +248,21 @@ public class MainController {
             return;
         }
         System.out.println("=== Show Audit Log ===");
+        setActiveButton(btnAuditLog);
         loadView("audit_log.fxml");
     }
 
     @FXML
     private void showResidents() {
         System.out.println("=== Show Residents ===");
+        setActiveButton(btnResidents);
         loadView("residents.fxml");
     }
 
     @FXML
     private void showServices() {
         System.out.println("=== Show Services ===");
+        setActiveButton(btnServices);
         loadView("services.fxml");
     }
 
@@ -249,6 +273,7 @@ public class MainController {
             return;
         }
         System.out.println("=== Show Personnel ===");
+        setActiveButton(btnPersonnel);
         loadView("personnel.fxml");
     }
 
@@ -260,6 +285,7 @@ public class MainController {
             return;
         }
         System.out.println("=== Show Inventory ===");
+        setActiveButton(btnInventory);
         loadView("inventory.fxml");
     }
 
@@ -271,12 +297,14 @@ public class MainController {
             return;
         }
         System.out.println("=== Show Transactions ===");
+        setActiveButton(btnTransactions);
         loadView("transactions.fxml");
     }
 
     @FXML
     private void showReports() {
         System.out.println("=== Show Reports ===");
+        setActiveButton(btnReports);
         loadView("reports.fxml");
     }
 
@@ -335,5 +363,4 @@ public class MainController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 }

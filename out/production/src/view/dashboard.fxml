@@ -4,6 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.effect.*?>
 
 <VBox spacing="16" style="-fx-background-color: #f0f4f8;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.DashboardController">
 
@@ -20,22 +22,37 @@
     <!-- Top Cards -->
     <HBox spacing="16">
         <!-- Residents -->
-        <VBox alignment="CENTER" spacing="6" style="-fx-background-color: #3498db; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 2);" HBox.hgrow="ALWAYS">
-            <Text style="-fx-font-size: 30;" text="👥" />
+        <VBox alignment="CENTER" spacing="6" style="-fx-background-color: #3498db; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1);" HBox.hgrow="ALWAYS">
+            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                <effect>
+                    <DropShadow radius="3" spread="0.05" color="rgba(0,0,0,0.15)" offsetX="1" offsetY="1" />
+                </effect>
+                <Image url="@/images/residents.png" />
+            </ImageView>
             <Text fx:id="txtResidentCount" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: white;" text="0" />
             <Text style="-fx-font-size: 13; -fx-fill: white; -fx-font-weight: 600;" text="Total Residents" />
         </VBox>
 
         <!-- Services -->
-        <VBox alignment="CENTER" spacing="6" style="-fx-background-color: #27ae60; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 2);" HBox.hgrow="ALWAYS">
-            <Text style="-fx-font-size: 30;" text="💉" />
+        <VBox alignment="CENTER" spacing="6" style="-fx-background-color: #27ae60; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1);" HBox.hgrow="ALWAYS">
+            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                <effect>
+                    <DropShadow radius="3" spread="0.05" color="rgba(0,0,0,0.15)" offsetX="1" offsetY="1" />
+                </effect>
+                <Image url="@/images/health-service.png" />
+            </ImageView>
             <Text fx:id="txtServiceCount" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: white;" text="0" />
             <Text style="-fx-font-size: 13; -fx-fill: white; -fx-font-weight: 600;" text="Health Services" />
         </VBox>
 
         <!-- Transactions -->
-        <VBox alignment="CENTER" spacing="6" style="-fx-background-color: #9b59b6; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 2);" HBox.hgrow="ALWAYS">
-            <Text style="-fx-font-size: 30;" text="📋" />
+        <VBox alignment="CENTER" spacing="6" style="-fx-background-color: #9b59b6; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1);" HBox.hgrow="ALWAYS">
+            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                <effect>
+                    <DropShadow radius="3" spread="0.05" color="rgba(0,0,0,0.15)" offsetX="1" offsetY="1" />
+                </effect>
+                <Image url="@/images/transaction.png" />
+            </ImageView>
             <Text fx:id="txtTransactionCount" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: white;" text="0" />
             <Text style="-fx-font-size: 13; -fx-fill: white; -fx-font-weight: 600; -fx-text-alignment: center;" text="Transactions Today" wrappingWidth="130" />
         </VBox>
@@ -48,29 +65,49 @@
         <GridPane hgap="14" vgap="14" VBox.vgrow="ALWAYS">
 
             <!-- Avail Service -->
-            <VBox alignment="CENTER" spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 2); -fx-border-color: #3498db; -fx-border-width: 2; -fx-border-radius: 12;" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
-                <Text style="-fx-font-size: 36;" text="💊" />
+            <VBox alignment="CENTER" spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 4, 0, 0, 1); -fx-border-color: #3498db; -fx-border-width: 2; -fx-border-radius: 12;" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
+                <ImageView fitHeight="36" fitWidth="36" preserveRatio="true">
+                    <effect>
+                        <DropShadow radius="4" spread="0.08" color="rgba(0,0,0,0.12)" offsetX="1" offsetY="1" />
+                    </effect>
+                    <Image url="@/images/health-service.png" />
+                </ImageView>
                 <Text style="-fx-font-size: 15; -fx-font-weight: bold; -fx-fill: #2d3748; -fx-text-alignment: center;" text="Avail Health Service" wrappingWidth="160" />
                 <Button onAction="#handleAvailHealthService" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 8 20; -fx-font-weight: bold; -fx-background-radius: 8; -fx-font-size: 12;" text="Start Transaction" />
             </VBox>
 
             <!-- Issue Supplies -->
-            <VBox alignment="CENTER" spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 2); -fx-border-color: #27ae60; -fx-border-width: 2; -fx-border-radius: 12;" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
-                <Text style="-fx-font-size: 36;" text="📦" />
+            <VBox alignment="CENTER" spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 4, 0, 0, 1); -fx-border-color: #27ae60; -fx-border-width: 2; -fx-border-radius: 12;" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
+                <ImageView fitHeight="36" fitWidth="36" preserveRatio="true">
+                    <effect>
+                        <DropShadow radius="4" spread="0.08" color="rgba(0,0,0,0.12)" offsetX="1" offsetY="1" />
+                    </effect>
+                    <Image url="@/images/medical-supplies.png" />
+                </ImageView>
                 <Text style="-fx-font-size: 15; -fx-font-weight: bold; -fx-fill: #2d3748;" text="Issue Medical Supplies" wrappingWidth="160" />
                 <Button onAction="#handleIssueMedicalSupplies" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 8 20; -fx-font-weight: bold; -fx-background-radius: 8; -fx-font-size: 12;" text="Start Transaction" />
             </VBox>
 
             <!-- Restock Inventory -->
-            <VBox alignment="CENTER" spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 2); -fx-border-color: #f39c12; -fx-border-width: 2; -fx-border-radius: 12;" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
-                <Text style="-fx-font-size: 36;" text="📥" />
+            <VBox alignment="CENTER" spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 4, 0, 0, 1); -fx-border-color: #f39c12; -fx-border-width: 2; -fx-border-radius: 12;" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+                <ImageView fitHeight="36" fitWidth="36" preserveRatio="true">
+                    <effect>
+                        <DropShadow radius="4" spread="0.08" color="rgba(0,0,0,0.12)" offsetX="1" offsetY="1" />
+                    </effect>
+                    <Image url="@/images/restock.png" />
+                </ImageView>
                 <Text style="-fx-font-size: 15; -fx-font-weight: bold; -fx-fill: #2d3748;" text="Restock Clinic Inventory" textAlignment="CENTER" wrappingWidth="160" />
                 <Button onAction="#handleRestockInventory" style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 8 20; -fx-font-weight: bold; -fx-background-radius: 8; -fx-font-size: 12;" text="Start Transaction" />
             </VBox>
 
             <!-- Clinic Visit -->
-            <VBox alignment="CENTER" spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 2); -fx-border-color: #9b59b6; -fx-border-width: 2; -fx-border-radius: 12;" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
-                <Text style="-fx-font-size: 36;" text="🏥" />
+            <VBox alignment="CENTER" spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 4, 0, 0, 1); -fx-border-color: #9b59b6; -fx-border-width: 2; -fx-border-radius: 12;" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+                <ImageView fitHeight="36" fitWidth="36" preserveRatio="true">
+                    <effect>
+                        <DropShadow radius="4" spread="0.08" color="rgba(0,0,0,0.12)" offsetX="1" offsetY="1" />
+                    </effect>
+                    <Image url="@/images/clinic-visit.png" />
+                </ImageView>
                 <Text style="-fx-font-size: 15; -fx-font-weight: bold; -fx-fill: #2d3748;" text="Log Clinic Visit" textAlignment="CENTER" wrappingWidth="160" />
                 <Button onAction="#handleLogClinicVisit" style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-padding: 8 20; -fx-font-weight: bold; -fx-background-radius: 8; -fx-font-size: 12;" text="Start Transaction" />
             </VBox>
