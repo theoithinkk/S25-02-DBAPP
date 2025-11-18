@@ -92,12 +92,50 @@ public class DashboardController {
 
     @FXML
     private void handleIssueMedicalSupplies() {
-        showAlert("Coming Soon", "Issuing Medical Supplies feature will be implemented soon.");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/issue_supplies.fxml"));
+            ScrollPane root = loader.load(); // Changed from VBox to ScrollPane
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Medical Supply Issuance");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setScene(new Scene(root, 650, 750)); // Same size as avail service
+            dialogStage.setResizable(false);
+
+            // Refresh statistics when dialog closes
+            dialogStage.setOnHidden(e -> loadStatistics());
+
+            dialogStage.showAndWait();
+
+        } catch (Exception e) {
+            System.err.println("Error opening medical supplies dialog: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Error", "Could not open transaction dialog");
+        }
     }
 
     @FXML
     private void handleRestockInventory() {
-        showAlert("Coming Soon", "Restocking Inventory feature will be implemented soon.");
+        try {
+            // Load the FXML for Restock Inventory
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/restock_inventory.fxml"));
+            ScrollPane root = loader.load(); // Using ScrollPane as root
+
+            // Create a new dialog stage
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Restock Clinic Inventory");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setScene(new Scene(root, 650, 750)); // Adjusted height for scrolling
+            dialogStage.setResizable(false);
+
+            // Show the dialog and wait
+            dialogStage.showAndWait();
+
+        } catch (Exception e) {
+            System.err.println("Error opening restock inventory dialog: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Error", "Could not open restock inventory dialog");
+        }
     }
 
     @FXML

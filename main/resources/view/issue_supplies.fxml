@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.effect.DropShadow?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="app.controller.MedicalSupplyIssuanceController"
+            fitToWidth="true"
+            vbarPolicy="ALWAYS"
+            prefViewportHeight="700"
+            style="-fx-background: #f5f7fa; -fx-background-color: #f5f7fa;">
+
+    <VBox spacing="18" style="-fx-background-color: #f5f7fa;">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <!-- Header - MATCHING YOUR COLORS -->
+        <VBox alignment="CENTER" spacing="10"
+              style="-fx-background-color: linear-gradient(to right, #667eea 0%, #764ba2 100%); -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0, 0, 3);">
+            <Text text="📦" style="-fx-font-size: 48;">
+                <effect>
+                    <DropShadow radius="8.0" offsetX="3.0" offsetY="3.0" color="rgba(0,0,0,0.4)"/>
+                </effect>
+            </Text>
+            <Text text="Issue Medical Supplies"
+                  style="-fx-font-size: 26; -fx-font-weight: bold; -fx-fill: white;"/>
+            <Text text="Complete this transaction in 6 comprehensive steps"
+                  style="-fx-font-size: 14; -fx-fill: #e0e7ff;"/>
+        </VBox>
+
+        <!-- Step 1: Identify Receiver -->
+        <VBox spacing="15"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #3b82f6; -fx-background-radius: 25; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;">
+                    <Text text="1" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;">
+                        <effect>
+                            <DropShadow radius="4.0" offsetX="2.0" offsetY="2.0" color="rgba(0,0,0,0.3)"/>
+                        </effect>
+                    </Text>
+                </StackPane>
+                <VBox>
+                    <Text text="Identify Receiver" style="-fx-font-size: 17; -fx-font-weight: bold; -fx-fill: #1f2937;"/>
+                    <Text text="Select resident receiving the medical supplies" style="-fx-font-size: 12; -fx-fill: #6b7280;"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="txtSearchResident" promptText="🔍 Type name or ID to search..."
+                           HBox.hgrow="ALWAYS" prefHeight="38"
+                           style="-fx-font-size: 14; -fx-padding: 8 12; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-border-width: 1.5;"/>
+                <Button text="Search" onAction="#handleSearchResident" prefWidth="90" prefHeight="38"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+            </HBox>
+
+            <TableView fx:id="tableResidents" prefHeight="200"
+                       style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e5e7eb;">
+                <columns>
+                    <TableColumn fx:id="colResidentId" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="colResidentName" text="Full Name" prefWidth="180"/>
+                    <TableColumn fx:id="colAge" text="Age" prefWidth="60"/>
+                    <TableColumn fx:id="colSex" text="Sex" prefWidth="50"/>
+                    <TableColumn fx:id="colContact" text="Contact Number" prefWidth="130"/>
+                    <TableColumn fx:id="colVulnerability" text="Vulnerability Status" prefWidth="120"/>
+                </columns>
+            </TableView>
+
+            <Label fx:id="lblSelectedResident" text="No resident selected"
+                   style="-fx-text-fill: #9ca3af; -fx-font-size: 13; -fx-font-style: italic; -fx-padding: 5 0 0 0;"/>
+        </VBox>
+
+        <!-- Step 2: Check Inventory & Select Supply -->
+        <VBox spacing="15"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #10b981; -fx-background-radius: 25; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;">
+                    <Text text="2" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;">
+                        <effect>
+                            <DropShadow radius="4.0" offsetX="2.0" offsetY="2.0" color="rgba(0,0,0,0.3)"/>
+                        </effect>
+                    </Text>
+                </StackPane>
+                <VBox>
+                    <Text text="Check Inventory and Select Supply" style="-fx-font-size: 17; -fx-font-weight: bold; -fx-fill: #1f2937;"/>
+                    <Text text="Verify availability and expiration dates" style="-fx-font-size: 12; -fx-fill: #6b7280;"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="8">
+                <Label text="Available Medical Supplies" style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;"/>
+                <ComboBox fx:id="cmbMedicalSupply" promptText="Select a medical supply..." prefHeight="38"
+                          style="-fx-font-size: 14;"/>
+            </VBox>
+
+            <!-- Enhanced Stock Information -->
+            <VBox fx:id="containerStockInfo" spacing="8" visible="false"
+                  style="-fx-background-color: #f8fafc; -fx-background-radius: 8; -fx-padding: 15; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-border-width: 1;">
+                <HBox spacing="20" alignment="CENTER_LEFT">
+                    <VBox spacing="4">
+                        <Label text="Current Stock" style="-fx-font-size: 12; -fx-text-fill: #6b7280;"/>
+                        <Label fx:id="lblCurrentStock" text="0" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1f2937;"/>
+                    </VBox>
+                    <VBox spacing="4">
+                        <Label text="Expiration Date" style="-fx-font-size: 12; -fx-text-fill: #6b7280;"/>
+                        <Label fx:id="lblExpirationDate" text="No date" style="-fx-font-size: 14; -fx-text-fill: #6b7280;"/>
+                    </VBox>
+                    <VBox spacing="4">
+                        <Label text="Days Remaining" style="-fx-font-size: 12; -fx-text-fill: #6b7280;"/>
+                        <Label fx:id="lblDaysRemaining" text="-" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+                    </VBox>
+                    <VBox spacing="4">
+                        <Label text="Status" style="-fx-font-size: 12; -fx-text-fill: #6b7280;"/>
+                        <Label fx:id="lblStockStatus" text="Available" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <!-- Step 3: Assign Quantity -->
+        <VBox spacing="15"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #f59e0b; -fx-background-radius: 25; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;">
+                    <Text text="3" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;">
+                        <effect>
+                            <DropShadow radius="4.0" offsetX="2.0" offsetY="2.0" color="rgba(0,0,0,0.3)"/>
+                        </effect>
+                    </Text>
+                </StackPane>
+                <VBox>
+                    <Text text="Assign Quantity" style="-fx-font-size: 17; -fx-font-weight: bold; -fx-fill: #1f2937;"/>
+                    <Text text="Set quantity to be issued" style="-fx-font-size: 12; -fx-fill: #6b7280;"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <VBox spacing="8" prefWidth="200">
+                    <Label text="Quantity to Issue" style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;"/>
+                    <TextField fx:id="txtQuantity" promptText="Enter quantity" prefHeight="38"
+                               style="-fx-font-size: 14; -fx-padding: 8 12; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-border-width: 1.5;"/>
+                </VBox>
+
+                <VBox spacing="8">
+                    <Label text="Remaining After Issue" style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;"/>
+                    <Label fx:id="lblRemainingAfter" text="-" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #3b82f6;"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- Step 4: Assign Health Personnel -->
+        <VBox spacing="15"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #8b5cf6; -fx-background-radius: 25; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;">
+                    <Text text="4" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;">
+                        <effect>
+                            <DropShadow radius="4.0" offsetX="2.0" offsetY="2.0" color="rgba(0,0,0,0.3)"/>
+                        </effect>
+                    </Text>
+                </StackPane>
+                <VBox>
+                    <Text text="Assign Health Personnel" style="-fx-font-size: 17; -fx-font-weight: bold; -fx-fill: #1f2937;"/>
+                    <Text text="Log responsible healthcare provider" style="-fx-font-size: 12; -fx-fill: #6b7280;"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="8">
+                <Label text="Attending Personnel" style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;"/>
+                <ComboBox fx:id="cmbPersonnel" promptText="Select healthcare personnel..." prefHeight="38"
+                          style="-fx-font-size: 14;"/>
+            </VBox>
+
+            <VBox spacing="8">
+                <Label text="Personnel Role" style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;"/>
+                <Label fx:id="lblPersonnelRole" text="-" style="-fx-font-size: 14; -fx-text-fill: #6b7280;"/>
+            </VBox>
+        </VBox>
+
+        <!-- Step 5: Log Issuance Date -->
+        <VBox spacing="15"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #ec4899; -fx-background-radius: 25; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;">
+                    <Text text="5" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;">
+                        <effect>
+                            <DropShadow radius="4.0" offsetX="2.0" offsetY="2.0" color="rgba(0,0,0,0.3)"/>
+                        </effect>
+                    </Text>
+                </StackPane>
+                <VBox>
+                    <Text text="Log Issuance Date" style="-fx-font-size: 17; -fx-font-weight: bold; -fx-fill: #1f2937;"/>
+                    <Text text="Record transaction date and time" style="-fx-font-size: 12; -fx-fill: #6b7280;"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="20">
+                <VBox spacing="8" prefWidth="200">
+                    <Label text="Date of Issuance" style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;"/>
+                    <DatePicker fx:id="dateIssuance" prefHeight="38"
+                                style="-fx-font-size: 14;"/>
+                </VBox>
+
+                <VBox spacing="8">
+                    <Label text="Time of Issuance" style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;"/>
+                    <ComboBox fx:id="cmbTime" promptText="Select time" prefHeight="38"
+                              style="-fx-font-size: 14;"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- Step 6: Additional Information & Review -->
+        <VBox spacing="15"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane style="-fx-background-color: #06b6d4; -fx-background-radius: 25; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;">
+                    <Text text="6" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-fill: white;">
+                        <effect>
+                            <DropShadow radius="4.0" offsetX="2.0" offsetY="2.0" color="rgba(0,0,0,0.3)"/>
+                        </effect>
+                    </Text>
+                </StackPane>
+                <VBox>
+                    <Text text="Additional Information and Review" style="-fx-font-size: 17; -fx-font-weight: bold; -fx-fill: #1f2937;"/>
+                    <Text text="Add remarks and review transaction" style="-fx-font-size: 12; -fx-fill: #6b7280;"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="8">
+                <Label text="Transaction Summary" style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;"/>
+                <VBox fx:id="containerSummary" spacing="5" style="-fx-background-color: #f8fafc; -fx-background-radius: 8; -fx-padding: 15; -fx-border-color: #e2e8f0; -fx-border-radius: 8;">
+                    <Label fx:id="lblSummaryReceiver" text="Receiver: Not selected" style="-fx-font-size: 12;"/>
+                    <Label fx:id="lblSummaryItem" text="Item: Not selected" style="-fx-font-size: 12;"/>
+                    <Label fx:id="lblSummaryQuantity" text="Quantity: -" style="-fx-font-size: 12;"/>
+                    <Label fx:id="lblSummaryPersonnel" text="Personnel: Not selected" style="-fx-font-size: 12;"/>
+                    <Label fx:id="lblSummaryDate" text="Date: -" style="-fx-font-size: 12;"/>
+                </VBox>
+            </VBox>
+
+            <VBox spacing="8">
+                <Label text="Remarks (Optional)" style="-fx-font-size: 13; -fx-text-fill: #6b7280; -fx-font-weight: 600;"/>
+                <TextArea fx:id="txtRemarks" promptText="Enter any additional notes or observations..."
+                          prefHeight="80" wrapText="true"
+                          style="-fx-font-size: 14; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8;"/>
+            </VBox>
+        </VBox>
+
+        <!-- Action Buttons - MATCHING YOUR GREEN COLOR -->
+        <HBox spacing="12" alignment="CENTER" style="-fx-padding: 20 0 10 0;">
+            <Button text="✓ Complete Issuance" onAction="#handleIssueSupplies"
+                    prefWidth="220" prefHeight="48"
+                    style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(16,185,129,0.4), 8, 0, 0, 2);"/>
+            <Button text="✖ Cancel" onAction="#handleCancel"
+                    prefWidth="120" prefHeight="48"
+                    style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;"/>
+        </HBox>
+
+    </VBox>
+</ScrollPane>
