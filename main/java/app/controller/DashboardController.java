@@ -6,12 +6,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.scene.text.Text;
+import javafx.application.Platform;
 
 import java.sql.*;
 
@@ -77,132 +80,98 @@ public class DashboardController {
 
     @FXML
     private void handleAvailHealthService() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/avail_service_dialog.fxml"));
-            ScrollPane root = loader.load();
-
-            Stage dialogStage = new Stage();
-
-            // Set owner window BEFORE setting modality
-            Window owner = getOwnerWindow();
-            if (owner != null) {
-                dialogStage.initOwner(owner);
-                System.out.println("✅ Dialog owner set for Avail Health Service");
-            } else {
-                System.out.println("⚠️ Warning: Could not find owner window for Avail Health Service dialog");
-            }
-
-            dialogStage.setTitle("Avail Health Service");
-            // FIXED: Use NONE to avoid blocking issues - dialog is still on top
-            // User can click between windows, but dialog stays visible
-            dialogStage.setScene(new Scene(root, 650, 750));
-            dialogStage.setResizable(false);
-
-            // Refresh statistics when dialog closes
-            dialogStage.setOnHidden(e -> loadStatistics());
-
-            System.out.println("📋 About to show Avail Health Service dialog...");
-            dialogStage.show(); // Changed from showAndWait() to show()
-
-        } catch (Exception e) {
-            System.err.println("Error opening avail service dialog: " + e.getMessage());
-            e.printStackTrace();
-            showAlert("Error", "Could not open transaction dialog");
-        }
+        openTransactionDialog("/view/avail_service_dialog.fxml",
+                "Avail Health Service", 650, 750, true);
     }
 
     @FXML
     private void handleIssueMedicalSupplies() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/issue_supplies.fxml"));
-            ScrollPane root = loader.load();
-
-            Stage dialogStage = new Stage();
-
-            // Set owner window BEFORE setting modality
-            Window owner = getOwnerWindow();
-            if (owner != null) {
-                dialogStage.initOwner(owner);
-                System.out.println("✅ Dialog owner set for Medical Supplies");
-            } else {
-                System.out.println("⚠️ Warning: Could not find owner window for Medical Supplies dialog");
-            }
-
-            dialogStage.setTitle("Medical Supply Issuance");
-            dialogStage.setScene(new Scene(root, 650, 750));
-            dialogStage.setResizable(false);
-
-            // Refresh statistics when dialog closes
-            dialogStage.setOnHidden(e -> loadStatistics());
-
-            System.out.println("📋 About to show Medical Supplies dialog...");
-            dialogStage.show();
-
-        } catch (Exception e) {
-            System.err.println("Error opening medical supplies dialog: " + e.getMessage());
-            e.printStackTrace();
-            showAlert("Error", "Could not open transaction dialog");
-        }
+        openTransactionDialog("/view/issue_supplies.fxml",
+                "Medical Supply Issuance", 650, 750, true);
     }
 
     @FXML
     private void handleRestockInventory() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/restock_inventory.fxml"));
-            ScrollPane root = loader.load();
-
-            Stage dialogStage = new Stage();
-
-            // Set owner window BEFORE setting modality
-            Window owner = getOwnerWindow();
-            if (owner != null) {
-                dialogStage.initOwner(owner);
-                System.out.println("✅ Dialog owner set for Restock Inventory");
-            } else {
-                System.out.println("⚠️ Warning: Could not find owner window for Restock Inventory dialog");
-            }
-
-            dialogStage.setTitle("Restock Clinic Inventory");
-            dialogStage.setScene(new Scene(root, 650, 750));
-            dialogStage.setResizable(false);
-
-            System.out.println("📋 About to show Restock Inventory dialog...");
-            dialogStage.show();
-
-        } catch (Exception e) {
-            System.err.println("Error opening restock inventory dialog: " + e.getMessage());
-            e.printStackTrace();
-            showAlert("Error", "Could not open restock inventory dialog");
-        }
+        openTransactionDialog("/view/restock_inventory.fxml",
+                "Restock Clinic Inventory", 650, 750, false);
     }
 
     @FXML
     private void handleLogClinicVisit() {
+        openTransactionDialog("/view/clinicvisits.fxml",
+                "Log Clinic Visit", 700, 750, false);
+    }
+
+    private void openTransactionDialog(String resourcePath,
+                                       String title,
+                                       double width,
+                                       double height,
+                                       boolean refreshStats) {
         try {
-            Parent clinicVisitsRoot = FXMLLoader.load(getClass().getResource("/view/clinicvisits.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
+            Parent root = loader.load();
 
-            Stage stage = new Stage();
+            Stage dialogStage = configureDialogStage(root, title, width, height, refreshStats);
 
-            // Set owner window BEFORE setting modality
-            Window owner = getOwnerWindow();
-            if (owner != null) {
-                stage.initOwner(owner);
-                System.out.println("✅ Stage owner set for Log Clinic Visit");
-            } else {
-                System.out.println("⚠️ Warning: Could not find owner window for Log Clinic Visit");
-            }
-
-            stage.setTitle("Log Clinic Visit");
-            stage.setScene(new Scene(clinicVisitsRoot, 700, 750));
-            stage.setResizable(false);
-
-            System.out.println("📋 About to show Log Clinic Visit window...");
-            stage.show();
-
+            System.out.println("📋 About to show dialog: " + title);
+            dialogStage.showAndWait();
         } catch (Exception e) {
+            System.err.println("Error opening dialog (" + title + "): " + e.getMessage());
             e.printStackTrace();
-            showAlert("Error", "Cannot load clinic visits form: " + e.getMessage());
+            showAlert("Error", "Could not open " + title + " dialog");
         }
+    }
+
+    private Stage configureDialogStage(Parent root,
+                                       String title,
+                                       double width,
+                                       double height,
+                                       boolean refreshStats) {
+        Stage dialogStage = new Stage();
+        Scene scene = new Scene(root, width, height);
+        dialogStage.setScene(scene);
+        dialogStage.setTitle(title);
+        dialogStage.setResizable(false);
+
+        Window owner = getOwnerWindow();
+        if (owner != null) {
+            dialogStage.initOwner(owner);
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            System.out.println("✅ Dialog owner set for " + title);
+        } else {
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            System.out.println("⚠️ Dialog owner not found, using application modal for " + title);
+        }
+
+        scene.getAccelerators().put(
+                new KeyCodeCombination(KeyCode.ESCAPE),
+                dialogStage::close
+        );
+
+        dialogStage.setOnShown(e -> Platform.runLater(() -> {
+            Node firstInput = findFirstInputNode(scene);
+            if (firstInput != null) {
+                firstInput.requestFocus();
+            }
+        }));
+
+        if (refreshStats) {
+            dialogStage.setOnHidden(e -> loadStatistics());
+        }
+
+        dialogStage.centerOnScreen();
+        return dialogStage;
+    }
+
+    private Node findFirstInputNode(Scene scene) {
+        Node node = scene.lookup(".text-field");
+        if (node == null) {
+            node = scene.lookup(".combo-box");
+        }
+        if (node == null) {
+            node = scene.lookup(".table-view");
+        }
+        return node;
     }
 
     private void showAlert(String title, String message) {

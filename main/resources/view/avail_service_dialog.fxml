@@ -9,6 +9,8 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="app.controller.AvailServiceDialogController"
             fitToWidth="true"
+            pannable="false"
+            focusTraversable="false"
             style="-fx-background: #f5f7fa; -fx-background-color: #f5f7fa;">
 
     <VBox spacing="18"
