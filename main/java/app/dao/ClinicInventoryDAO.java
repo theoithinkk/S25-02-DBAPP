@@ -6,104 +6,105 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO for ClinicInventory table
+ */
 public class ClinicInventoryDAO {
 
-    // Get all items from inventory
-    public List<ClinicInventory> getAllItems() {
-        List<ClinicInventory> items = new ArrayList<>();
-        String sql = "SELECT * FROM clinicinventory";
-
-        System.out.println("DAO DEBUG: Executing SQL: " + sql);
+    /** -----------------------------------------
+     * CREATE
+     * ------------------------------------------ */
+    public boolean addItem(ClinicInventory item) {
+        String sql = "INSERT INTO clinicinventory (item_name, category, quantity, expiration_date) " +
+                "VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            System.out.println("DAO DEBUG: Connection successful");
-            int count = 0;
+            ps.setString(1, item.getItemName());
+            ps.setString(2, item.getCategory());
+            ps.setInt(3, item.getQuantity());
 
-            while (rs.next()) {
-                ClinicInventory item = mapResultSetToClinicInventory(rs);
-                items.add(item);
-                count++;
-                System.out.println("DAO DEBUG: Loaded - ID: " + rs.getInt("id") +
-                        ", Name: " + rs.getString("item_name") +
-                        ", Category: " + rs.getString("category") +
-                        ", Qty: " + rs.getInt("quantity"));
+            if (item.getExpirationDate() != null) {
+                ps.setDate(4, new java.sql.Date(item.getExpirationDate().getTime()));
+            } else {
+                ps.setNull(4, Types.DATE);
             }
 
-            System.out.println("DAO DEBUG: Total items loaded from DB: " + count);
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.err.println("DAO ERROR: " + e.getMessage());
             e.printStackTrace();
+            return false;
         }
-        return items;
     }
 
-    // Get item by ID
-    public ClinicInventory getItemById(int itemId) {
-        String sql = "SELECT * FROM clinicinventory WHERE id = ?";
+    /** -----------------------------------------
+     * READ - GET ALL
+     * ------------------------------------------ */
+    public List<ClinicInventory> getAllItems() {
+        List<ClinicInventory> list = new ArrayList<>();
+        String sql = "SELECT * FROM clinicinventory";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-            pstmt.setInt(1, itemId);
-            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                list.add(map(rs));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /** -----------------------------------------
+     * READ - GET BY ID
+     * ------------------------------------------ */
+    public ClinicInventory getItemById(int id) {
+        String sql = "SELECT * FROM clinicinventory WHERE item_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                return mapResultSetToClinicInventory(rs);
+                return map(rs);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    // Add new item to inventory - UPDATED TO INCLUDE CATEGORY
-    public boolean addItem(ClinicInventory item) {
-        String sql = "INSERT INTO clinicinventory (item_name, category, quantity, expiration_date) VALUES (?, ?, ?, ?)";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, item.getItemName());
-            pstmt.setString(2, item.getCategory()); // ADDED CATEGORY
-            pstmt.setInt(3, item.getQuantity());
-            if (item.getExpirationDate() != null) {
-                pstmt.setDate(4, new java.sql.Date(item.getExpirationDate().getTime()));
-            } else {
-                pstmt.setNull(4, Types.DATE);
-            }
-
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    // Update existing item - UPDATED TO INCLUDE CATEGORY
+    /** -----------------------------------------
+     * UPDATE
+     * ------------------------------------------ */
     public boolean updateItem(ClinicInventory item) {
-        String sql = "UPDATE clinicinventory SET item_name = ?, category = ?, quantity = ?, expiration_date = ? WHERE item_id = ?";
+        String sql = "UPDATE clinicinventory SET item_name=?, category=?, quantity=?, expiration_date=? " +
+                "WHERE item_id=?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, item.getItemName());
-            pstmt.setString(2, item.getCategory()); // ADDED CATEGORY
-            pstmt.setInt(3, item.getQuantity());
+            ps.setString(1, item.getItemName());
+            ps.setString(2, item.getCategory());
+            ps.setInt(3, item.getQuantity());
+
             if (item.getExpirationDate() != null) {
-                pstmt.setDate(4, new java.sql.Date(item.getExpirationDate().getTime()));
+                ps.setDate(4, new java.sql.Date(item.getExpirationDate().getTime()));
             } else {
-                pstmt.setNull(4, Types.DATE);
+                ps.setNull(4, Types.DATE);
             }
-            pstmt.setInt(5, item.getItemId());
 
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
+            ps.setInt(5, item.getItemId());
+
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -111,16 +112,17 @@ public class ClinicInventoryDAO {
         }
     }
 
-    // Delete item from inventory
-    public boolean deleteItem(int itemId) {
-        String sql = "DELETE FROM clinicinventory WHERE item_id = ?";
+    /** -----------------------------------------
+     * DELETE
+     * ------------------------------------------ */
+    public boolean deleteItem(int id) {
+        String sql = "DELETE FROM clinicinventory WHERE item_id=?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, itemId);
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -128,19 +130,22 @@ public class ClinicInventoryDAO {
         }
     }
 
-    // DEDUCT QUANTITY METHOD
-    public boolean deductQuantity(int itemId, int quantityToDeduct) {
-        String sql = "UPDATE clinicinventory SET quantity = quantity - ? WHERE id = ? AND quantity >= ?";
+    /** -----------------------------------------
+     * STOCK ADJUSTMENTS
+     * ------------------------------------------ */
+
+    // Decrease quantity (checking for sufficient stock)
+    public boolean deductQuantity(int itemId, int amount) {
+        String sql = "UPDATE clinicinventory SET quantity = quantity - ? WHERE item_id = ? AND quantity >= ?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, quantityToDeduct);
-            pstmt.setInt(2, itemId);
-            pstmt.setInt(3, quantityToDeduct);
+            ps.setInt(1, amount);
+            ps.setInt(2, itemId);
+            ps.setInt(3, amount);
 
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -148,18 +153,17 @@ public class ClinicInventoryDAO {
         }
     }
 
-    // Add quantity to inventory
-    public boolean addQuantity(int itemId, int quantityToAdd) {
-        String sql = "UPDATE clinicinventory SET quantity = quantity + ? WHERE id = ?";
+    // Increase quantity
+    public boolean addQuantity(int itemId, int amount) {
+        String sql = "UPDATE clinicinventory SET quantity = quantity + ? WHERE item_id = ?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, quantityToAdd);
-            pstmt.setInt(2, itemId);
+            ps.setInt(1, amount);
+            ps.setInt(2, itemId);
 
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -167,139 +171,124 @@ public class ClinicInventoryDAO {
         }
     }
 
-    // Get low stock items (less than or equal to threshold)
+    /** -----------------------------------------
+     * SPECIAL QUERIES
+     * ------------------------------------------ */
+
+    // Low stock
     public List<ClinicInventory> getLowStockItems(int threshold) {
-        List<ClinicInventory> items = new ArrayList<>();
+        List<ClinicInventory> list = new ArrayList<>();
         String sql = "SELECT * FROM clinicinventory WHERE quantity <= ?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, threshold);
-            ResultSet rs = pstmt.executeQuery();
+            ps.setInt(1, threshold);
+            ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                ClinicInventory item = mapResultSetToClinicInventory(rs);
-                items.add(item);
-            }
+            while (rs.next()) list.add(map(rs));
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return items;
+        return list;
     }
 
-    // Get expired items
+    // Expired
     public List<ClinicInventory> getExpiredItems() {
-        List<ClinicInventory> items = new ArrayList<>();
+        List<ClinicInventory> list = new ArrayList<>();
         String sql = "SELECT * FROM clinicinventory WHERE expiration_date < CURDATE()";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                ClinicInventory item = mapResultSetToClinicInventory(rs);
-                items.add(item);
-            }
+            while (rs.next()) list.add(map(rs));
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return items;
+        return list;
     }
 
-    // Get items expiring soon (within next 30 days)
+    // Expiring soon (30 days)
     public List<ClinicInventory> getExpiringSoonItems() {
-        List<ClinicInventory> items = new ArrayList<>();
-        String sql = "SELECT * FROM clinicinventory WHERE expiration_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)";
+        List<ClinicInventory> list = new ArrayList<>();
+        String sql = "SELECT * FROM clinicinventory " +
+                "WHERE expiration_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                ClinicInventory item = mapResultSetToClinicInventory(rs);
-                items.add(item);
-            }
+            while (rs.next()) list.add(map(rs));
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return items;
+        return list;
     }
 
-    // Search items by name
-    public List<ClinicInventory> searchItemsByName(String searchTerm) {
-        List<ClinicInventory> items = new ArrayList<>();
+    // Search by name
+    public List<ClinicInventory> searchItemsByName(String name) {
+        List<ClinicInventory> list = new ArrayList<>();
         String sql = "SELECT * FROM clinicinventory WHERE item_name LIKE ?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, "%" + searchTerm + "%");
-            ResultSet rs = pstmt.executeQuery();
+            ps.setString(1, "%" + name + "%");
+            ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                ClinicInventory item = mapResultSetToClinicInventory(rs);
-                items.add(item);
-            }
+            while (rs.next()) list.add(map(rs));
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return items;
+        return list;
     }
 
-    // UPDATED: Helper method to map ResultSet to ClinicInventory object - INCLUDES CATEGORY
-    private ClinicInventory mapResultSetToClinicInventory(ResultSet rs) throws SQLException {
+    /** -----------------------------------------
+     * Helper: Convert ResultSet → Model
+     * ------------------------------------------ */
+    private ClinicInventory map(ResultSet rs) throws SQLException {
         ClinicInventory item = new ClinicInventory();
-        item.setItemId(rs.getInt("id"));
+        item.setItemId(rs.getInt("item_id"));
         item.setItemName(rs.getString("item_name"));
-        item.setCategory(rs.getString("category")); // ADDED THIS LINE
+        item.setCategory(rs.getString("category"));
         item.setQuantity(rs.getInt("quantity"));
         item.setExpirationDate(rs.getDate("expiration_date"));
         return item;
     }
 
-    // Get total item count
+    /** -----------------------------------------
+     * Metrics
+     * ------------------------------------------ */
     public int getTotalItemCount() {
-        String sql = "SELECT COUNT(*) as count FROM clinicinventory";
-
+        String sql = "SELECT COUNT(*) FROM clinicinventory";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-            if (rs.next()) {
-                return rs.getInt("count");
-            }
+            return rs.next() ? rs.getInt(1) : 0;
+
         } catch (SQLException e) {
             e.printStackTrace();
+            return 0;
         }
-        return 0;
     }
 
-    // Get total quantity of all items
     public int getTotalQuantity() {
-        String sql = "SELECT SUM(quantity) as total FROM clinicinventory";
-
+        String sql = "SELECT SUM(quantity) FROM clinicinventory";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-            if (rs.next()) {
-                return rs.getInt("total");
-            }
+            return rs.next() ? rs.getInt(1) : 0;
+
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        return 0;
-    }
-
-    public boolean testConnection() {
-        try (Connection conn = DBConnection.getConnection()) {
-            System.out.println("✅ Database connection successful!");
-            return true;
-        } catch (SQLException e) {
-            System.err.println("❌ Database connection failed: " + e.getMessage());
-            e.printStackTrace();
-            return false;
+            return 0;
         }
     }
 }

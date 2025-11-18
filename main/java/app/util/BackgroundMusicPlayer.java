@@ -1,6 +1,5 @@
 package app.util;
 
-import javafx.application.Platform;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -11,7 +10,6 @@ public class BackgroundMusicPlayer {
     private static boolean available = false;
     private static boolean muted = false;
     private static double volume = 0.3; // default volume
-    private static Thread fadeThread;   // prevent overlapping fades
 
     /**
      * Loads the background music file, but does not auto-play.
@@ -43,40 +41,18 @@ public class BackgroundMusicPlayer {
     }
 
     /**
-     * Plays the background music with fade-in.
+     * Plays the background music WITHOUT fade-in to prevent dialog focus issues.
+     * The fade-in thread was causing dialogs to go behind the main window!
      */
     public static void play() {
         if (!available) initialize();
         if (mediaPlayer == null) return;
 
+        // FIX: Set volume directly instead of using fadeIn() thread
+        // The fadeIn() thread's Platform.runLater() calls were stealing focus!
+        mediaPlayer.setVolume(volume);
         mediaPlayer.play();
-        fadeIn();
         System.out.println("♫ Music playing...");
-    }
-
-    /**
-     * Smooth fade-in effect for volume.
-     */
-    private static void fadeIn() {
-        if (fadeThread != null && fadeThread.isAlive()) {
-            fadeThread.interrupt();
-        }
-
-        fadeThread = new Thread(() -> {
-            try {
-                for (double v = 0; v <= volume; v += 0.01) {
-                    double vol = v;
-                    Platform.runLater(() -> {
-                        if (mediaPlayer != null && !mediaPlayer.isMute()) {
-                            mediaPlayer.setVolume(vol);
-                        }
-                    });
-                    Thread.sleep(80);
-                }
-            } catch (InterruptedException ignored) {}
-        });
-        fadeThread.setDaemon(true);
-        fadeThread.start();
     }
 
     /**

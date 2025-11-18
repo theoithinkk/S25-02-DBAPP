@@ -48,6 +48,7 @@ public class ClinicVisitsController {
 
     @FXML
     private void initialize() {
+
         colPatientId.setCellValueFactory(data ->
                 new SimpleObjectProperty<>(data.getValue().getResidentId()));
         colPatientName.setCellValueFactory(data ->

@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.scene.text.Text;
 
 import java.sql.*;
@@ -31,6 +32,14 @@ public class DashboardController {
 
         // Load statistics
         loadStatistics();
+    }
+
+    // Helper to get the owner window
+    private Window getOwnerWindow() {
+        if (txtWelcome != null && txtWelcome.getScene() != null && txtWelcome.getScene().getWindow() != null) {
+            return txtWelcome.getScene().getWindow();
+        }
+        return null;
     }
 
     private void loadStatistics() {
@@ -70,18 +79,30 @@ public class DashboardController {
     private void handleAvailHealthService() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/avail_service_dialog.fxml"));
-            ScrollPane root = loader.load(); // Changed from VBox to ScrollPane
+            ScrollPane root = loader.load();
 
             Stage dialogStage = new Stage();
+
+            // Set owner window BEFORE setting modality
+            Window owner = getOwnerWindow();
+            if (owner != null) {
+                dialogStage.initOwner(owner);
+                System.out.println("✅ Dialog owner set for Avail Health Service");
+            } else {
+                System.out.println("⚠️ Warning: Could not find owner window for Avail Health Service dialog");
+            }
+
             dialogStage.setTitle("Avail Health Service");
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.setScene(new Scene(root, 650, 750)); // Increased size for scrolling
+            // FIXED: Use NONE to avoid blocking issues - dialog is still on top
+            // User can click between windows, but dialog stays visible
+            dialogStage.setScene(new Scene(root, 650, 750));
             dialogStage.setResizable(false);
 
             // Refresh statistics when dialog closes
             dialogStage.setOnHidden(e -> loadStatistics());
 
-            dialogStage.showAndWait();
+            System.out.println("📋 About to show Avail Health Service dialog...");
+            dialogStage.show(); // Changed from showAndWait() to show()
 
         } catch (Exception e) {
             System.err.println("Error opening avail service dialog: " + e.getMessage());
@@ -94,18 +115,28 @@ public class DashboardController {
     private void handleIssueMedicalSupplies() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/issue_supplies.fxml"));
-            ScrollPane root = loader.load(); // Changed from VBox to ScrollPane
+            ScrollPane root = loader.load();
 
             Stage dialogStage = new Stage();
+
+            // Set owner window BEFORE setting modality
+            Window owner = getOwnerWindow();
+            if (owner != null) {
+                dialogStage.initOwner(owner);
+                System.out.println("✅ Dialog owner set for Medical Supplies");
+            } else {
+                System.out.println("⚠️ Warning: Could not find owner window for Medical Supplies dialog");
+            }
+
             dialogStage.setTitle("Medical Supply Issuance");
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.setScene(new Scene(root, 650, 750)); // Same size as avail service
+            dialogStage.setScene(new Scene(root, 650, 750));
             dialogStage.setResizable(false);
 
             // Refresh statistics when dialog closes
             dialogStage.setOnHidden(e -> loadStatistics());
 
-            dialogStage.showAndWait();
+            System.out.println("📋 About to show Medical Supplies dialog...");
+            dialogStage.show();
 
         } catch (Exception e) {
             System.err.println("Error opening medical supplies dialog: " + e.getMessage());
@@ -117,19 +148,26 @@ public class DashboardController {
     @FXML
     private void handleRestockInventory() {
         try {
-            // Load the FXML for Restock Inventory
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/restock_inventory.fxml"));
-            ScrollPane root = loader.load(); // Using ScrollPane as root
+            ScrollPane root = loader.load();
 
-            // Create a new dialog stage
             Stage dialogStage = new Stage();
+
+            // Set owner window BEFORE setting modality
+            Window owner = getOwnerWindow();
+            if (owner != null) {
+                dialogStage.initOwner(owner);
+                System.out.println("✅ Dialog owner set for Restock Inventory");
+            } else {
+                System.out.println("⚠️ Warning: Could not find owner window for Restock Inventory dialog");
+            }
+
             dialogStage.setTitle("Restock Clinic Inventory");
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.setScene(new Scene(root, 650, 750)); // Adjusted height for scrolling
+            dialogStage.setScene(new Scene(root, 650, 750));
             dialogStage.setResizable(false);
 
-            // Show the dialog and wait
-            dialogStage.showAndWait();
+            System.out.println("📋 About to show Restock Inventory dialog...");
+            dialogStage.show();
 
         } catch (Exception e) {
             System.err.println("Error opening restock inventory dialog: " + e.getMessage());
@@ -144,9 +182,21 @@ public class DashboardController {
             Parent clinicVisitsRoot = FXMLLoader.load(getClass().getResource("/view/clinicvisits.fxml"));
 
             Stage stage = new Stage();
+
+            // Set owner window BEFORE setting modality
+            Window owner = getOwnerWindow();
+            if (owner != null) {
+                stage.initOwner(owner);
+                System.out.println("✅ Stage owner set for Log Clinic Visit");
+            } else {
+                System.out.println("⚠️ Warning: Could not find owner window for Log Clinic Visit");
+            }
+
             stage.setTitle("Log Clinic Visit");
-            stage.setScene(new Scene(clinicVisitsRoot, 700, 750)); // Increased height to 750
-            stage.setResizable(false); // Changed to true so user can resize if needed
+            stage.setScene(new Scene(clinicVisitsRoot, 700, 750));
+            stage.setResizable(false);
+
+            System.out.println("📋 About to show Log Clinic Visit window...");
             stage.show();
 
         } catch (Exception e) {
@@ -157,6 +207,13 @@ public class DashboardController {
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+        // Set owner for alerts
+        Window owner = getOwnerWindow();
+        if (owner != null) {
+            alert.initOwner(owner);
+        }
+
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

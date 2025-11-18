@@ -8,7 +8,13 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="700.0" prefWidth="900.0" spacing="15" style="-fx-background-color: #f5f7fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.TransactionController">
+<VBox prefHeight="700.0"
+      prefWidth="900.0"
+      spacing="15"
+      style="-fx-background-color: #f5f7fa;"
+      xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="app.controller.TransactionController">
 
     <padding>
         <Insets bottom="20" left="20" right="20" top="20" />
@@ -25,6 +31,7 @@
     <HBox spacing="10">
         <Button onAction="#showTransactions" prefHeight="40" prefWidth="180" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 12; -fx-font-weight: bold; -fx-background-radius: 8;" text="💊 Service Transactions" />
         <Button onAction="#showServiceInventory" prefHeight="40" prefWidth="180" style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-size: 12; -fx-font-weight: bold; -fx-background-radius: 8;" text="📦 Service Inventory" />
+        <Button onAction="#showRestockInventory" prefHeight="40" prefWidth="180" style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-size: 12; -fx-font-weight: bold; -fx-background-radius: 8;" text="📥 Restocking Inventory" />
         <Button onAction="#showClinicVisits" prefHeight="40" prefWidth="180" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 12; -fx-font-weight: bold; -fx-background-radius: 8;" text="🏥 Clinic Visits" />
     </HBox>
 
