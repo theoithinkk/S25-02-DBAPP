@@ -1,10 +1,10 @@
+CREATE DATABASE  IF NOT EXISTS `barangayhealthdb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `barangayhealthdb`;
 -- MySQL dump 10.13  Distrib 8.0.43, for Win64 (x86_64)
 --
 -- Host: localhost    Database: barangayhealthdb
 -- ------------------------------------------------------
 -- Server version	8.0.43
-CREATE DATABASE barangayhealthdb;
-USE barangayhealthdb;
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -32,7 +32,7 @@ CREATE TABLE `auditlog` (
   PRIMARY KEY (`log_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `auditlog_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=114 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `auditlog` (
 
 LOCK TABLES `auditlog` WRITE;
 /*!40000 ALTER TABLE `auditlog` DISABLE KEYS */;
-INSERT INTO `auditlog` VALUES (1,1,'LOGIN','2025-11-10 09:44:42');
+INSERT INTO `auditlog` VALUES (1,1,'LOGIN','2025-11-10 09:44:42'),(2,1,'LOGIN','2025-11-10 09:45:50'),(3,1,'LOGIN','2025-11-10 09:47:17'),(4,1,'LOGIN','2025-11-10 09:48:53'),(5,1,'LOGIN','2025-11-10 09:51:53'),(6,1,'LOGIN','2025-11-10 09:52:14'),(7,1,'UPDATE_RESIDENT: 18','2025-11-10 09:52:27'),(8,1,'UPDATE_RESIDENT: 20','2025-11-10 09:52:42'),(9,1,'LOGIN','2025-11-10 10:00:34'),(10,1,'ADD_RESIDENT: Big Ced','2025-11-10 10:01:07'),(11,1,'ADD_RESIDENT: Hello R','2025-11-10 10:02:43'),(12,1,'LOGIN','2025-11-10 10:03:47'),(13,1,'ADD_RESIDENT: Kim Ver','2025-11-10 10:04:08'),(14,1,'LOGIN','2025-11-10 10:10:27'),(15,1,'LOGIN','2025-11-10 10:11:41'),(16,5,'LOGIN','2025-11-10 10:12:17'),(17,1,'LOGIN','2025-11-10 10:12:53'),(18,1,'LOGIN','2025-11-10 10:17:15'),(19,1,'LOGIN','2025-11-10 10:19:24'),(20,5,'LOGIN','2025-11-10 23:22:33'),(21,1,'LOGIN','2025-11-10 23:22:58'),(22,1,'LOGIN','2025-11-10 23:56:01'),(23,1,'LOGIN','2025-11-10 23:57:28'),(24,1,'LOGIN','2025-11-10 23:59:14'),(25,1,'LOGIN','2025-11-11 00:01:58'),(26,1,'LOGIN','2025-11-11 00:02:57'),(27,1,'LOGIN','2025-11-11 00:06:16'),(28,1,'LOGIN','2025-11-11 00:11:18'),(29,6,'CHANGE_PASSWORD','2025-11-11 00:11:45'),(30,1,'LOGIN','2025-11-11 00:18:59'),(31,1,'DELETE_USER: 9','2025-11-11 00:19:29'),(32,3,'LOGIN','2025-11-17 01:48:26'),(33,3,'LOGIN','2025-11-17 01:53:19'),(34,3,'AVAIL_SERVICE: Resident Kim Ver availed Medical Consultation by Linda Santos','2025-11-17 01:53:27'),(35,1,'LOGIN','2025-11-17 10:44:36'),(36,1,'LOGIN','2025-11-17 10:47:12'),(37,1,'AVAIL_SERVICE: Resident Pedro Reyes availed Deworming by Anna Garcia','2025-11-17 10:47:20'),(38,1,'LOGIN','2025-11-17 11:20:29'),(39,1,'LOGIN','2025-11-17 11:24:27'),(40,10,'LOGIN','2025-11-17 11:25:49'),(41,1,'LOGIN','2025-11-17 11:29:45'),(42,1,'LOGIN','2025-11-17 11:31:27'),(43,1,'LOGIN','2025-11-17 11:33:01'),(44,1,'LOGIN','2025-11-17 11:36:47'),(45,1,'LOGIN','2025-11-17 11:39:59'),(46,1,'LOGIN','2025-11-17 11:41:54'),(47,1,'LOGIN','2025-11-17 11:45:12'),(48,1,'LOGIN','2025-11-17 11:46:11'),(49,1,'LOGIN','2025-11-17 11:46:47'),(50,1,'LOGIN','2025-11-17 11:48:05'),(51,1,'LOGIN','2025-11-17 11:48:41'),(52,1,'LOGIN','2025-11-17 11:49:47'),(53,1,'LOGIN','2025-11-17 11:53:55'),(54,1,'LOGIN','2025-11-17 11:58:26'),(55,1,'LOGIN','2025-11-17 12:07:30'),(56,1,'LOGIN','2025-11-17 12:10:54'),(57,1,'LOGIN','2025-11-17 12:12:32'),(58,1,'LOGIN','2025-11-17 12:13:26'),(59,1,'LOGIN','2025-11-17 12:18:46'),(60,1,'LOGIN','2025-11-17 13:07:43'),(61,1,'LOGIN','2025-11-17 13:10:17'),(62,1,'LOGIN','2025-11-17 13:17:22'),(63,1,'LOGIN','2025-11-17 13:18:44'),(64,1,'LOGIN','2025-11-17 13:20:03'),(65,1,'LOGIN','2025-11-17 13:22:03'),(66,1,'LOGIN','2025-11-17 13:23:23'),(67,1,'LOGIN','2025-11-18 01:13:22'),(68,1,'LOGIN','2025-11-18 01:37:30'),(69,1,'LOGIN','2025-11-18 01:43:35'),(70,1,'LOGIN','2025-11-18 01:44:06'),(71,1,'LOGIN','2025-11-18 01:49:40'),(72,1,'LOGIN','2025-11-18 01:57:12'),(73,1,'LOGIN','2025-11-18 02:02:40'),(74,1,'LOGIN','2025-11-18 02:05:46'),(75,1,'LOGIN','2025-11-18 02:08:19'),(76,1,'LOGIN','2025-11-18 02:14:21'),(77,1,'LOGIN','2025-11-18 02:22:15'),(78,1,'LOGIN','2025-11-18 02:23:55'),(79,1,'LOGIN','2025-11-18 02:29:44'),(80,1,'LOGIN','2025-11-18 03:05:41'),(81,1,'LOGIN','2025-11-18 04:40:36'),(82,1,'LOGIN','2025-11-18 05:39:29'),(83,1,'LOGIN','2025-11-18 05:43:58'),(84,1,'LOGIN','2025-11-18 05:54:48'),(85,1,'LOGIN','2025-11-18 05:58:11'),(86,1,'LOGIN','2025-11-18 06:07:06'),(87,1,'LOGIN','2025-11-18 06:10:26'),(88,1,'LOGIN','2025-11-18 06:15:43'),(89,1,'LOGIN','2025-11-18 06:18:45'),(90,1,'LOGIN','2025-11-18 06:20:27'),(91,1,'LOGIN','2025-11-18 06:50:12'),(92,1,'LOGIN','2025-11-18 06:51:00'),(93,1,'LOGIN','2025-11-18 10:38:50'),(94,1,'LOGIN','2025-11-18 12:12:57'),(95,1,'LOGIN','2025-11-18 12:21:23'),(96,10,'LOGIN','2025-11-18 12:22:05'),(97,5,'LOGIN','2025-11-18 12:23:04'),(98,11,'LOGIN','2025-11-18 12:24:05'),(99,1,'LOGIN','2025-11-18 12:31:14'),(100,1,'LOGIN','2025-11-18 12:34:36'),(101,1,'Added inventory item to Transaction #15','2025-11-18 12:35:06'),(102,1,'LOGIN','2025-11-18 12:40:24'),(103,1,'LOGIN','2025-11-18 12:44:09'),(104,1,'LOGIN','2025-11-18 12:46:16'),(105,1,'LOGIN','2025-11-18 13:01:04'),(106,1,'LOGIN','2025-11-18 13:02:17'),(107,1,'LOGIN','2025-11-18 13:04:05'),(108,1,'LOGIN','2025-11-18 13:07:28'),(109,1,'LOGIN','2025-11-18 13:09:03'),(110,1,'LOGIN','2025-11-18 13:10:23'),(111,1,'LOGIN','2025-11-18 13:11:32'),(112,1,'LOGIN','2025-11-18 13:11:54'),(113,10,'LOGIN','2025-11-18 13:12:24');
 /*!40000 ALTER TABLE `auditlog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,7 +87,7 @@ CREATE TABLE `clinicinventory` (
   `quantity` int DEFAULT '0',
   `expiration_date` date DEFAULT NULL,
   PRIMARY KEY (`item_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,7 +96,7 @@ CREATE TABLE `clinicinventory` (
 
 LOCK TABLES `clinicinventory` WRITE;
 /*!40000 ALTER TABLE `clinicinventory` DISABLE KEYS */;
-INSERT INTO `clinicinventory` VALUES (1,'Paracetamol','Medicine',200,NULL),(2,'Paracetamol 500mg','Medicine',500,NULL),(3,'Amoxicillin 500mg','Medicine',300,NULL),(4,'Betadine Solution','Medical Supply',50,NULL),(5,'Cotton Balls','Medical Supply',200,NULL),(6,'Syringe 5ml','Medical Equipment',100,NULL),(7,'Face Masks','PPE',1000,NULL),(8,'Alcohol 70%','Medical Supply',80,NULL),(9,'Bandages','Medical Supply',150,NULL),(10,'Thermometer','Medical Equipment',10,NULL),(11,'Blood Pressure Monitor','Medical Equipment',5,NULL),(12,'Paracetamol 500mg','Medicine',500,NULL),(13,'Amoxicillin 500mg','Medicine',300,NULL),(14,'Betadine Solution','Medical Supply',50,NULL),(15,'Cotton Balls','Medical Supply',200,NULL),(16,'Syringe 5ml','Medical Equipment',100,NULL),(17,'Face Masks','PPE',1000,NULL),(18,'Alcohol 70%','Medical Supply',80,NULL),(19,'Bandages','Medical Supply',150,NULL),(20,'Thermometer','Medical Equipment',10,NULL),(21,'Blood Pressure Monitor','Medical Equipment',5,NULL),(22,'Paracetamol 500mg','Medication',100,'2025-12-31'),(23,'Ibuprofen 400mg','Medication',75,'2025-10-15'),(24,'Amoxicillin 250mg','Antibiotic',50,'2024-08-20'),(25,'Vitamin C 1000mg','Supplement',200,'2026-03-15'),(26,'Bandages (pack of 10)','First Aid',30,'2027-01-01'),(27,'Antiseptic Solution 100ml','First Aid',25,'2025-06-30'),(28,'Cotton Swabs (pack of 50)','First Aid',40,'2026-09-15'),(29,'Medical Gloves (box of 100)','Protective Equipment',15,'2025-11-30'),(30,'Face Masks (pack of 50)','Protective Equipment',60,'2026-05-20'),(31,'Thermometer','Medical Equipment',8,'2028-12-31'),(32,'Blood Pressure Monitor','Medical Equipment',5,'2027-08-15'),(33,'First Aid Kit','First Aid',12,'2026-07-10'),(34,'Insulin Syringes (box of 50)','Diabetes Care',20,'2025-04-30'),(35,'Diabetes Test Strips (box of 100)','Diabetes Care',35,'2025-09-20'),(36,'Asthma Inhaler','Respiratory',18,'2024-12-15');
+INSERT INTO `clinicinventory` VALUES (1,'Paracetamol','Medicine',200,NULL),(2,'Paracetamol 500mg','Medicine',500,NULL),(3,'Amoxicillin 500mg','Medicine',310,NULL),(4,'Betadine Solution','Medical Supply',50,NULL),(5,'Cotton Balls','Medical Supply',200,NULL),(6,'Syringe 5ml','Medical Equipment',100,NULL),(7,'Face Masks','PPE',940,NULL),(8,'Alcohol 70%','Medical Supply',80,NULL),(9,'Bandages','Medical Supply',150,NULL),(10,'Thermometer','Medical Equipment',10,NULL),(11,'Blood Pressure Monitor','Medical Equipment',5,NULL),(12,'Paracetamol 500mg','Medicine',500,NULL),(13,'Amoxicillin 500mg','Medicine',300,NULL),(14,'Betadine Solution','Medical Supply',50,NULL),(15,'Cotton Balls','Medical Supply',200,NULL),(16,'Syringe 5ml','Medical Equipment',100,'2025-11-30'),(17,'Face Masks','PPE',1000,NULL),(18,'Alcohol 70%','Medical Supply',80,NULL),(19,'Bandages','Medical Supply',150,NULL),(20,'Thermometer','Medical Equipment',10,NULL),(21,'Blood Pressure Monitor','Medical Equipment',5,NULL),(22,'Paracetamol 500mg','Medication',100,'2025-12-31'),(23,'Ibuprofen 400mg','Medication',75,'2025-10-15'),(24,'Amoxicillin 250mg','Antibiotic',50,'2024-08-20'),(25,'Vitamin C 1000mg','Supplement',200,'2026-03-15'),(26,'Bandages (pack of 10)','First Aid',30,'2027-01-01'),(27,'Antiseptic Solution 100ml','First Aid',25,'2025-06-30'),(28,'Cotton Swabs (pack of 50)','First Aid',40,'2026-09-15'),(29,'Medical Gloves (box of 100)','Protective Equipment',20,'2025-11-30'),(30,'Face Masks (pack of 50)','Protective Equipment',60,'2026-05-19'),(31,'Thermometer','Medical Equipment',8,'2028-12-31'),(32,'Blood Pressure Monitor','Medical Equipment',5,'2027-08-15'),(33,'First Aid Kit','First Aid',12,'2026-07-10'),(34,'Insulin Syringes (box of 50)','Diabetes Care',20,'2025-04-30'),(35,'Diabetes Test Strips (box of 100)','Diabetes Care',35,'2025-09-20'),(36,'Asthma Inhaler','Respiratory',18,'2024-12-15'),(37,'HP Potion','Magical',7,NULL),(38,'Defense Potion','Magical',5,NULL);
 /*!40000 ALTER TABLE `clinicinventory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,7 +122,7 @@ CREATE TABLE `clinicvisits` (
   KEY `personnel_id` (`personnel_id`),
   CONSTRAINT `clinicvisits_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `residents` (`resident_id`),
   CONSTRAINT `clinicvisits_ibfk_2` FOREIGN KEY (`personnel_id`) REFERENCES `healthpersonnel` (`personnel_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,7 +131,7 @@ CREATE TABLE `clinicvisits` (
 
 LOCK TABLES `clinicvisits` WRITE;
 /*!40000 ALTER TABLE `clinicvisits` DISABLE KEYS */;
-INSERT INTO `clinicvisits` VALUES (1,6,3,'WALK_IN','3','3','3','2025-11-17','2025-11-17 01:48:42'),(2,4,5,'WALK_IN','3','2','1','2025-11-17','2025-11-17 01:53:37'),(3,3,2,'WALK_IN','deatg','r','r','2025-11-17','2025-11-17 10:44:48'),(4,4,10,'WALK_IN','t','','','2025-11-17','2025-11-17 10:48:07'),(5,4,1,'WALK_IN','f','','','2025-11-17','2025-11-17 13:18:31');
+INSERT INTO `clinicvisits` VALUES (1,6,3,'WALK_IN','3','3','3','2025-11-17','2025-11-17 01:48:42'),(2,4,5,'WALK_IN','3','2','1','2025-11-17','2025-11-17 01:53:37'),(3,3,2,'WALK_IN','deatg','r','r','2025-11-17','2025-11-17 10:44:48'),(4,4,10,'WALK_IN','t','','','2025-11-17','2025-11-17 10:48:07'),(5,4,1,'WALK_IN','f','','','2025-11-17','2025-11-17 13:18:31'),(6,3,2,'WALK_IN','g','','','2025-11-18','2025-11-18 12:15:03');
 /*!40000 ALTER TABLE `clinicvisits` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -240,7 +240,7 @@ CREATE TABLE `restock_inventory` (
   KEY `restocked_by` (`restocked_by`),
   CONSTRAINT `restock_inventory_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `clinicinventory` (`item_id`) ON DELETE CASCADE,
   CONSTRAINT `restock_inventory_ibfk_2` FOREIGN KEY (`restocked_by`) REFERENCES `users` (`user_id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -249,6 +249,7 @@ CREATE TABLE `restock_inventory` (
 
 LOCK TABLES `restock_inventory` WRITE;
 /*!40000 ALTER TABLE `restock_inventory` DISABLE KEYS */;
+INSERT INTO `restock_inventory` VALUES (2,3,10,4,'2025-11-18 12:21:33','');
 /*!40000 ALTER TABLE `restock_inventory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -273,7 +274,7 @@ CREATE TABLE `serviceinventory` (
   CONSTRAINT `serviceinventory_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `clinicinventory` (`item_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `serviceinventory_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `healthservices` (`service_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `serviceinventory_ibfk_3` FOREIGN KEY (`transaction_id`) REFERENCES `servicetransactions` (`transaction_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -282,7 +283,7 @@ CREATE TABLE `serviceinventory` (
 
 LOCK TABLES `serviceinventory` WRITE;
 /*!40000 ALTER TABLE `serviceinventory` DISABLE KEYS */;
-INSERT INTO `serviceinventory` VALUES (1,1,1,1,2,'2026-12-31');
+INSERT INTO `serviceinventory` VALUES (1,1,1,1,2,'2026-12-31'),(2,7,8,15,60,'2026-11-18');
 /*!40000 ALTER TABLE `serviceinventory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -321,7 +322,7 @@ CREATE TABLE `servicetransactions` (
 
 LOCK TABLES `servicetransactions` WRITE;
 /*!40000 ALTER TABLE `servicetransactions` DISABLE KEYS */;
-INSERT INTO `servicetransactions` VALUES (1,1,NULL,1,'2025-11-09','Routine check-up',NULL,NULL,NULL,NULL,'COMPLETED'),(2,1,NULL,1,'2024-11-01','Patient complains of fever and headache',NULL,NULL,NULL,NULL,'COMPLETED'),(3,2,2,2,'2024-11-02','Flu vaccine administered',NULL,NULL,NULL,NULL,'COMPLETED'),(4,3,2,1,'2024-11-03','First trimester checkup - normal',NULL,NULL,NULL,NULL,'COMPLETED'),(5,5,3,2,'2024-11-04','BP: 140/90 - slightly elevated',NULL,NULL,NULL,NULL,'COMPLETED'),(6,4,4,3,'2024-11-05','Dental scaling completed',NULL,NULL,NULL,NULL,'COMPLETED'),(7,7,7,2,'2024-11-06','Deworming medication given',NULL,NULL,NULL,NULL,'COMPLETED'),(8,1,NULL,1,'2024-11-01','Patient complains of fever and headache',NULL,NULL,NULL,NULL,'COMPLETED'),(9,2,2,2,'2024-11-02','Flu vaccine administered',NULL,NULL,NULL,NULL,'COMPLETED'),(10,3,2,1,'2024-11-03','First trimester checkup - normal',NULL,NULL,NULL,NULL,'COMPLETED'),(11,5,3,2,'2024-11-04','BP: 140/90 - slightly elevated',NULL,NULL,NULL,NULL,'COMPLETED'),(12,4,4,3,'2024-11-05','Dental scaling completed',NULL,NULL,NULL,NULL,'COMPLETED'),(13,7,7,2,'2024-11-06','Deworming medication given',NULL,NULL,NULL,NULL,'COMPLETED'),(14,9,1,10,'2025-11-17','',NULL,NULL,NULL,NULL,'CANCELLED'),(15,8,4,7,'2025-11-17','t',NULL,NULL,NULL,NULL,'PENDING');
+INSERT INTO `servicetransactions` VALUES (1,1,NULL,1,'2025-11-09','Routine check-up',NULL,NULL,NULL,NULL,'COMPLETED'),(2,1,NULL,1,'2024-11-01','Patient complains of fever and headache',NULL,NULL,NULL,NULL,'COMPLETED'),(3,2,2,2,'2024-11-02','Flu vaccine administered',NULL,NULL,NULL,NULL,'COMPLETED'),(4,3,2,1,'2024-11-03','First trimester checkup - normal',NULL,NULL,NULL,NULL,'COMPLETED'),(5,5,3,2,'2024-11-04','BP: 140/90 - slightly elevated',NULL,NULL,NULL,NULL,'COMPLETED'),(6,4,4,3,'2024-11-05','Dental scaling completed',NULL,NULL,NULL,NULL,'COMPLETED'),(7,7,7,2,'2024-11-06','Deworming medication given',NULL,NULL,NULL,NULL,'COMPLETED'),(8,1,NULL,1,'2024-11-01','Patient complains of fever and headache',NULL,NULL,NULL,NULL,'COMPLETED'),(9,2,2,2,'2024-11-02','Flu vaccine administered',NULL,NULL,NULL,NULL,'PENDING'),(10,3,2,1,'2024-11-03','First trimester checkup - normal',NULL,NULL,NULL,NULL,'COMPLETED'),(11,5,3,2,'2024-11-04','BP: 140/90 - slightly elevated',NULL,NULL,NULL,NULL,'COMPLETED'),(12,4,4,3,'2024-11-05','Dental scaling completed',NULL,NULL,NULL,NULL,'COMPLETED'),(13,7,7,2,'2024-11-06','Deworming medication given',NULL,NULL,NULL,NULL,'COMPLETED'),(14,9,1,10,'2025-11-17','',NULL,NULL,NULL,NULL,'CANCELLED'),(15,8,4,7,'2025-11-17','t',NULL,NULL,NULL,NULL,'PENDING');
 /*!40000 ALTER TABLE `servicetransactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -344,7 +345,7 @@ CREATE TABLE `users` (
   KEY `idx_username` (`username`),
   KEY `idx_role` (`role`),
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`personnel_id`) REFERENCES `healthpersonnel` (`personnel_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -353,7 +354,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'theo','theo123','Admin',NULL),(2,'ara','araara123','Admin',NULL),(3,'nelle','wordle123','Admin',NULL),(4,'karl','karlkarl123','Admin',NULL),(5,'staff1','staff123','Staff',NULL),(6,'annagarcia','ana123123','Staff',NULL),(7,'cruzramon','cr1234','Personnel',NULL),(10,'1234','123456','Staff',NULL);
+INSERT INTO `users` VALUES (1,'theo','theo123','Admin',NULL),(2,'ara','araara123','Admin',NULL),(3,'nelle','wordle123','Admin',NULL),(4,'karl','karlkarl123','Admin',NULL),(5,'staff1','staff123','Staff',NULL),(6,'annagarcia','ana123123','Staff',NULL),(7,'cruzramon','cr1234','Personnel',NULL),(10,'1234','123456','Staff',NULL),(11,'wasd','123123','Personnel',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -366,4 +367,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-18 18:44:30
+-- Dump completed on 2025-11-18 21:15:50
