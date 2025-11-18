@@ -7,10 +7,15 @@ import java.util.List;
 
 public class RestockInventoryDAO {
 
-    // Insert a new restock entry using a RestockInventory object
+    /**
+     * Insert a new restock transaction.
+     * restock_date is auto-generated using NOW() from MySQL.
+     */
     public void insert(RestockInventory r) {
-        String sql = "INSERT INTO restock_inventory (item_id, quantity_added, restocked_by, remarks) " +
-                "VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO restock_inventory " +
+                "(item_id, quantity_added, restocked_by, restock_date, remarks) " +
+                "VALUES (?, ?, ?, NOW(), ?)";
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -24,7 +29,6 @@ public class RestockInventoryDAO {
             }
 
             stmt.setString(4, r.getRemarks());
-
             stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -32,12 +36,14 @@ public class RestockInventoryDAO {
         }
     }
 
-    // Convenience method: directly log restock from controller
-    public boolean insertRestockRecord(int itemId, int quantity, int restockedBy, String remarks) {
+    /**
+     * Convenience insert method called directly by controllers.
+     */
+    public boolean insertRestockRecord(int itemId, int quantity, int personnelId, String remarks) {
         RestockInventory r = new RestockInventory();
         r.setItemId(itemId);
         r.setQuantityAdded(quantity);
-        r.setRestockedBy(restockedBy);
+        r.setRestockedBy(personnelId);
         r.setRemarks(remarks);
 
         try {
@@ -49,7 +55,9 @@ public class RestockInventoryDAO {
         }
     }
 
-    // Load all restock history
+    /**
+     * Load all restock transactions ordered by most recent.
+     */
     public List<RestockInventory> getAll() {
         List<RestockInventory> list = new ArrayList<>();
         String sql = "SELECT * FROM restock_inventory ORDER BY restock_date DESC";
@@ -73,6 +81,7 @@ public class RestockInventoryDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return list;
     }
 }

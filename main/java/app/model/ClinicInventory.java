@@ -1,20 +1,21 @@
 package app.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class ClinicInventory {
     private int itemId;
-    private int id;
     private String itemName;
     private int quantity;
     private Date expirationDate;
     private String category;
 
-    public ClinicInventory(int itemId, String itemName, String category, int quantity) {
+    public ClinicInventory(int itemId, String itemName, String category, int quantity, Date expirationDate) {
         this.itemId = itemId;
         this.itemName = itemName;
         this.category = category;
         this.quantity = quantity;
+        this.expirationDate = expirationDate;
     }
 
     public ClinicInventory() {
@@ -63,4 +64,5 @@ public class ClinicInventory {
     public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
+
 }

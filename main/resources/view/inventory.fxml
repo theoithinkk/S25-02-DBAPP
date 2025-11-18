@@ -38,6 +38,19 @@
             <Label fx:id="lblItemCount" text="0 items"
                    style="-fx-text-fill: #7f8c8d; -fx-font-size: 11;"/>
         </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="⚠ Expiring Soon" onAction="#filterExpiringSoon"
+                    prefHeight="32"
+                    style="-fx-background-color: #f39c12; -fx-text-fill: white;
+                   -fx-font-size: 11; -fx-font-weight: bold;
+                   -fx-background-radius: 6; -fx-cursor: hand;"/>
+
+            <Button text="Show All" onAction="#refreshInventory"
+                    prefHeight="32"
+                    style="-fx-background-color: #95a5a6; -fx-text-fill: white;
+                   -fx-font-size: 11; -fx-font-weight: bold;
+                   -fx-background-radius: 6; -fx-cursor: hand;"/>
+        </HBox>
 
         <TableView fx:id="tableInventory" VBox.vgrow="ALWAYS"
                    style="-fx-background-radius: 8; -fx-border-radius: 8;">
@@ -46,6 +59,7 @@
                 <TableColumn fx:id="colName" text="Item Name" prefWidth="250"/>
                 <TableColumn fx:id="colCategory" text="Category" prefWidth="180"/>
                 <TableColumn fx:id="colQuantity" text="Quantity" prefWidth="100"/>
+                <TableColumn fx:id="colExpirationDate" text="Expiration Date" prefWidth="150"/>
             </columns>
         </TableView>
     </VBox>
@@ -75,6 +89,12 @@
             <TextField fx:id="txtQuantity" promptText="0"
                        GridPane.columnIndex="2" GridPane.rowIndex="1" prefWidth="120"
                        style="-fx-background-radius: 6; -fx-border-color: #dfe6e9; -fx-border-radius: 6;"/>
+            <Label text="Expiration Date" GridPane.columnIndex="3" GridPane.rowIndex="0"
+                   style="-fx-text-fill: #34495e; -fx-font-size: 12;"/>
+            <DatePicker fx:id="dateExpiration" GridPane.columnIndex="3" GridPane.rowIndex="1"
+                        promptText="MM/DD/YYYY"
+                        prefWidth="150"
+                        style="-fx-background-radius: 6; -fx-border-color: #dfe6e9; -fx-border-radius: 6;"/>
         </GridPane>
 
         <Text text="* Required fields" style="-fx-font-size: 11; -fx-fill: #95a5a6;"/>
@@ -88,11 +108,10 @@
                 style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
         <Button fx:id="btnDelete" text="🗑 Delete" onAction="#deleteItem" prefWidth="120.0" prefHeight="40.0"
                 style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
-        <Button text="📦 Restock" onAction="#restockInventory" prefWidth="120.0" prefHeight="40.0"
-                style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
         <Button text="🔄 Refresh" onAction="#refreshInventory" prefWidth="120.0" prefHeight="40.0"
                 style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
         <Button text="✖ Clear" onAction="#clearFields" prefWidth="100.0" prefHeight="40.0"
                 style="-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+
     </HBox>
 </VBox>

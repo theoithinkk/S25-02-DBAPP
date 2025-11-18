@@ -6,17 +6,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO for ClinicInventory table
- */
 public class ClinicInventoryDAO {
 
-    /** -----------------------------------------
-     * CREATE
-     * ------------------------------------------ */
     public boolean addItem(ClinicInventory item) {
-        String sql = "INSERT INTO clinicinventory (item_name, category, quantity, expiration_date) " +
-                "VALUES (?, ?, ?, ?)";
+        String sql = """
+            INSERT INTO clinicinventory (item_name, category, quantity, expiration_date)
+            VALUES (?, ?, ?, ?)
+        """;
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -25,11 +21,10 @@ public class ClinicInventoryDAO {
             ps.setString(2, item.getCategory());
             ps.setInt(3, item.getQuantity());
 
-            if (item.getExpirationDate() != null) {
+            if (item.getExpirationDate() != null)
                 ps.setDate(4, new java.sql.Date(item.getExpirationDate().getTime()));
-            } else {
+            else
                 ps.setNull(4, Types.DATE);
-            }
 
             return ps.executeUpdate() > 0;
 
@@ -39,55 +34,12 @@ public class ClinicInventoryDAO {
         }
     }
 
-    /** -----------------------------------------
-     * READ - GET ALL
-     * ------------------------------------------ */
-    public List<ClinicInventory> getAllItems() {
-        List<ClinicInventory> list = new ArrayList<>();
-        String sql = "SELECT * FROM clinicinventory";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                list.add(map(rs));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    /** -----------------------------------------
-     * READ - GET BY ID
-     * ------------------------------------------ */
-    public ClinicInventory getItemById(int id) {
-        String sql = "SELECT * FROM clinicinventory WHERE item_id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return map(rs);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /** -----------------------------------------
-     * UPDATE
-     * ------------------------------------------ */
     public boolean updateItem(ClinicInventory item) {
-        String sql = "UPDATE clinicinventory SET item_name=?, category=?, quantity=?, expiration_date=? " +
-                "WHERE item_id=?";
+        String sql = """
+            UPDATE clinicinventory
+            SET item_name=?, category=?, quantity=?, expiration_date=?
+            WHERE item_id=?
+        """;
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -96,11 +48,10 @@ public class ClinicInventoryDAO {
             ps.setString(2, item.getCategory());
             ps.setInt(3, item.getQuantity());
 
-            if (item.getExpirationDate() != null) {
+            if (item.getExpirationDate() != null)
                 ps.setDate(4, new java.sql.Date(item.getExpirationDate().getTime()));
-            } else {
+            else
                 ps.setNull(4, Types.DATE);
-            }
 
             ps.setInt(5, item.getItemId());
 
@@ -112,16 +63,13 @@ public class ClinicInventoryDAO {
         }
     }
 
-    /** -----------------------------------------
-     * DELETE
-     * ------------------------------------------ */
-    public boolean deleteItem(int id) {
+    public boolean deleteItem(int itemId) {
         String sql = "DELETE FROM clinicinventory WHERE item_id=?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+            ps.setInt(1, itemId);
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
@@ -130,109 +78,72 @@ public class ClinicInventoryDAO {
         }
     }
 
-    /** -----------------------------------------
-     * STOCK ADJUSTMENTS
-     * ------------------------------------------ */
-
-    // Decrease quantity (checking for sufficient stock)
-    public boolean deductQuantity(int itemId, int amount) {
-        String sql = "UPDATE clinicinventory SET quantity = quantity - ? WHERE item_id = ? AND quantity >= ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, amount);
-            ps.setInt(2, itemId);
-            ps.setInt(3, amount);
-
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    // Increase quantity
-    public boolean addQuantity(int itemId, int amount) {
-        String sql = "UPDATE clinicinventory SET quantity = quantity + ? WHERE item_id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, amount);
-            ps.setInt(2, itemId);
-
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /** -----------------------------------------
-     * SPECIAL QUERIES
-     * ------------------------------------------ */
-
-    // Low stock
-    public List<ClinicInventory> getLowStockItems(int threshold) {
+    public List<ClinicInventory> getAllItems() {
         List<ClinicInventory> list = new ArrayList<>();
-        String sql = "SELECT * FROM clinicinventory WHERE quantity <= ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, threshold);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) list.add(map(rs));
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    // Expired
-    public List<ClinicInventory> getExpiredItems() {
-        List<ClinicInventory> list = new ArrayList<>();
-        String sql = "SELECT * FROM clinicinventory WHERE expiration_date < CURDATE()";
+        String sql = """
+            SELECT item_id, item_name, category, quantity, expiration_date
+            FROM clinicinventory
+            ORDER BY item_name
+        """;
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) list.add(map(rs));
+            while (rs.next()) {
+                java.util.Date exp = null;
+                java.sql.Date sqlDate = rs.getDate("expiration_date");
+                if (sqlDate != null) exp = new java.util.Date(sqlDate.getTime());
+
+                list.add(new ClinicInventory(
+                        rs.getInt("item_id"),
+                        rs.getString("item_name"),
+                        rs.getString("category"),
+                        rs.getInt("quantity"),
+                        exp
+                ));
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return list;
     }
 
-    // Expiring soon (30 days)
-    public List<ClinicInventory> getExpiringSoonItems() {
-        List<ClinicInventory> list = new ArrayList<>();
-        String sql = "SELECT * FROM clinicinventory " +
-                "WHERE expiration_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)";
+    public boolean deductQuantity(int itemId, int quantityToDeduct) {
+        String sql = """
+        UPDATE clinicinventory
+        SET quantity = quantity - ?
+        WHERE item_id = ? AND quantity >= ?
+    """;
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            while (rs.next()) list.add(map(rs));
+            ps.setInt(1, quantityToDeduct);
+            ps.setInt(2, itemId);
+            ps.setInt(3, quantityToDeduct);
+
+            // returns >0 only if quantity was enough AND update succeeded
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return list;
     }
 
-    // Search by name
     public List<ClinicInventory> searchItemsByName(String name) {
         List<ClinicInventory> list = new ArrayList<>();
-        String sql = "SELECT * FROM clinicinventory WHERE item_name LIKE ?";
+
+        String sql = """
+        SELECT item_id, item_name, category, quantity, expiration_date
+        FROM clinicinventory
+        WHERE item_name LIKE ?
+        ORDER BY item_name
+    """;
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -240,55 +151,47 @@ public class ClinicInventoryDAO {
             ps.setString(1, "%" + name + "%");
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) list.add(map(rs));
+            while (rs.next()) {
+                java.util.Date exp = null;
+                java.sql.Date sqlDate = rs.getDate("expiration_date");
+                if (sqlDate != null) exp = new java.util.Date(sqlDate.getTime());
+
+                list.add(new ClinicInventory(
+                        rs.getInt("item_id"),
+                        rs.getString("item_name"),
+                        rs.getString("category"),
+                        rs.getInt("quantity"),
+                        exp
+                ));
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return list;
     }
 
-    /** -----------------------------------------
-     * Helper: Convert ResultSet → Model
-     * ------------------------------------------ */
-    private ClinicInventory map(ResultSet rs) throws SQLException {
-        ClinicInventory item = new ClinicInventory();
-        item.setItemId(rs.getInt("item_id"));
-        item.setItemName(rs.getString("item_name"));
-        item.setCategory(rs.getString("category"));
-        item.setQuantity(rs.getInt("quantity"));
-        item.setExpirationDate(rs.getDate("expiration_date"));
-        return item;
-    }
+    public boolean addQuantity(int itemId, int quantityToAdd) {
+        String sql = """
+        UPDATE clinicinventory
+        SET quantity = quantity + ?
+        WHERE item_id = ?
+    """;
 
-    /** -----------------------------------------
-     * Metrics
-     * ------------------------------------------ */
-    public int getTotalItemCount() {
-        String sql = "SELECT COUNT(*) FROM clinicinventory";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            return rs.next() ? rs.getInt(1) : 0;
+            ps.setInt(1, quantityToAdd);
+            ps.setInt(2, itemId);
+
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return 0;
+            return false;
         }
     }
 
-    public int getTotalQuantity() {
-        String sql = "SELECT SUM(quantity) FROM clinicinventory";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
 
-            return rs.next() ? rs.getInt(1) : 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
 }

@@ -4,16 +4,16 @@ import java.sql.Timestamp;
 
 public class RestockInventory {
 
-    private int restockId;
-    private int itemId;
-    private int quantityAdded;
-    private Integer restockedBy;
+    private Integer restockId;
+    private Integer itemId;
+    private Integer quantityAdded;
+    private Integer restockedBy; // nullable
     private Timestamp restockDate;
     private String remarks;
 
     public RestockInventory() {}
 
-    public RestockInventory(int restockId, int itemId, int quantityAdded,
+    public RestockInventory(Integer restockId, Integer itemId, Integer quantityAdded,
                             Integer restockedBy, Timestamp restockDate, String remarks) {
         this.restockId = restockId;
         this.itemId = itemId;
@@ -23,14 +23,15 @@ public class RestockInventory {
         this.remarks = remarks;
     }
 
-    public int getRestockId() { return restockId; }
-    public void setRestockId(int restockId) { this.restockId = restockId; }
+    // Getters & Setters
+    public Integer getRestockId() { return restockId; }
+    public void setRestockId(Integer restockId) { this.restockId = restockId; }
 
-    public int getItemId() { return itemId; }
-    public void setItemId(int itemId) { this.itemId = itemId; }
+    public Integer getItemId() { return itemId; }
+    public void setItemId(Integer itemId) { this.itemId = itemId; }
 
-    public int getQuantityAdded() { return quantityAdded; }
-    public void setQuantityAdded(int quantityAdded) { this.quantityAdded = quantityAdded; }
+    public Integer getQuantityAdded() { return quantityAdded; }
+    public void setQuantityAdded(Integer quantityAdded) { this.quantityAdded = quantityAdded; }
 
     public Integer getRestockedBy() { return restockedBy; }
     public void setRestockedBy(Integer restockedBy) { this.restockedBy = restockedBy; }

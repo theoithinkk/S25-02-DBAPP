@@ -19,7 +19,8 @@ import java.time.format.DateTimeFormatter;
 
 public class ReportsController {
 
-    @FXML private StackPane contentPane;
+    @FXML
+    private StackPane contentPane;
 
     @FXML
     private void initialize() {
@@ -96,7 +97,7 @@ public class ReportsController {
         title.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
         ComboBox<Integer> comboMonth = new ComboBox<>();
-        comboMonth.setItems(FXCollections.observableArrayList(1,2,3,4,5,6,7,8,9,10,11,12));
+        comboMonth.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
         comboMonth.setPromptText("Select Month");
         comboMonth.setValue(LocalDate.now().getMonthValue());
 
@@ -193,7 +194,7 @@ public class ReportsController {
                             "Average Services per Day: %.2f\n" +
                             "Number of Service Types: %d",
                     monthName, year, totalServices,
-                    (double)totalServices / LocalDate.of(year, month, 1).lengthOfMonth(),
+                    (double) totalServices / LocalDate.of(year, month, 1).lengthOfMonth(),
                     data.size()));
 
         } catch (SQLException e) {
@@ -240,71 +241,130 @@ public class ReportsController {
     }
 
     private void setupMedicalSupplyTable(TableView<ReportData> table) {
-        TableColumn<ReportData, String> col1 = new TableColumn<>("Item Name");
-        col1.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().field1));
+        table.getColumns().clear();
+
+        TableColumn<ReportData, String> col1 = new TableColumn<>("Item / Type");
+        col1.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(data.getValue().field1));
         col1.setPrefWidth(250);
 
-        TableColumn<ReportData, String> col2 = new TableColumn<>("Total Used");
-        col2.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().field2));
+        TableColumn<ReportData, String> col2 = new TableColumn<>("Quantity");
+        col2.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(data.getValue().field2));
         col2.setPrefWidth(150);
 
         TableColumn<ReportData, String> col3 = new TableColumn<>("Transactions");
-        col3.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().field3));
+        col3.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(data.getValue().field3));
         col3.setPrefWidth(150);
 
         table.getColumns().addAll(col1, col2, col3);
     }
 
-    private void generateMedicalSupplyReport(TableView<ReportData> table, TextArea summary, LocalDate from, LocalDate to) {
+    private void generateMedicalSupplyReport(TableView<ReportData> table, TextArea summary,
+                                             LocalDate from, LocalDate to) {
+
         ObservableList<ReportData> data = FXCollections.observableArrayList();
 
-        String sql = """
-            SELECT ci.item_name,
-                   SUM(si.quantity) as total_used,
-                   COUNT(DISTINCT si.transaction_id) as num_transactions
-            FROM ServiceInventory si
-            JOIN ClinicInventory ci ON si.item_id = ci.item_id
-            JOIN ServiceTransactions st ON si.transaction_id = st.transaction_id
-            WHERE st.date_provided BETWEEN ? AND ?
-            GROUP BY ci.item_name
-            ORDER BY total_used DESC
-        """;
+    /* --------------------------------------------
+       1. Get Issuance Summary
+       -------------------------------------------- */
+        String sqlIssuance = """
+        SELECT ci.item_name,
+               SUM(si.quantity) AS total_used,
+               COUNT(*) AS num_transactions
+        FROM ServiceInventory si
+        JOIN ClinicInventory ci ON si.item_id = ci.item_id
+        JOIN ServiceTransactions st ON si.transaction_id = st.transaction_id
+        WHERE st.date_provided BETWEEN ? AND ?
+        GROUP BY ci.item_name
+    """;
+
+        int totalIssued = 0;
+        int totalIssuedTransactions = 0;
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sqlIssuance)) {
 
             ps.setDate(1, Date.valueOf(from));
             ps.setDate(2, Date.valueOf(to));
             ResultSet rs = ps.executeQuery();
 
-            int totalItems = 0;
-            int totalTransactions = 0;
+            while (rs.next()) {
+                String item = rs.getString("item_name");
+                int qty = rs.getInt("total_used");
+                int trans = rs.getInt("num_transactions");
+
+                data.add(new ReportData(item, String.valueOf(qty), String.valueOf(trans)));
+
+                totalIssued += qty;
+                totalIssuedTransactions += trans;
+            }
+        } catch (SQLException e) {
+            showError("Error loading issuance records: " + e.getMessage());
+        }
+
+    /* --------------------------------------------
+       2. Get Restock Summary
+       -------------------------------------------- */
+        String sqlRestock = """
+        SELECT ci.item_name,
+               SUM(r.quantity_added) AS total_added,
+               COUNT(*) AS restock_count
+        FROM restock_inventory r
+        JOIN ClinicInventory ci ON r.item_id = ci.item_id
+        WHERE DATE(r.restock_date) BETWEEN ? AND ?
+        GROUP BY ci.item_name
+    """;
+
+        int totalRestocked = 0;
+        int totalRestockTransactions = 0;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sqlRestock)) {
+
+            ps.setDate(1, Date.valueOf(from));
+            ps.setDate(2, Date.valueOf(to));
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                String itemName = rs.getString("item_name");
-                int totalUsed = rs.getInt("total_used");
-                int numTrans = rs.getInt("num_transactions");
+                String item = rs.getString("item_name");
+                int qty = rs.getInt("total_added");
+                int trans = rs.getInt("restock_count");
 
-                data.add(new ReportData(itemName, String.valueOf(totalUsed), String.valueOf(numTrans)));
-                totalItems += totalUsed;
-                totalTransactions += numTrans;
+                data.add(new ReportData(item + " (Restock)",   // label clearly
+                        String.valueOf(qty),
+                        String.valueOf(trans)));
+
+                totalRestocked += qty;
+                totalRestockTransactions += trans;
             }
-
-            table.setItems(data);
-
-            long days = java.time.temporal.ChronoUnit.DAYS.between(from, to) + 1;
-            summary.setText(String.format("Report Period: %s to %s\n" +
-                            "Total Items Used: %d\n" +
-                            "Total Transactions: %d\n" +
-                            "Average Items per Day: %.2f\n" +
-                            "Average Items per Transaction: %.2f",
-                    from, to, totalItems, totalTransactions,
-                    (double)totalItems / days,
-                    totalTransactions > 0 ? (double)totalItems / totalTransactions : 0));
-
         } catch (SQLException e) {
-            showError("Error generating report: " + e.getMessage());
+            showError("Error loading restock records: " + e.getMessage());
         }
+
+    /* --------------------------------------------
+       3. Display in Table
+       -------------------------------------------- */
+        table.setItems(data);
+
+    /* --------------------------------------------
+       4. Summary Panel Output
+       -------------------------------------------- */
+        summary.setText(String.format("""
+            Report Period: %s to %s
+
+            TOTAL ISSUED: %d items in %d transactions
+            TOTAL RESTOCKED: %d items in %d restock events
+
+            NET MOVEMENT: %d items
+            (Positive = Inventory Increased)
+        """,
+                from, to,
+                totalIssued, totalIssuedTransactions,
+                totalRestocked, totalRestockTransactions,
+                totalRestocked - totalIssued
+        ));
     }
 
     // Report 3: Personnel Performance
@@ -316,7 +376,7 @@ public class ReportsController {
         title.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
         ComboBox<Integer> comboMonth = new ComboBox<>();
-        comboMonth.setItems(FXCollections.observableArrayList(1,2,3,4,5,6,7,8,9,10,11,12));
+        comboMonth.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
         comboMonth.setPromptText("Select Month");
         comboMonth.setValue(LocalDate.now().getMonthValue());
 
@@ -407,7 +467,7 @@ public class ReportsController {
                             "Total Unique Residents Attended: %d\n" +
                             "Average Residents per Personnel: %.2f",
                     monthName, year, data.size(), totalResidents,
-                    data.size() > 0 ? (double)totalResidents / data.size() : 0));
+                    data.size() > 0 ? (double) totalResidents / data.size() : 0));
 
         } catch (SQLException e) {
             showError("Error generating report: " + e.getMessage());
@@ -423,7 +483,7 @@ public class ReportsController {
         title.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
         ComboBox<Integer> comboMonth = new ComboBox<>();
-        comboMonth.setItems(FXCollections.observableArrayList(1,2,3,4,5,6,7,8,9,10,11,12));
+        comboMonth.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
         comboMonth.setPromptText("Select Month");
         comboMonth.setValue(LocalDate.now().getMonthValue());
 
@@ -521,7 +581,7 @@ public class ReportsController {
                             "Service Types Offered: %d\n" +
                             "Average Visits per Day: %.2f",
                     monthName, year, totalVisits, data.size(),
-                    (double)totalVisits / LocalDate.of(year, month, 1).lengthOfMonth()));
+                    (double) totalVisits / LocalDate.of(year, month, 1).lengthOfMonth()));
 
         } catch (SQLException e) {
             showError("Error generating report: " + e.getMessage());
