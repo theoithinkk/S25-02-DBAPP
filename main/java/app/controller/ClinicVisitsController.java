@@ -9,14 +9,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.sql.Date;
+import java.sql.Date; //
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClinicVisitsController {
 
-    // ========= NEW UI ELEMENTS (like AvailHealthService) =========
     @FXML private TextField txtSearchPatient;
     @FXML private TableView<Resident> tablePatients;
     @FXML private TableColumn<Resident, Integer> colPatientId;
@@ -26,14 +25,13 @@ public class ClinicVisitsController {
     @FXML private TableColumn<Resident, String> colContact;
     @FXML private Label lblSelectedPatient;
 
-    // ========= Personnel Search Table (NEW) =========
     @FXML private TextField txtSearchPersonnel;
     @FXML private TableView<HealthPersonnel> tablePersonnel;
     @FXML private TableColumn<HealthPersonnel, Integer> colPersonnelId;
     @FXML private TableColumn<HealthPersonnel, String> colPersonnelName;
     @FXML private TableColumn<HealthPersonnel, String> colRole;
+    @FXML private Label lblSelectedPersonnel;
 
-    // ========= Existing fields =========
     @FXML private ComboBox<String> visitTypeCombo;
     @FXML private TextArea diagnosisArea;
     @FXML private TextArea treatmentArea;
@@ -50,8 +48,6 @@ public class ClinicVisitsController {
 
     @FXML
     private void initialize() {
-
-        // ========== SETUP RESIDENT TABLE ==========
         colPatientId.setCellValueFactory(data ->
                 new SimpleObjectProperty<>(data.getValue().getResidentId()));
         colPatientName.setCellValueFactory(data ->
@@ -72,11 +68,10 @@ public class ClinicVisitsController {
                         "✓ Selected: " + newV.getFirstName() + " " + newV.getLastName() +
                                 " (ID: " + newV.getResidentId() + ")"
                 );
+                lblSelectedPatient.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;");
             }
         });
 
-
-        // ========== SETUP PERSONNEL TABLE ==========
         colPersonnelId.setCellValueFactory(data ->
                 new SimpleObjectProperty<>(data.getValue().getPersonnelId()));
         colPersonnelName.setCellValueFactory(data ->
@@ -89,18 +84,20 @@ public class ClinicVisitsController {
         tablePersonnel.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
             if (newV != null) {
                 selectedPersonnel = newV;
+                lblSelectedPersonnel.setText(
+                        "✓ Selected: " + newV.getFirstName() + " " + newV.getLastName() +
+                                " (" + newV.getRole() + ")"
+                );
+                lblSelectedPersonnel.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;");
             }
         });
 
-
-        // ========== OTHER FORM SETUP ==========
         visitTypeCombo.setItems(FXCollections.observableArrayList("WALK_IN", "SCHEDULED"));
         visitTypeCombo.setValue("WALK_IN");
 
         visitDatePicker.setValue(LocalDate.now());
     }
 
-    // ===================== RESIDENT SEARCH =====================
     @FXML
     private void handleSearchPatient() {
         String search = txtSearchPatient.getText().trim().toLowerCase();
@@ -122,7 +119,6 @@ public class ClinicVisitsController {
         tablePatients.setItems(FXCollections.observableArrayList(residentsDAO.getAllResidents()));
     }
 
-    // ===================== PERSONNEL SEARCH =====================
     @FXML
     private void handleSearchPersonnel() {
         String search = txtSearchPersonnel.getText().trim().toLowerCase();
@@ -145,11 +141,10 @@ public class ClinicVisitsController {
         tablePersonnel.setItems(FXCollections.observableArrayList(personnelDAO.getAllPersonnel()));
     }
 
-    // ===================== SAVE VISIT =====================
     @FXML
     private void handleSaveVisit() {
         if (selectedPatient == null) {
-            showStatus("Please select a resident", true);
+            showStatus("Please select a patient", true);
             return;
         }
         if (selectedPersonnel == null) {
@@ -175,7 +170,20 @@ public class ClinicVisitsController {
         visit.setVisitDate(Date.valueOf(visitDatePicker.getValue()));
 
         if (clinicVisitsDAO.addClinicVisit(visit)) {
-            showStatus("✓ Clinic visit saved!", false);
+            showStatus("✓ Clinic visit saved successfully!", false);
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Visit Recorded");
+            alert.setHeaderText("Clinic Visit Successfully Recorded");
+            alert.setContentText(
+                    "Patient: " + selectedPatient.getFirstName() + " " + selectedPatient.getLastName() + "\n" +
+                            "Personnel: " + selectedPersonnel.getFirstName() + " " + selectedPersonnel.getLastName() + "\n" +
+                            "Visit Type: " + visitTypeCombo.getValue() + "\n" +
+                            "Date: " + visitDatePicker.getValue() + "\n" +
+                            "Diagnosis: " + diagnosisArea.getText().trim()
+            );
+            alert.showAndWait();
+
             clearForm();
         } else {
             showStatus("Failed to save visit", true);
@@ -191,15 +199,25 @@ public class ClinicVisitsController {
     private void clearForm() {
         selectedPatient = null;
         selectedPersonnel = null;
+        lblSelectedPatient.setText("No patient selected");
+        lblSelectedPatient.setStyle("-fx-text-fill: #9ca3af; -fx-font-weight: normal;");
+        lblSelectedPersonnel.setText("No personnel selected");
+        lblSelectedPersonnel.setStyle("-fx-text-fill: #9ca3af; -fx-font-weight: normal;");
 
         diagnosisArea.clear();
         treatmentArea.clear();
         notesArea.clear();
         visitDatePicker.setValue(LocalDate.now());
+
+        loadAllResidents();
+        loadAllPersonnel();
     }
 
     private void showStatus(String msg, boolean error) {
         lblStatus.setText(msg);
-        lblStatus.setStyle(error ? "-fx-text-fill: red;" : "-fx-text-fill: green;");
+        lblStatus.setStyle(error ?
+                "-fx-text-fill: #e74c3c; -fx-font-weight: bold;" :
+                "-fx-text-fill: #27ae60; -fx-font-weight: bold;");
+        lblStatus.setVisible(true);
     }
 }

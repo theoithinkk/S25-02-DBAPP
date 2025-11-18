@@ -44,6 +44,8 @@ public class MainController {
         // Configure UI based on role
         configureUIForRole();
 
+        BackgroundMusicPlayer.play();
+
         // Initialize music controls
         initializeMusicControls();
 
