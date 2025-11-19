@@ -267,16 +267,16 @@ public class ReportsController {
         ObservableList<ReportData> data = FXCollections.observableArrayList();
 
     /* --------------------------------------------
-       1. Get Issuance Summary
+       1. Get Issuance Summary (from InventoryMovement)
        -------------------------------------------- */
         String sqlIssuance = """
         SELECT ci.item_name,
-               SUM(si.quantity) AS total_used,
+               SUM(im.quantity) AS total_used,
                COUNT(*) AS num_transactions
-        FROM ServiceInventory si
-        JOIN ClinicInventory ci ON si.item_id = ci.item_id
-        JOIN ServiceTransactions st ON si.transaction_id = st.transaction_id
-        WHERE st.date_provided BETWEEN ? AND ?
+        FROM inventorymovement im
+        JOIN ClinicInventory ci ON im.item_id = ci.item_id
+        WHERE im.movement_type IN ('ISSUE', 'SERVICE')
+          AND DATE(im.movement_date) BETWEEN ? AND ?
         GROUP BY ci.item_name
     """;
 
@@ -305,15 +305,16 @@ public class ReportsController {
         }
 
     /* --------------------------------------------
-       2. Get Restock Summary
+       2. Get Restock Summary (from InventoryMovement)
        -------------------------------------------- */
         String sqlRestock = """
         SELECT ci.item_name,
-               SUM(r.quantity_added) AS total_added,
+               SUM(im.quantity) AS total_added,
                COUNT(*) AS restock_count
-        FROM restock_inventory r
-        JOIN ClinicInventory ci ON r.item_id = ci.item_id
-        WHERE DATE(r.restock_date) BETWEEN ? AND ?
+        FROM inventorymovement im
+        JOIN ClinicInventory ci ON im.item_id = ci.item_id
+        WHERE im.movement_type = 'RESTOCK'
+          AND DATE(im.movement_date) BETWEEN ? AND ?
         GROUP BY ci.item_name
     """;
 
