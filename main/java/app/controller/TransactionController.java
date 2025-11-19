@@ -2,6 +2,7 @@ package app.controller;
 
 import app.dao.*;
 import app.model.*;
+import app.model.InventoryMovement;
 import app.util.SessionManager;
 
 import javafx.beans.property.SimpleObjectProperty;
