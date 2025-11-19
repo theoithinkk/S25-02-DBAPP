@@ -405,7 +405,7 @@ public class TransactionController {
             inventoryDAO.updateItem(selected);
 
             // Log as SERVICE movement in InventoryMovement table
-            if (transaction.getResidentId() != null && transaction.getPersonnelId() != null) {
+            if (transaction.getResidentId() > 0 && transaction.getPersonnelId() > 0) {
                 movementDAO.insertServiceMovement(
                         selected.getItemId(),
                         qty,
