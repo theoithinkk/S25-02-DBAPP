@@ -41,8 +41,7 @@
 
     <HBox spacing="10">
         <Button onAction="#showTransactions" prefHeight="40" prefWidth="180" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 12; -fx-font-weight: bold; -fx-background-radius: 8;" text="💊 Service Transactions" />
-        <Button onAction="#showServiceInventory" prefHeight="40" prefWidth="180" style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-size: 12; -fx-font-weight: bold; -fx-background-radius: 8;" text="📦 Service Inventory" />
-        <Button onAction="#showRestockInventory" prefHeight="40" prefWidth="180" style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-size: 12; -fx-font-weight: bold; -fx-background-radius: 8;" text="📥 Restocking Inventory" />
+        <Button onAction="#showInventoryMovement" prefHeight="40" prefWidth="180" style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-size: 12; -fx-font-weight: bold; -fx-background-radius: 8;" text="📦 Inventory Log" />
         <Button onAction="#showClinicVisits" prefHeight="40" prefWidth="180" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 12; -fx-font-weight: bold; -fx-background-radius: 8;" text="🏥 Clinic Visits" />
     </HBox>
 

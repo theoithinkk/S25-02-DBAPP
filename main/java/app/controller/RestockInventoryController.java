@@ -1,10 +1,11 @@
 package app.controller;
 
 import app.dao.HealthPersonnelDAO;
-import app.dao.RestockInventoryDAO;
+import app.dao.InventoryMovementDAO;
 import app.model.ClinicInventory;
 import app.model.HealthPersonnel;
 import app.dao.ClinicInventoryDAO;
+import app.util.SessionManager;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -123,25 +124,45 @@ public class RestockInventoryController {
             // Update stock in clinicinventory table
             inventoryDAO.addQuantity(selectedItem.getItemId(), quantity);
 
-            // Log restock in restock_inventory table
-            RestockInventoryDAO restockDAO = new RestockInventoryDAO();
-            restockDAO.insertRestockRecord(
+            // Log restock in inventorymovement table
+            InventoryMovementDAO movementDAO = new InventoryMovementDAO();
+            movementDAO.insertRestockMovement(
                     selectedItem.getItemId(),
                     quantity,
                     restocker.getPersonnelId(),
                     remarks
             );
-            // Refresh table
-            refreshInventoryTable();
 
-            // Clear fields
-            txtQuantity.clear();
-            txtRemarks.clear();
-            comboPersonnel.getSelectionModel().clearSelection();
-            lblSelectedItem.setText("No item selected");
-            tableInventory.getSelectionModel().clearSelection();
+            // Log the action in audit log
+            if (SessionManager.isLoggedIn()) {
+                String action = String.format(
+                        "RESTOCK: %d %s restocked by %s (%s). Remarks: %s",
+                        quantity,
+                        selectedItem.getItemName(),
+                        restocker.getFirstName() + " " + restocker.getLastName(),
+                        restocker.getRole(),
+                        remarks.isEmpty() ? "None" : remarks
+                );
 
+                inventoryDAO.logAction(SessionManager.getCurrentUser().getUserId(), action);
+            }
             showStatus("Restock successful!", "#d1fae5"); // green
+
+            // Show success dialog
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Restock Complete");
+            alert.setHeaderText("Inventory Restocked Successfully");
+            alert.setContentText(
+                    "Item: " + selectedItem.getItemName() + "\n" +
+                            "Quantity Added: " + quantity + "\n" +
+                            "Restocked By: " + restocker.getFirstName() + " " + restocker.getLastName() + "\n" +
+                            "Remarks: " + (remarks.isEmpty() ? "None" : remarks)
+            );
+            alert.showAndWait();
+
+            // Close the modal after successful restock
+            Stage stage = (Stage) txtQuantity.getScene().getWindow();
+            stage.close();
         } catch (Exception e) {
             e.printStackTrace();
             showStatus("Error during restock: " + e.getMessage(), "#fca5a5");

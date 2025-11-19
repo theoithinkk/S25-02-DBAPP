@@ -21,42 +21,67 @@
 
     <!-- Top Cards -->
     <HBox spacing="16">
+
         <!-- Residents -->
-        <VBox alignment="CENTER" spacing="6" style="-fx-background-color: #3498db; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1);" HBox.hgrow="ALWAYS">
+        <VBox alignment="CENTER" spacing="6"
+              style="-fx-background-color: #3498db; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1);"
+              HBox.hgrow="ALWAYS">
             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                 <effect>
-                    <DropShadow radius="3" spread="0.05" color="rgba(0,0,0,0.15)" offsetX="1" offsetY="1" />
+                    <DropShadow radius="3" spread="0.05" color="rgba(0,0,0,0.15)" offsetX="1" offsetY="1"/>
                 </effect>
-                <Image url="@/images/residents.png" />
+                <Image url="@/images/residents.png"/>
             </ImageView>
-            <Text fx:id="txtResidentCount" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: white;" text="0" />
-            <Text style="-fx-font-size: 13; -fx-fill: white; -fx-font-weight: 600;" text="Total Residents" />
+            <Text fx:id="txtResidentCount" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: white;" text="0"/>
+            <Text style="-fx-font-size: 13; -fx-fill: white; -fx-font-weight: 600;" text="Total Residents"/>
+        </VBox>
+
+        <!-- Personnel (NEW CARD) -->
+        <VBox alignment="CENTER" spacing="6"
+              style="-fx-background-color: #e67e22; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1);"
+              HBox.hgrow="ALWAYS">
+            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                <effect>
+                    <DropShadow radius="3" spread="0.05" color="rgba(0,0,0,0.15)" offsetX="1" offsetY="1"/>
+                </effect>
+                <Image url="@/images/personnel.png"/> <!-- Change this if needed -->
+            </ImageView>
+            <Text fx:id="txtPersonnelCount" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: white;" text="0"/>
+            <Text style="-fx-font-size: 13; -fx-fill: white; -fx-font-weight: 600;" text="Total Personnel"/>
         </VBox>
 
         <!-- Services -->
-        <VBox alignment="CENTER" spacing="6" style="-fx-background-color: #27ae60; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1);" HBox.hgrow="ALWAYS">
+        <VBox alignment="CENTER" spacing="6"
+              style="-fx-background-color: #27ae60; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1);"
+              HBox.hgrow="ALWAYS">
             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                 <effect>
-                    <DropShadow radius="3" spread="0.05" color="rgba(0,0,0,0.15)" offsetX="1" offsetY="1" />
+                    <DropShadow radius="3" spread="0.05" color="rgba(0,0,0,0.15)" offsetX="1" offsetY="1"/>
                 </effect>
-                <Image url="@/images/health-service.png" />
+                <Image url="@/images/health-service.png"/>
             </ImageView>
-            <Text fx:id="txtServiceCount" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: white;" text="0" />
-            <Text style="-fx-font-size: 13; -fx-fill: white; -fx-font-weight: 600;" text="Health Services" />
+            <Text fx:id="txtServiceCount" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: white;" text="0"/>
+            <Text style="-fx-font-size: 13; -fx-fill: white; -fx-font-weight: 600;" text="Health Services"/>
         </VBox>
 
         <!-- Transactions -->
-        <VBox alignment="CENTER" spacing="6" style="-fx-background-color: #9b59b6; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1);" HBox.hgrow="ALWAYS">
+        <VBox alignment="CENTER" spacing="6"
+              style="-fx-background-color: #9b59b6; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1);"
+              HBox.hgrow="ALWAYS">
             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                 <effect>
-                    <DropShadow radius="3" spread="0.05" color="rgba(0,0,0,0.15)" offsetX="1" offsetY="1" />
+                    <DropShadow radius="3" spread="0.05" color="rgba(0,0,0,0.15)" offsetX="1" offsetY="1"/>
                 </effect>
-                <Image url="@/images/transaction.png" />
+                <Image url="@/images/transaction.png"/>
             </ImageView>
-            <Text fx:id="txtTransactionCount" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: white;" text="0" />
-            <Text style="-fx-font-size: 13; -fx-fill: white; -fx-font-weight: 600; -fx-text-alignment: center;" text="Transactions Today" wrappingWidth="130" />
+            <Text fx:id="txtTotalTransactionCount" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-fill: white;" text="0"/>
+            <Text style="-fx-font-size: 13; -fx-fill: white; -fx-font-weight: 600;"
+                  text="Transactions Today" wrappingWidth="130"/>
         </VBox>
+
     </HBox>
+
+
 
     <!-- Quick Actions -->
     <VBox spacing="12" VBox.vgrow="ALWAYS">

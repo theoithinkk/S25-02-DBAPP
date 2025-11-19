@@ -2,6 +2,7 @@ package app.controller;
 
 import app.dao.*;
 import app.model.*;
+import app.model.InventoryMovement;
 import app.util.SessionManager;
 
 import javafx.beans.property.SimpleObjectProperty;
@@ -35,11 +36,10 @@ public class TransactionController {
 
     private final ServiceTransactionDAO transactionDAO = new ServiceTransactionDAO();
     private final ClinicInventoryDAO inventoryDAO = new ClinicInventoryDAO();
-    private final ServiceInventoryDAO serviceInventoryDAO = new ServiceInventoryDAO();
+    private final InventoryMovementDAO movementDAO = new InventoryMovementDAO();
     private final ClinicVisitsDAO clinicVisitsDAO = new ClinicVisitsDAO();
     private final ResidentDAO residentsDAO = new ResidentDAO();
     private final HealthPersonnelDAO personnelDAO = new HealthPersonnelDAO();
-    private final RestockInventoryDAO restockDAO = new RestockInventoryDAO();
 
     @FXML
     private void initialize() {
@@ -52,13 +52,8 @@ public class TransactionController {
     }
 
     @FXML
-    private void showServiceInventory() {
-        contentPane.getChildren().setAll(createServiceInventoryView());
-    }
-
-    @FXML
-    private void showRestockInventory() {
-        contentPane.getChildren().setAll(createRestockInventoryView());
+    private void showInventoryMovement() {
+        contentPane.getChildren().setAll(createInventoryMovementView());
     }
 
     @FXML
@@ -160,23 +155,35 @@ public class TransactionController {
     }
 
     // =====================================================
-    //             RESTOCK INVENTORY VIEW
+    //        INVENTORY MOVEMENT VIEW (UNIFIED)
     // =====================================================
 
-    private VBox createRestockInventoryView() {
+    private VBox createInventoryMovementView() {
         VBox vbox = new VBox(15);
         vbox.setPadding(new Insets(15));
 
-        Label title = new Label("Restock Inventory Management");
+        Label title = new Label("Inventory Movement Log");
         title.setStyle("-fx-font-size:18; -fx-font-weight:bold;");
 
-        Label subtitle = new Label("Track and log all restocking activities.");
+        Label subtitle = new Label("Track all inventory movements - RESTOCK, ISSUE, and SERVICE transactions.");
         subtitle.setStyle("-fx-font-size:13; -fx-text-fill:#7f8c8d;");
 
-        TableView<RestockInventory> table = new TableView<>();
-        table.setPrefHeight(450);
+        // Filter controls
+        HBox filterBox = new HBox(10);
+        filterBox.setPadding(new Insets(10, 0, 10, 0));
 
-        // preload maps
+        Label filterLabel = new Label("Filter by Type:");
+        ComboBox<String> filterCombo = new ComboBox<>();
+        filterCombo.getItems().addAll("ALL", "RESTOCK", "ISSUE", "SERVICE");
+        filterCombo.setValue("ALL");
+        filterCombo.setPrefWidth(150);
+
+        filterBox.getChildren().addAll(filterLabel, filterCombo);
+
+        TableView<InventoryMovement> table = new TableView<>();
+        table.setPrefHeight(420);
+
+        // Preload maps for displaying names
         Map<Integer, String> itemNames = new HashMap<>();
         for (ClinicInventory i : inventoryDAO.getAllItems()) {
             itemNames.put(i.getItemId(), i.getItemName());
@@ -187,96 +194,68 @@ public class TransactionController {
             personnelNames.put(p.getPersonnelId(), p.getFirstName() + " " + p.getLastName());
         }
 
-        TableColumn<RestockInventory, Integer> colId = new TableColumn<>("Restock ID");
-        colId.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getRestockId()));
-        colId.setPrefWidth(90);
+        Map<Integer, String> residentNames = new HashMap<>();
+        for (Resident r : residentsDAO.getAllResidents()) {
+            residentNames.put(r.getResidentId(), r.getFirstName() + " " + r.getLastName());
+        }
 
-        TableColumn<RestockInventory, String> colItem = new TableColumn<>("Item");
+        // Table columns
+        TableColumn<InventoryMovement, Integer> colId = new TableColumn<>("Movement ID");
+        colId.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getMovementId()));
+        colId.setPrefWidth(100);
+
+        TableColumn<InventoryMovement, String> colType = new TableColumn<>("Type");
+        colType.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getMovementType()));
+        colType.setPrefWidth(90);
+
+        TableColumn<InventoryMovement, String> colItem = new TableColumn<>("Item");
         colItem.setCellValueFactory(d -> new SimpleStringProperty(
                 itemNames.getOrDefault(d.getValue().getItemId(), "Unknown")
         ));
         colItem.setPrefWidth(150);
 
-        TableColumn<RestockInventory, String> colBy = new TableColumn<>("Restocked By");
-        colBy.setCellValueFactory(d -> new SimpleStringProperty(
-                d.getValue().getRestockedBy() == null
-                        ? "N/A"
-                        : personnelNames.getOrDefault(d.getValue().getRestockedBy(), "Unknown")
+        TableColumn<InventoryMovement, Integer> colQty = new TableColumn<>("Quantity");
+        colQty.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getQuantity()));
+        colQty.setPrefWidth(80);
+
+        TableColumn<InventoryMovement, String> colActor = new TableColumn<>("Personnel");
+        colActor.setCellValueFactory(d -> new SimpleStringProperty(
+                personnelNames.getOrDefault(d.getValue().getActorId(), "Unknown")
         ));
-        colBy.setPrefWidth(150);
+        colActor.setPrefWidth(150);
 
-        TableColumn<RestockInventory, Integer> colQty = new TableColumn<>("Qty Added");
-        colQty.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getQuantityAdded()));
-        colQty.setPrefWidth(100);
+        TableColumn<InventoryMovement, String> colResident = new TableColumn<>("Resident");
+        colResident.setCellValueFactory(d -> new SimpleStringProperty(
+                d.getValue().getResidentId() == null
+                        ? "N/A"
+                        : residentNames.getOrDefault(d.getValue().getResidentId(), "Unknown")
+        ));
+        colResident.setPrefWidth(150);
 
-        TableColumn<RestockInventory, String> colRemarks = new TableColumn<>("Remarks");
-        colRemarks.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getRemarks()));
-        colRemarks.setPrefWidth(200);
-
-        TableColumn<RestockInventory, String> colDate = new TableColumn<>("Date");
+        TableColumn<InventoryMovement, String> colDate = new TableColumn<>("Date");
         colDate.setCellValueFactory(d -> new SimpleStringProperty(
-                d.getValue().getRestockDate() != null ? d.getValue().getRestockDate().toString() : "N/A"
+                d.getValue().getMovementDate() != null ? d.getValue().getMovementDate().toString() : "N/A"
         ));
         colDate.setPrefWidth(150);
 
-        table.getColumns().addAll(colId, colItem, colBy, colQty, colRemarks, colDate);
+        TableColumn<InventoryMovement, String> colRemarks = new TableColumn<>("Remarks");
+        colRemarks.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getRemarks()));
+        colRemarks.setPrefWidth(200);
 
-        loadRestockInventory(table);
+        table.getColumns().addAll(colId, colType, colItem, colQty, colActor, colResident, colDate, colRemarks);
+
+        // Load data
+        loadInventoryMovements(table, "ALL");
+
+        // Filter action
+        filterCombo.setOnAction(e -> loadInventoryMovements(table, filterCombo.getValue()));
 
         Button btnRefresh = new Button("🔄 Refresh");
-        btnRefresh.setOnAction(e -> loadRestockInventory(table));
+        btnRefresh.setOnAction(e -> loadInventoryMovements(table, filterCombo.getValue()));
 
         VBox buttonBox = new VBox(10, btnRefresh);
 
-        vbox.getChildren().addAll(title, subtitle, table, buttonBox);
-        return vbox;
-    }
-
-    // =====================================================
-    //        SERVICE INVENTORY VIEW
-    // =====================================================
-
-    private VBox createServiceInventoryView() {
-        VBox vbox = new VBox(15);
-        vbox.setPadding(new Insets(15));
-
-        Label title = new Label("Service Inventory Management");
-        title.setStyle("-fx-font-size:18; -fx-font-weight:bold;");
-
-        Label subtitle = new Label("Items used during service transactions.");
-        subtitle.setStyle("-fx-font-size:13; -fx-text-fill:#7f8c8d;");
-
-        TableView<ServiceInventory> table = new TableView<>();
-        table.setPrefHeight(420);
-
-        TableColumn<ServiceInventory, Integer> colId = new TableColumn<>("Inventory ID");
-        colId.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getInventoryId()));
-        colId.setPrefWidth(100);
-
-        TableColumn<ServiceInventory, Integer> colTrans = new TableColumn<>("Transaction ID");
-        colTrans.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getTransactionId()));
-        colTrans.setPrefWidth(110);
-
-        TableColumn<ServiceInventory, String> colItem = new TableColumn<>("Item Name");
-        colItem.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getItemName()));
-        colItem.setPrefWidth(200);
-
-        TableColumn<ServiceInventory, Integer> colQty = new TableColumn<>("Quantity Used");
-        colQty.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getQuantity()));
-        colQty.setPrefWidth(120);
-
-        TableColumn<ServiceInventory, Date> colExp = new TableColumn<>("Expiration");
-        colExp.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getExpiration()));
-        colExp.setPrefWidth(130);
-
-        table.getColumns().addAll(colId, colTrans, colItem, colQty, colExp);
-
-        loadServiceInventory(table);
-
-        Button btnRefresh = new Button("🔄 Refresh");
-        btnRefresh.setOnAction(e -> loadServiceInventory(table));
-
-        vbox.getChildren().addAll(title, subtitle, table, btnRefresh);
+        vbox.getChildren().addAll(title, subtitle, filterBox, table, buttonBox);
         return vbox;
     }
 
@@ -337,21 +316,20 @@ public class TransactionController {
         table.setItems(FXCollections.observableArrayList(list));
     }
 
-    private void loadServiceInventory(TableView<ServiceInventory> table) {
-        List<ServiceInventory> list = serviceInventoryDAO.getAllServiceInventory();
-        list.sort((a, b) -> b.getInventoryId() - a.getInventoryId());
-        table.setItems(FXCollections.observableArrayList(list));
-    }
-
     private void loadClinicVisits(TableView<ClinicVisits> table) {
         List<ClinicVisits> list = clinicVisitsDAO.getAllClinicVisits();
         list.sort((a, b) -> b.getVisitId() - a.getVisitId());
         table.setItems(FXCollections.observableArrayList(list));
     }
 
-    private void loadRestockInventory(TableView<RestockInventory> table) {
-        List<RestockInventory> list = restockDAO.getAll();
-        list.sort((a, b) -> b.getRestockId() - a.getRestockId());
+    private void loadInventoryMovements(TableView<InventoryMovement> table, String filterType) {
+        List<InventoryMovement> list;
+        if ("ALL".equals(filterType)) {
+            list = movementDAO.getAll();
+        } else {
+            list = movementDAO.getByMovementType(filterType);
+        }
+        list.sort((a, b) -> b.getMovementId() - a.getMovementId());
         table.setItems(FXCollections.observableArrayList(list));
     }
 
@@ -422,22 +400,47 @@ public class TransactionController {
             return;
         }
 
-        ServiceInventory si = new ServiceInventory();
-        si.setItemId(selected.getItemId());
-        si.setServiceId(transaction.getServiceId());
-        si.setTransactionId(transaction.getTransactionId());
-        si.setQuantity(qty);
-        si.setExpiration(Date.valueOf(expirationPicker.getValue()));
-
-        if (serviceInventoryDAO.addServiceInventory(si)) {
+        try {
+            // Update inventory quantity
             selected.setQuantity(selected.getQuantity() - qty);
             inventoryDAO.updateItem(selected);
+
+            // Log as SERVICE movement in InventoryMovement table
+            // Use the transaction's personnel and resident IDs
+            int actorPersonnelId = transaction.getPersonnelId();
+            int residentId = transaction.getResidentId();
+
+            System.out.println("DEBUG: Attempting to log inventory movement:");
+            System.out.println("  Item ID: " + selected.getItemId());
+            System.out.println("  Quantity: " + qty);
+            System.out.println("  Actor Personnel ID: " + actorPersonnelId);
+            System.out.println("  Resident ID: " + residentId);
+            System.out.println("  Transaction ID: " + transaction.getTransactionId());
+
+            // Attempt to log the movement
+            boolean movementLogged = movementDAO.insertServiceMovement(
+                    selected.getItemId(),
+                    qty,
+                    actorPersonnelId,
+                    residentId,
+                    "Used in Transaction #" + transaction.getTransactionId()
+            );
+
+            if (movementLogged) {
+                System.out.println("✓ Inventory movement logged successfully");
+            } else {
+                System.err.println("✗ Failed to log inventory movement for Transaction #" +
+                        transaction.getTransactionId() + ", Item ID: " + selected.getItemId());
+            }
 
             showAlert(Alert.AlertType.INFORMATION, "Success",
                     "Inventory added successfully.", table);
 
             transactionDAO.logAction(SessionManager.getCurrentUser().getUserId(),
                     "Added inventory item to Transaction #" + transaction.getTransactionId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to add inventory: " + e.getMessage(), table);
         }
     }
 

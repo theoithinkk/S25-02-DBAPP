@@ -1,10 +1,9 @@
 package app.controller;
 
 import app.dao.ClinicInventoryDAO;
-import app.dao.MedicalSupplyIssuanceDAO;
+import app.dao.InventoryMovementDAO;
 import app.dao.ResidentDAO;
 import app.model.ClinicInventory;
-import app.model.MedicalSupplyIssuance;
 import app.model.Resident;
 import app.util.SessionManager;
 import javafx.beans.property.SimpleObjectProperty;
@@ -61,7 +60,7 @@ public class MedicalSupplyIssuanceController {
 
     private final ClinicInventoryDAO inventoryDAO = new ClinicInventoryDAO();
     private final ResidentDAO residentDAO = new ResidentDAO();
-    private final MedicalSupplyIssuanceDAO issuanceDAO = new MedicalSupplyIssuanceDAO();
+    private final InventoryMovementDAO movementDAO = new InventoryMovementDAO();
 
     private Resident selectedResident = null;
 
@@ -272,7 +271,7 @@ public class MedicalSupplyIssuanceController {
         return true;
     }
 
-    // FIXED: Better transaction handling like working controller
+    //Better transaction handling like working controller
     @FXML
     private void handleIssueSupplies() {
         if (!validateInputs()) {
@@ -283,23 +282,27 @@ public class MedicalSupplyIssuanceController {
         int quantity = Integer.parseInt(txtQuantity.getText());
 
         try {
-            // Create issuance record
-            MedicalSupplyIssuance issuance = new MedicalSupplyIssuance();
-            issuance.setResidentId(selectedResident.getResidentId());
-            issuance.setItemId(selectedItem.getItemId());
-            issuance.setPersonnelId(getPersonnelIdFromSelection());
-            issuance.setQuantityIssued(quantity);
-            issuance.setIssuanceDate(Date.valueOf(dateIssuance.getValue()));
-            issuance.setRemarks(txtRemarks.getText().trim());
-
             // Update inventory quantity
             if (!inventoryDAO.deductQuantity(selectedItem.getItemId(), quantity)) {
                 showStatus("Failed to update inventory. Please try again.", true);
                 return;
             }
 
-            // Record the issuance
-            if (issuanceDAO.addIssuance(issuance)) {
+            // Log ISSUE movement in InventoryMovement table
+            String remarks = txtRemarks.getText().trim();
+            if (remarks.isEmpty()) {
+                remarks = "Issued to " + selectedResident.getFirstName() + " " + selectedResident.getLastName();
+            }
+
+            boolean movementLogged = movementDAO.insertIssueMovement(
+                    selectedItem.getItemId(),
+                    quantity,
+                    getPersonnelIdFromSelection(),
+                    selectedResident.getResidentId(),
+                    remarks
+            );
+
+            if (movementLogged) {
                 // Log the action
                 if (SessionManager.isLoggedIn()) {
                     String action = String.format("ISSUE_SUPPLY: Resident %s received %d %s issued by %s",
@@ -326,8 +329,7 @@ public class MedicalSupplyIssuanceController {
                 );
                 alert.showAndWait();
 
-                clearForm();
-                refreshSuppliesList();
+                handleCancel();
 
             } else {
                 showStatus("Failed to record issuance. Please try again.", true);

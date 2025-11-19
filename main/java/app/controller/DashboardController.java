@@ -23,7 +23,9 @@ public class DashboardController {
     @FXML private Text txtWelcome;
     @FXML private Text txtResidentCount;
     @FXML private Text txtServiceCount;
-    @FXML private Text txtTransactionCount;
+    @FXML private Text txtPersonnelCount;
+
+    @FXML private Text txtTotalTransactionCount;
 
     @FXML
     private void initialize() {
@@ -64,13 +66,55 @@ public class DashboardController {
                 txtServiceCount.setText(String.valueOf(rs2.getInt(1)));
             }
 
-            // Count today's transactions
-            String transactionSql = "SELECT COUNT(*) FROM ServiceTransactions WHERE DATE(date_provided) = CURDATE()";
+            // Count personnel
+            String personnelSql = "SELECT COUNT(*) FROM healthpersonnel";
             Statement st3 = conn.createStatement();
-            ResultSet rs3 = st3.executeQuery(transactionSql);
+            ResultSet rs3 = st3.executeQuery(personnelSql);
             if (rs3.next()) {
-                txtTransactionCount.setText(String.valueOf(rs3.getInt(1)));
+                txtPersonnelCount.setText(String.valueOf(rs3.getInt(1)));
             }
+
+            // Count today's ServiceTransactions from AuditLog
+            String serviceTransactionSql = "SELECT COUNT(*) FROM auditLog " +
+                    "WHERE action LIKE 'AVAIL_SERVICE%' " +
+                    "AND DATE(timestamp) = CURDATE()";
+            Statement st4 = conn.createStatement();
+            ResultSet rs4 = st4.executeQuery(serviceTransactionSql);
+            rs4.next();
+            int serviceTransactionCount = rs4.getInt(1);
+
+            // Count today's InventoryTransactions(supply) from AuditLog
+            String supplyTransactionSql = "SELECT COUNT(*) FROM auditLog " +
+                    "WHERE action LIKE 'ISSUE_SUPPLY%' " +
+                    "AND DATE(timestamp) = CURDATE()";
+            Statement st5 = conn.createStatement();
+            ResultSet rs5 = st5.executeQuery(supplyTransactionSql);
+            rs5.next();
+            int inventoryTransactionCount = rs5.getInt(1);
+
+            // Count today's InventoryTransactions(supply) from AuditLog
+            String restockTransactionSql = "SELECT COUNT(*) FROM auditLog " +
+                    "WHERE action LIKE 'RESTOCK%' " +
+                    "AND DATE(timestamp) = CURDATE()";
+            Statement st6 = conn.createStatement();
+            ResultSet rs6 = st6.executeQuery(restockTransactionSql);
+            rs6.next();
+            int restockTransactionCount = rs6.getInt(1);
+
+            // Count today's ClinicVisits from AuditLog
+            String visitTransactionSql = "SELECT COUNT(*) FROM auditLog " +
+                    "WHERE action LIKE 'CLINIC_VISIT%' " +
+                    "AND DATE(timestamp) = CURDATE()";
+            Statement st7 = conn.createStatement();
+            ResultSet rs7 = st7.executeQuery(visitTransactionSql);
+            rs7.next();
+            int visitTransactionCount = rs7.getInt(1);
+
+            // Sum them up
+            int total = serviceTransactionCount + inventoryTransactionCount + restockTransactionCount + visitTransactionCount;
+            txtTotalTransactionCount.setText(String.valueOf(total));
+
+            txtTotalTransactionCount.setText(String.valueOf(total));
 
         } catch (SQLException e) {
             System.err.println("Error loading statistics: " + e.getMessage());
@@ -93,13 +137,13 @@ public class DashboardController {
     @FXML
     private void handleRestockInventory() {
         openTransactionDialog("/view/restock_inventory.fxml",
-                "Restock Clinic Inventory", 650, 750, false);
+                "Restock Clinic Inventory", 650, 750, true);
     }
 
     @FXML
     private void handleLogClinicVisit() {
         openTransactionDialog("/view/clinicvisits.fxml",
-                "Log Clinic Visit", 700, 750, false);
+                "Log Clinic Visit", 700, 750, true);
     }
 
     private void openTransactionDialog(String resourcePath,

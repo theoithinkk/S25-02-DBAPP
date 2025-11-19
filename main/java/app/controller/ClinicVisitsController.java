@@ -2,6 +2,7 @@ package app.controller;
 
 import app.dao.*;
 import app.model.*;
+import app.util.SessionManager;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -161,6 +162,7 @@ public class ClinicVisitsController {
             return;
         }
 
+        //Create clinic transaction
         ClinicVisits visit = new ClinicVisits();
         visit.setResidentId(selectedPatient.getResidentId());
         visit.setPersonnelId(selectedPersonnel.getPersonnelId());
@@ -170,8 +172,23 @@ public class ClinicVisitsController {
         visit.setNotes(notesArea.getText().trim());
         visit.setVisitDate(Date.valueOf(visitDatePicker.getValue()));
 
+        //Save to database
         if (clinicVisitsDAO.addClinicVisit(visit)) {
             showStatus("✓ Clinic visit saved successfully!", false);
+
+            if (SessionManager.isLoggedIn()) {
+                // Build action text
+                String action = String.format(
+                        "CLINIC_VISIT: Patient %s visited %s (%s) on %s",
+                        selectedPatient.getFirstName() + " " + selectedPatient.getLastName(),
+                        selectedPersonnel.getFirstName() + " " + selectedPersonnel.getLastName(),
+                        visitTypeCombo.getValue(),
+                        visitDatePicker.getValue().toString()
+                );
+
+                // Save to audit log
+                residentsDAO.logAction(SessionManager.getCurrentUser().getUserId(), action);
+            }
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Visit Recorded");
@@ -185,7 +202,7 @@ public class ClinicVisitsController {
             );
             alert.showAndWait();
 
-            clearForm();
+            handleCancel();
         } else {
             showStatus("Failed to save visit", true);
         }

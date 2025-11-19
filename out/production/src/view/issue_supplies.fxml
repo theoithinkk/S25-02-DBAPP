@@ -260,6 +260,10 @@
         </VBox>
 
         <!-- Action Buttons - MATCHING YOUR GREEN COLOR -->
+        <Label fx:id="lblStatus"
+               text=""
+               visible="false"
+               style="-fx-text-fill: #e74c3c; -fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 5 0 0 0;"/>
         <HBox spacing="12" alignment="CENTER" style="-fx-padding: 20 0 10 0;">
             <Button text="✓ Complete Issuance" onAction="#handleIssueSupplies"
                     prefWidth="220" prefHeight="48"

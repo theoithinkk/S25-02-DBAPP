@@ -193,5 +193,21 @@ public class ClinicInventoryDAO {
         }
     }
 
+    /**
+     * Log user action to audit log
+     */
+    public void logAction(int userId, String action) {
+        String sql = "INSERT INTO AuditLog (user_id, action) VALUES (?, ?)";
 
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            ps.setString(2, action);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Warning: Could not log action: " + e.getMessage());
+        }
+    }
 }

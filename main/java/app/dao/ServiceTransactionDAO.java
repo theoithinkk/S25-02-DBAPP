@@ -30,7 +30,7 @@ public class ServiceTransactionDAO {
     /** READ **/
     public List<ServiceTransaction> getAllTransactions() {
         List<ServiceTransaction> list = new ArrayList<>();
-        String sql = "SELECT st.transaction_id, st.date_provided, st.status, st.remarks, " +
+        String sql = "SELECT st.transaction_id, st.resident_id, st.personnel_id, st.date_provided, st.status, st.remarks, " +
                 "r.first_name AS resident_first, r.last_name AS resident_last, " +
                 "hs.service_id, hs.service_type, " +
                 "hp.first_name AS personnel_first, hp.last_name AS personnel_last " +
@@ -48,6 +48,8 @@ public class ServiceTransactionDAO {
                 ServiceTransaction t = new ServiceTransaction();
                 t.setTransactionId(rs.getInt("transaction_id"));
                 t.setServiceId(rs.getInt("service_id"));
+                t.setResidentId(rs.getInt("resident_id"));
+                t.setPersonnelId(rs.getInt("personnel_id"));
                 t.setDateProvided(rs.getDate("date_provided"));
                 t.setRemarks(rs.getString("remarks"));
 
