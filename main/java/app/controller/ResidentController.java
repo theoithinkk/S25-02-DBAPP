@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import java.util.stream.Collectors;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class ResidentController {
     @FXML private Label lblHousehold;
     @FXML private Label lblVulnerability;
     @FXML private Button btnDelete;
+    @FXML private TextField txtSearch;
 
     private final ResidentDAO residentDAO = new ResidentDAO();
 
@@ -87,6 +89,11 @@ public class ResidentController {
                         newSel.getVulnerabilityStatus() : "None");
             }
         });
+        if (txtSearch != null) {
+            txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+                filterResidents(newValue);
+            });
+        }
     }
 
     private void setupComboBoxes() {
@@ -317,6 +324,30 @@ public class ResidentController {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Database Error",
                     "Could not load residents from database: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void filterResidents(String searchText) {
+        if (searchText == null || searchText.trim().isEmpty()) {
+            refreshResidents();
+            return;
+        }
+
+        String search = searchText.trim().toLowerCase();
+        List<Resident> allResidents = residentDAO.getAllResidents();
+        List<Resident> filtered = allResidents.stream()
+                .filter(r ->
+                        r.getFirstName().toLowerCase().contains(search) ||
+                                r.getLastName().toLowerCase().contains(search) ||
+                                (r.getFirstName() + " " + r.getLastName()).toLowerCase().contains(search) ||
+                                (r.getAddress() != null && r.getAddress().toLowerCase().contains(search)))
+                .collect(Collectors.toList());
+
+        tableResidents.setItems(FXCollections.observableArrayList(filtered));
+
+        if (lblRecordCount != null) {
+            lblRecordCount.setText(filtered.size() + " resident" + (filtered.size() != 1 ? "s" : ""));
         }
     }
 

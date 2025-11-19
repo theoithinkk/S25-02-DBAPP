@@ -47,6 +47,12 @@
                    style="-fx-text-fill: #7f8c8d; -fx-font-size: 11;"/>
         </HBox>
         <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="🔍 Search:" style="-fx-font-size: 12; -fx-text-fill: #34495e; -fx-font-weight: bold;"/>
+            <TextField fx:id="txtSearch" promptText="Type to search..."
+                       prefWidth="300"
+                       style="-fx-background-radius: 6; -fx-border-color: #dfe6e9; -fx-border-radius: 6; -fx-padding: 8;"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
             <Button text="⚠ Expiring Soon" onAction="#filterExpiringSoon"
                     prefHeight="32"
                     style="-fx-background-color: #f39c12; -fx-text-fill: white;

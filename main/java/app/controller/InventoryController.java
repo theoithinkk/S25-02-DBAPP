@@ -24,6 +24,7 @@ public class InventoryController {
     @FXML private DatePicker dateExpiration;
     @FXML private Label lblItemCount;
     @FXML private Button btnDelete;
+    @FXML private TextField txtSearch;
 
     private final ClinicInventoryDAO inventoryDAO = new ClinicInventoryDAO();
 
@@ -77,6 +78,11 @@ public class InventoryController {
                 }
             }
         });
+        if (txtSearch != null) {
+            txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+                filterInventory(newValue);
+            });
+        }
     }
 
     private void setupTable() {
@@ -187,6 +193,28 @@ public class InventoryController {
                 clearFields();
             }
         });
+    }
+
+    @FXML
+    private void filterInventory(String searchText) {
+        if (searchText == null || searchText.trim().isEmpty()) {
+            refreshInventory();
+            return;
+        }
+
+        String search = searchText.trim().toLowerCase();
+        List<ClinicInventory> allItems = inventoryDAO.getAllItems();
+        List<ClinicInventory> filtered = allItems.stream()
+                .filter(item ->
+                        item.getItemName().toLowerCase().contains(search) ||
+                                item.getCategory().toLowerCase().contains(search))
+                .collect(java.util.stream.Collectors.toList());
+
+        tableInventory.setItems(FXCollections.observableArrayList(filtered));
+
+        if (lblItemCount != null) {
+            lblItemCount.setText(filtered.size() + " item" + (filtered.size() != 1 ? "s" : ""));
+        }
     }
 
     @FXML

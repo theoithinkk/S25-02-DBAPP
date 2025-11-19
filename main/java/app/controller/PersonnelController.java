@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import java.util.stream.Collectors;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class PersonnelController {
     @FXML private TextField txtFirstName, txtLastName, txtRole, txtSpecialization, txtContact;
     @FXML private Label lblRecordCount;
     @FXML private Button btnDelete;
+    @FXML private TextField txtSearch;
 
     private final HealthPersonnelDAO personnelDAO = new HealthPersonnelDAO();
 
@@ -55,6 +57,12 @@ public class PersonnelController {
                 txtContact.setText(newSel.getContactNumber());
             }
         });
+        // Setup live search
+        if (txtSearch != null) {
+            txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+                filterPersonnel(newValue);
+            });
+        }
     }
 
     private void addInputValidation() {
@@ -187,6 +195,31 @@ public class PersonnelController {
                 }
             }
         });
+    }
+
+    @FXML
+    private void filterPersonnel(String searchText) {
+        if (searchText == null || searchText.trim().isEmpty()) {
+            refreshPersonnel();
+            return;
+        }
+
+        String search = searchText.trim().toLowerCase();
+        List<HealthPersonnel> allPersonnel = personnelDAO.getAllPersonnel();
+        List<HealthPersonnel> filtered = allPersonnel.stream()
+                .filter(p ->
+                        p.getFirstName().toLowerCase().contains(search) ||
+                                p.getLastName().toLowerCase().contains(search) ||
+                                (p.getFirstName() + " " + p.getLastName()).toLowerCase().contains(search) ||
+                                p.getRole().toLowerCase().contains(search) ||
+                                (p.getSpecialization() != null && p.getSpecialization().toLowerCase().contains(search)))
+                .collect(java.util.stream.Collectors.toList());
+
+        tablePersonnel.setItems(FXCollections.observableArrayList(filtered));
+
+        if (lblRecordCount != null) {
+            lblRecordCount.setText(filtered.size() + " personnel" + (filtered.size() != 1 ? "s" : ""));
+        }
     }
 
     @FXML
