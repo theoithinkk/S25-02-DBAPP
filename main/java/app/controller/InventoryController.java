@@ -257,6 +257,27 @@ public class InventoryController {
         tableInventory.setItems(filtered);
     }
 
+    @FXML
+    private void filterExpired() {
+        List<ClinicInventory> all = inventoryDAO.getAllItems();
+        ObservableList<ClinicInventory> filtered = FXCollections.observableArrayList();
+
+        java.util.Date today = new java.util.Date();
+
+        for (ClinicInventory item : all) {
+            if (item.getExpirationDate() == null) continue;
+
+            long diff = item.getExpirationDate().getTime() - today.getTime();
+            long daysLeft = diff / (1000 * 60 * 60 * 24);
+
+            if (daysLeft < 0) {
+                filtered.add(item);
+            }
+        }
+
+        tableInventory.setItems(filtered);
+    }
+
     private void checkExpiringSoon() {
         List<ClinicInventory> all = inventoryDAO.getAllItems();
 

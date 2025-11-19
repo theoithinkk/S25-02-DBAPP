@@ -66,14 +66,14 @@ public class InventoryMovementDAO {
     /**
      * Convenience insert method for ISSUE movements (requires resident).
      */
-    public boolean insertIssueMovement(int itemId, int quantity, int actorId, int residentId, String remarks) {
+    public boolean insertIssueMovement(int itemId, int quantity, int actorId, int residentId, String remarks, Timestamp movementDate) {
         InventoryMovement movement = new InventoryMovement();
         movement.setItemId(itemId);
         movement.setMovementType("ISSUE");
         movement.setQuantity(quantity);
         movement.setActorId(actorId);
         movement.setResidentId(residentId);
-        movement.setMovementDate(new Timestamp(System.currentTimeMillis()));
+        movement.setMovementDate(movementDate != null ? movementDate : new Timestamp(System.currentTimeMillis()));
         movement.setRemarks(remarks);
 
         try {

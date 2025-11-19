@@ -15,8 +15,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import app.dao.HealthPersonnelDAO;
+import app.model.HealthPersonnel;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
@@ -42,7 +45,7 @@ public class MedicalSupplyIssuanceController {
     @FXML private Label lblStockStatus;
     @FXML private VBox containerStockInfo;
 
-    @FXML private ComboBox<String> cmbPersonnel;
+    @FXML private ComboBox<HealthPersonnel> cmbPersonnel;
     @FXML private DatePicker dateIssuance;
     @FXML private Label lblStatus;
 
@@ -61,6 +64,7 @@ public class MedicalSupplyIssuanceController {
     private final ClinicInventoryDAO inventoryDAO = new ClinicInventoryDAO();
     private final ResidentDAO residentDAO = new ResidentDAO();
     private final InventoryMovementDAO movementDAO = new InventoryMovementDAO();
+    private final HealthPersonnelDAO personnelDAO = new HealthPersonnelDAO();
 
     private Resident selectedResident = null;
 
@@ -134,13 +138,21 @@ public class MedicalSupplyIssuanceController {
     }
 
     private void setupPersonnelComboBox() {
-        ObservableList<String> personnelList = FXCollections.observableArrayList(
-                "Dr. Maria Santos - Physician",
-                "Nurse Juan Dela Cruz - Registered Nurse",
-                "MedTech Ana Reyes - Medical Technologist",
-                "Midwife Lorna Garcia - Midwife"
-        );
-        cmbPersonnel.setItems(personnelList);
+        List<HealthPersonnel> personnel = personnelDAO.getAllPersonnel();
+        cmbPersonnel.setItems(FXCollections.observableArrayList(personnel));
+
+        cmbPersonnel.setConverter(new javafx.util.StringConverter<HealthPersonnel>() {
+            @Override
+            public String toString(HealthPersonnel p) {
+                return p == null ? "" : p.getFirstName() + " " + p.getLastName() +
+                        " (" + p.getRole() + ")";
+            }
+
+            @Override
+            public HealthPersonnel fromString(String string) {
+                return null;
+            }
+        });
     }
 
     private void setupTimeComboBox() {
@@ -172,7 +184,9 @@ public class MedicalSupplyIssuanceController {
         });
 
         cmbPersonnel.valueProperty().addListener((obs, oldVal, newVal) -> {
-            updatePersonnelRole(newVal);
+            if (newVal != null) {
+                updatePersonnelRole(newVal.getRole());
+            }
             updateTransactionSummary();
         });
 
@@ -294,12 +308,20 @@ public class MedicalSupplyIssuanceController {
                 remarks = "Issued to " + selectedResident.getFirstName() + " " + selectedResident.getLastName();
             }
 
+            LocalDate date = dateIssuance.getValue();
+            String timeStr = cmbTime.getValue();
+            String[] timeParts = timeStr.split(":");
+            int hour = Integer.parseInt(timeParts[0]);
+            int minute = Integer.parseInt(timeParts[1]);
+            Timestamp issuanceTimestamp = Timestamp.valueOf(date.atTime(hour, minute));
+
             boolean movementLogged = movementDAO.insertIssueMovement(
                     selectedItem.getItemId(),
                     quantity,
                     getPersonnelIdFromSelection(),
                     selectedResident.getResidentId(),
-                    remarks
+                    remarks,
+                    issuanceTimestamp
             );
 
             if (movementLogged) {
@@ -309,7 +331,7 @@ public class MedicalSupplyIssuanceController {
                             selectedResident.getFirstName() + " " + selectedResident.getLastName(),
                             quantity,
                             selectedItem.getItemName(),
-                            cmbPersonnel.getValue());
+                            cmbPersonnel.getValue().getFirstName() + " " + cmbPersonnel.getValue().getLastName());
 
                     residentDAO.logAction(SessionManager.getCurrentUser().getUserId(), action);
                 }
@@ -324,7 +346,9 @@ public class MedicalSupplyIssuanceController {
                         "Resident: " + selectedResident.getFirstName() + " " + selectedResident.getLastName() + "\n" +
                                 "Item: " + selectedItem.getItemName() + "\n" +
                                 "Quantity: " + quantity + "\n" +
-                                "Issued by: " + cmbPersonnel.getValue() + "\n" +
+                                "Issued by: " + cmbPersonnel.getValue().getFirstName() + " " +
+                                cmbPersonnel.getValue().getLastName() + " (" +
+                                cmbPersonnel.getValue().getRole() + ")\n" +
                                 "Date: " + dateIssuance.getValue() + " at " + cmbTime.getValue()
                 );
                 alert.showAndWait();
@@ -443,19 +467,9 @@ public class MedicalSupplyIssuanceController {
         }
     }
 
-    private void updatePersonnelRole(String personnel) {
-        if (personnel != null) {
-            if (personnel.contains("Dr.")) {
-                lblPersonnelRole.setText("Physician");
-            } else if (personnel.contains("Nurse")) {
-                lblPersonnelRole.setText("Registered Nurse");
-            } else if (personnel.contains("MedTech")) {
-                lblPersonnelRole.setText("Medical Technologist");
-            } else if (personnel.contains("Midwife")) {
-                lblPersonnelRole.setText("Midwife");
-            } else {
-                lblPersonnelRole.setText("Healthcare Provider");
-            }
+    private void updatePersonnelRole(String role) {
+        if (role != null) {
+            lblPersonnelRole.setText(role);
         } else {
             lblPersonnelRole.setText("-");
         }
@@ -463,7 +477,7 @@ public class MedicalSupplyIssuanceController {
 
     private void updateTransactionSummary() {
         ClinicInventory item = cmbMedicalSupply.getValue();
-        String personnel = cmbPersonnel.getValue();
+        HealthPersonnel personnel = cmbPersonnel.getValue();
 
         if (selectedResident != null || item != null || personnel != null) {
             containerSummary.setVisible(true);
@@ -473,7 +487,8 @@ public class MedicalSupplyIssuanceController {
             lblSummaryItem.setText("Item: " + (item != null ? item.getItemName() : "Not selected"));
             lblSummaryQuantity.setText("Quantity: " + (!txtQuantity.getText().isEmpty() ?
                     txtQuantity.getText() : "-"));
-            lblSummaryPersonnel.setText("Personnel: " + (personnel != null ? personnel : "Not selected"));
+            lblSummaryPersonnel.setText("Personnel: " + (personnel != null ?
+                    personnel.getFirstName() + " " + personnel.getLastName() : "Not selected"));
 
             String dateTime = (dateIssuance.getValue() != null ? dateIssuance.getValue().toString() : "-") +
                     " " + (cmbTime.getValue() != null ? cmbTime.getValue() : "");
@@ -484,14 +499,8 @@ public class MedicalSupplyIssuanceController {
     }
 
     private int getPersonnelIdFromSelection() {
-        String personnel = cmbPersonnel.getValue();
-        if (personnel != null) {
-            if (personnel.contains("Dr.")) return 1;
-            if (personnel.contains("Nurse")) return 2;
-            if (personnel.contains("MedTech")) return 3;
-            if (personnel.contains("Midwife")) return 4;
-        }
-        return 1;
+        HealthPersonnel personnel = cmbPersonnel.getValue();
+        return personnel != null ? personnel.getPersonnelId() : 1;
     }
 
     private void showStatus(String message, boolean isError) {

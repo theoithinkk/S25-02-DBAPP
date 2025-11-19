@@ -49,8 +49,8 @@ public class ReportsController {
                 "Total and average health services availed for a given month",
                 "#3498db", this::showHealthServiceReport);
 
-        VBox card2 = createReportCard("📦 Medical Supply Issuance Report",
-                "Total and average transactions performed on the medical supply inventory",
+        VBox card2 = createReportCard("📦 Inventory Movement Logs",
+                "Complete log of all inventory transactions (Issue, Service, Restock)",
                 "#27ae60", this::showMedicalSupplyReport);
 
         VBox card3 = createReportCard("👨‍⚕️ Health Personnel Performance Report",
@@ -96,18 +96,10 @@ public class ReportsController {
         Label title = new Label("📊 Health Service Issuance Report");
         title.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
-        ComboBox<Integer> comboMonth = new ComboBox<>();
-        comboMonth.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
-        comboMonth.setPromptText("Select Month");
-        comboMonth.setValue(LocalDate.now().getMonthValue());
+        DatePicker dateFrom = new DatePicker(LocalDate.now().withDayOfMonth(1));
+        DatePicker dateTo = new DatePicker(LocalDate.now());
 
-        ComboBox<Integer> comboYear = new ComboBox<>();
-        for (int year = 2020; year <= 2030; year++) {
-            comboYear.getItems().add(year);
-        }
-        comboYear.setValue(LocalDate.now().getYear());
-
-        HBox filters = new HBox(10, new Label("Month:"), comboMonth, new Label("Year:"), comboYear);
+        HBox filters = new HBox(10, new Label("From:"), dateFrom, new Label("To:"), dateTo);
 
         Button btnGenerate = new Button("Generate");
         btnGenerate.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20;");
@@ -121,16 +113,12 @@ public class ReportsController {
 
         Button btnExport = new Button("📄 Export to CSV");
         btnExport.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 8 20;");
-        btnExport.setOnAction(e -> exportToCSV(table, "Health_Service_Report"));
+        btnExport.setOnAction(e -> exportToCSV(table, "HealthService_Report"));
 
         Button btnBack = new Button("← Back");
         btnBack.setOnAction(e -> showReportSelection());
 
-        btnGenerate.setOnAction(e -> {
-            int month = comboMonth.getValue();
-            int year = comboYear.getValue();
-            generateHealthServiceReport(table, txtSummary, month, year);
-        });
+        btnGenerate.setOnAction(e -> generateHealthServiceReport(table, txtSummary, dateFrom.getValue(), dateTo.getValue()));
 
         vbox.getChildren().addAll(title, filters, btnGenerate, table,
                 new Label("Summary:"), txtSummary,
@@ -154,26 +142,27 @@ public class ReportsController {
         table.getColumns().addAll(col1, col2, col3);
     }
 
-    private void generateHealthServiceReport(TableView<ReportData> table, TextArea summary, int month, int year) {
+    private void generateHealthServiceReport(TableView<ReportData> table, TextArea summary, LocalDate from, LocalDate to) {
         ObservableList<ReportData> data = FXCollections.observableArrayList();
 
         String sql = """
-            SELECT hs.service_type, 
-                   COUNT(*) as total,
-                   ROUND(COUNT(*) / DAY(LAST_DAY(DATE(?))), 2) as avg_per_day
-            FROM ServiceTransactions st
-            JOIN HealthServices hs ON st.service_id = hs.service_id
-            WHERE MONTH(st.date_provided) = ? AND YEAR(st.date_provided) = ?
-            GROUP BY hs.service_type
-            ORDER BY total DESC
-        """;
+        SELECT hs.service_type, 
+               COUNT(*) as total,
+               ROUND(COUNT(*) / DATEDIFF(?, ?), 2) as avg_per_day
+        FROM ServiceTransactions st
+        JOIN HealthServices hs ON st.service_id = hs.service_id
+        WHERE DATE(st.date_provided) BETWEEN ? AND ?
+        GROUP BY hs.service_type
+        ORDER BY total DESC
+    """;
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, year + "-" + month + "-01");
-            ps.setInt(2, month);
-            ps.setInt(3, year);
+            ps.setDate(1, Date.valueOf(to));
+            ps.setDate(2, Date.valueOf(from));
+            ps.setDate(3, Date.valueOf(from));
+            ps.setDate(4, Date.valueOf(to));
             ResultSet rs = ps.executeQuery();
 
             int totalServices = 0;
@@ -188,13 +177,13 @@ public class ReportsController {
 
             table.setItems(data);
 
-            String monthName = LocalDate.of(year, month, 1).format(DateTimeFormatter.ofPattern("MMMM"));
-            summary.setText(String.format("Report Period: %s %d\n" +
+            long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(from, to) + 1;
+            summary.setText(String.format("Report Period: %s to %s\n" +
                             "Total Services Availed: %d\n" +
                             "Average Services per Day: %.2f\n" +
                             "Number of Service Types: %d",
-                    monthName, year, totalServices,
-                    (double) totalServices / LocalDate.of(year, month, 1).lengthOfMonth(),
+                    from, to, totalServices,
+                    (double) totalServices / daysBetween,
                     data.size()));
 
         } catch (SQLException e) {
@@ -207,7 +196,7 @@ public class ReportsController {
         VBox vbox = new VBox(15);
         vbox.setPadding(new Insets(20));
 
-        Label title = new Label("📦 Medical Supply Issuance Report");
+        Label title = new Label("📦 Inventory Movement Logs");
         title.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
         DatePicker dateFrom = new DatePicker(LocalDate.now().withDayOfMonth(1));
@@ -227,7 +216,7 @@ public class ReportsController {
 
         Button btnExport = new Button("📄 Export to CSV");
         btnExport.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 8 20;");
-        btnExport.setOnAction(e -> exportToCSV(table, "Medical_Supply_Report"));
+        btnExport.setOnAction(e -> exportToCSV(table, "InventoryMovementLog_Report"));
 
         Button btnBack = new Button("← Back");
         btnBack.setOnAction(e -> showReportSelection());
@@ -243,22 +232,37 @@ public class ReportsController {
     private void setupMedicalSupplyTable(TableView<ReportData> table) {
         table.getColumns().clear();
 
-        TableColumn<ReportData, String> col1 = new TableColumn<>("Item / Type");
+        TableColumn<ReportData, String> col1 = new TableColumn<>("Date/Time");
         col1.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(data.getValue().field1));
-        col1.setPrefWidth(250);
+        col1.setPrefWidth(150);
 
-        TableColumn<ReportData, String> col2 = new TableColumn<>("Quantity");
+        TableColumn<ReportData, String> col2 = new TableColumn<>("Item Name");
         col2.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(data.getValue().field2));
-        col2.setPrefWidth(150);
+        col2.setPrefWidth(200);
 
-        TableColumn<ReportData, String> col3 = new TableColumn<>("Transactions");
+        TableColumn<ReportData, String> col3 = new TableColumn<>("Quantity");
         col3.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(data.getValue().field3));
-        col3.setPrefWidth(150);
+        col3.setPrefWidth(100);
 
-        table.getColumns().addAll(col1, col2, col3);
+        TableColumn<ReportData, String> col4 = new TableColumn<>("Type");
+        col4.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(data.getValue().field4));
+        col4.setPrefWidth(100);
+
+        TableColumn<ReportData, String> col5 = new TableColumn<>("Personnel");
+        col5.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(data.getValue().field5));
+        col5.setPrefWidth(150);
+
+        TableColumn<ReportData, String> col6 = new TableColumn<>("Resident");
+        col6.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(data.getValue().field6));
+        col6.setPrefWidth(150);
+
+        table.getColumns().addAll(col1, col2, col3, col4, col5, col6);
     }
 
     private void generateMedicalSupplyReport(TableView<ReportData> table, TextArea summary,
@@ -266,106 +270,70 @@ public class ReportsController {
 
         ObservableList<ReportData> data = FXCollections.observableArrayList();
 
-    /* --------------------------------------------
-       1. Get Issuance Summary (from InventoryMovement)
-       -------------------------------------------- */
-        String sqlIssuance = """
-        SELECT ci.item_name,
-               SUM(im.quantity) AS total_used,
-               COUNT(*) AS num_transactions
+        String sql = """
+        SELECT im.movement_date,
+               ci.item_name,
+               im.quantity,
+               im.movement_type,
+               CONCAT(hp.first_name, ' ', hp.last_name) AS personnel_name,
+               CONCAT(r.first_name, ' ', r.last_name) AS resident_name,
+               im.remarks
         FROM inventorymovement im
-        JOIN ClinicInventory ci ON im.item_id = ci.item_id
+        LEFT JOIN ClinicInventory ci ON im.item_id = ci.item_id
+        LEFT JOIN HealthPersonnel hp ON im.actor_id = hp.personnel_id
+        LEFT JOIN Residents r ON im.resident_id = r.resident_id
         WHERE im.movement_type IN ('ISSUE', 'SERVICE')
           AND DATE(im.movement_date) BETWEEN ? AND ?
-        GROUP BY ci.item_name
+        ORDER BY im.movement_date DESC
     """;
 
         int totalIssued = 0;
-        int totalIssuedTransactions = 0;
+        int totalTransactions = 0;
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sqlIssuance)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setDate(1, Date.valueOf(from));
             ps.setDate(2, Date.valueOf(to));
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                String item = rs.getString("item_name");
-                int qty = rs.getInt("total_used");
-                int trans = rs.getInt("num_transactions");
+                String date = rs.getTimestamp("movement_date").toString();
+                String itemName = rs.getString("item_name");
+                if (itemName == null) itemName = "DELETED ITEM";
 
-                data.add(new ReportData(item, String.valueOf(qty), String.valueOf(trans)));
+                int qty = rs.getInt("quantity");
+                String type = rs.getString("movement_type");
+                String personnel = rs.getString("personnel_name");
+                if (personnel == null) personnel = "Unknown";
+
+                String resident = rs.getString("resident_name");
+                if (resident == null) resident = "-";
+
+                data.add(new ReportData(date, itemName, String.valueOf(qty), type, personnel, resident));
 
                 totalIssued += qty;
-                totalIssuedTransactions += trans;
+                totalTransactions++;
             }
+
+            table.setItems(data);
+
+            summary.setText(String.format("""
+            Report Period: %s to %s
+
+            TOTAL TRANSACTIONS: %d
+            TOTAL ITEMS ISSUED: %d items
+            AVERAGE PER TRANSACTION: %.2f items
+        """,
+                    from, to,
+                    totalTransactions,
+                    totalIssued,
+                    totalTransactions > 0 ? (double) totalIssued / totalTransactions : 0
+            ));
+
         } catch (SQLException e) {
             showError("Error loading issuance records: " + e.getMessage());
         }
-
-    /* --------------------------------------------
-       2. Get Restock Summary (from InventoryMovement)
-       -------------------------------------------- */
-        String sqlRestock = """
-        SELECT ci.item_name,
-               SUM(im.quantity) AS total_added,
-               COUNT(*) AS restock_count
-        FROM inventorymovement im
-        JOIN ClinicInventory ci ON im.item_id = ci.item_id
-        WHERE im.movement_type = 'RESTOCK'
-          AND DATE(im.movement_date) BETWEEN ? AND ?
-        GROUP BY ci.item_name
-    """;
-
-        int totalRestocked = 0;
-        int totalRestockTransactions = 0;
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sqlRestock)) {
-
-            ps.setDate(1, Date.valueOf(from));
-            ps.setDate(2, Date.valueOf(to));
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                String item = rs.getString("item_name");
-                int qty = rs.getInt("total_added");
-                int trans = rs.getInt("restock_count");
-
-                data.add(new ReportData(item + " (Restock)",   // label clearly
-                        String.valueOf(qty),
-                        String.valueOf(trans)));
-
-                totalRestocked += qty;
-                totalRestockTransactions += trans;
-            }
-        } catch (SQLException e) {
-            showError("Error loading restock records: " + e.getMessage());
-        }
-
-    /* --------------------------------------------
-       3. Display in Table
-       -------------------------------------------- */
-        table.setItems(data);
-
-    /* --------------------------------------------
-       4. Summary Panel Output
-       -------------------------------------------- */
-        summary.setText(String.format("""
-            Report Period: %s to %s
-
-            TOTAL ISSUED: %d items in %d transactions
-            TOTAL RESTOCKED: %d items in %d restock events
-
-            NET MOVEMENT: %d items
-            (Positive = Inventory Increased)
-        """,
-                from, to,
-                totalIssued, totalIssuedTransactions,
-                totalRestocked, totalRestockTransactions,
-                totalRestocked - totalIssued
-        ));
     }
 
     // Report 3: Personnel Performance
@@ -376,18 +344,10 @@ public class ReportsController {
         Label title = new Label("👨‍⚕️ Health Personnel Performance Report");
         title.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
-        ComboBox<Integer> comboMonth = new ComboBox<>();
-        comboMonth.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
-        comboMonth.setPromptText("Select Month");
-        comboMonth.setValue(LocalDate.now().getMonthValue());
+        DatePicker dateFrom = new DatePicker(LocalDate.now().withDayOfMonth(1));
+        DatePicker dateTo = new DatePicker(LocalDate.now());
 
-        ComboBox<Integer> comboYear = new ComboBox<>();
-        for (int year = 2020; year <= 2030; year++) {
-            comboYear.getItems().add(year);
-        }
-        comboYear.setValue(LocalDate.now().getYear());
-
-        HBox filters = new HBox(10, new Label("Month:"), comboMonth, new Label("Year:"), comboYear);
+        HBox filters = new HBox(10, new Label("From:"), dateFrom, new Label("To:"), dateTo);
 
         Button btnGenerate = new Button("Generate");
         btnGenerate.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20;");
@@ -401,12 +361,12 @@ public class ReportsController {
 
         Button btnExport = new Button("📄 Export to CSV");
         btnExport.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 8 20;");
-        btnExport.setOnAction(e -> exportToCSV(table, "Personnel_Performance_Report"));
+        btnExport.setOnAction(e -> exportToCSV(table, "PersonnelPerformance_Report"));
 
         Button btnBack = new Button("← Back");
         btnBack.setOnAction(e -> showReportSelection());
 
-        btnGenerate.setOnAction(e -> generatePersonnelReport(table, txtSummary, comboMonth.getValue(), comboYear.getValue()));
+        btnGenerate.setOnAction(e -> generatePersonnelReport(table, txtSummary, dateFrom.getValue(), dateTo.getValue()));
 
         vbox.getChildren().addAll(title, filters, btnGenerate, table,
                 new Label("Summary:"), txtSummary,
@@ -430,24 +390,24 @@ public class ReportsController {
         table.getColumns().addAll(col1, col2, col3);
     }
 
-    private void generatePersonnelReport(TableView<ReportData> table, TextArea summary, int month, int year) {
+    private void generatePersonnelReport(TableView<ReportData> table, TextArea summary, LocalDate from, LocalDate to) {
         ObservableList<ReportData> data = FXCollections.observableArrayList();
 
         String sql = """
-            SELECT hp.first_name, hp.last_name, hp.role,
-                   COUNT(DISTINCT st.resident_id) as residents_attended
-            FROM HealthPersonnel hp
-            LEFT JOIN ServiceTransactions st ON hp.personnel_id = st.personnel_id
-                AND MONTH(st.date_provided) = ? AND YEAR(st.date_provided) = ?
-            GROUP BY hp.personnel_id, hp.first_name, hp.last_name, hp.role
-            ORDER BY residents_attended DESC
-        """;
+        SELECT hp.first_name, hp.last_name, hp.role,
+               COUNT(DISTINCT st.resident_id) as residents_attended
+        FROM HealthPersonnel hp
+        LEFT JOIN ServiceTransactions st ON hp.personnel_id = st.personnel_id
+            AND DATE(st.date_provided) BETWEEN ? AND ?
+        GROUP BY hp.personnel_id, hp.first_name, hp.last_name, hp.role
+        ORDER BY residents_attended DESC
+    """;
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, month);
-            ps.setInt(2, year);
+            ps.setDate(1, Date.valueOf(from));
+            ps.setDate(2, Date.valueOf(to));
             ResultSet rs = ps.executeQuery();
 
             int totalResidents = 0;
@@ -462,12 +422,11 @@ public class ReportsController {
 
             table.setItems(data);
 
-            String monthName = LocalDate.of(year, month, 1).format(DateTimeFormatter.ofPattern("MMMM"));
-            summary.setText(String.format("Report Period: %s %d\n" +
+            summary.setText(String.format("Report Period: %s to %s\n" +
                             "Total Personnel: %d\n" +
                             "Total Unique Residents Attended: %d\n" +
                             "Average Residents per Personnel: %.2f",
-                    monthName, year, data.size(), totalResidents,
+                    from, to, data.size(), totalResidents,
                     data.size() > 0 ? (double) totalResidents / data.size() : 0));
 
         } catch (SQLException e) {
@@ -483,18 +442,10 @@ public class ReportsController {
         Label title = new Label("🏥 Clinic Visits Report");
         title.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
-        ComboBox<Integer> comboMonth = new ComboBox<>();
-        comboMonth.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
-        comboMonth.setPromptText("Select Month");
-        comboMonth.setValue(LocalDate.now().getMonthValue());
+        DatePicker dateFrom = new DatePicker(LocalDate.now().withDayOfMonth(1));
+        DatePicker dateTo = new DatePicker(LocalDate.now());
 
-        ComboBox<Integer> comboYear = new ComboBox<>();
-        for (int year = 2020; year <= 2030; year++) {
-            comboYear.getItems().add(year);
-        }
-        comboYear.setValue(LocalDate.now().getYear());
-
-        HBox filters = new HBox(10, new Label("Month:"), comboMonth, new Label("Year:"), comboYear);
+        HBox filters = new HBox(10, new Label("From:"), dateFrom, new Label("To:"), dateTo);
 
         Button btnGenerate = new Button("Generate");
         btnGenerate.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20;");
@@ -508,12 +459,12 @@ public class ReportsController {
 
         Button btnExport = new Button("📄 Export to CSV");
         btnExport.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 8 20;");
-        btnExport.setOnAction(e -> exportToCSV(table, "Clinic_Visits_Report"));
+        btnExport.setOnAction(e -> exportToCSV(table, "ClinicVisits_Report"));
 
         Button btnBack = new Button("← Back");
         btnBack.setOnAction(e -> showReportSelection());
 
-        btnGenerate.setOnAction(e -> generateClinicVisitsReport(table, txtSummary, comboMonth.getValue(), comboYear.getValue()));
+        btnGenerate.setOnAction(e -> generateClinicVisitsReport(table, txtSummary, dateFrom.getValue(), dateTo.getValue()));
 
         vbox.getChildren().addAll(title, filters, btnGenerate, table,
                 new Label("Summary:"), txtSummary,
@@ -537,23 +488,23 @@ public class ReportsController {
         table.getColumns().addAll(col1, col2, col3);
     }
 
-    private void generateClinicVisitsReport(TableView<ReportData> table, TextArea summary, int month, int year) {
+    private void generateClinicVisitsReport(TableView<ReportData> table, TextArea summary, LocalDate from, LocalDate to) {
         ObservableList<ReportData> data = FXCollections.observableArrayList();
 
         String sql = """
-            SELECT hs.service_type, COUNT(*) as visit_count
-            FROM ServiceTransactions st
-            JOIN HealthServices hs ON st.service_id = hs.service_id
-            WHERE MONTH(st.date_provided) = ? AND YEAR(st.date_provided) = ?
-            GROUP BY hs.service_type
-            ORDER BY visit_count DESC
-        """;
+        SELECT hs.service_type, COUNT(*) as visit_count
+        FROM ServiceTransactions st
+        JOIN HealthServices hs ON st.service_id = hs.service_id
+        WHERE DATE(st.date_provided) BETWEEN ? AND ?
+        GROUP BY hs.service_type
+        ORDER BY visit_count DESC
+    """;
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, month);
-            ps.setInt(2, year);
+            ps.setDate(1, Date.valueOf(from));
+            ps.setDate(2, Date.valueOf(to));
             ResultSet rs = ps.executeQuery();
 
             int totalVisits = 0;
@@ -576,13 +527,13 @@ public class ReportsController {
 
             table.setItems(data);
 
-            String monthName = LocalDate.of(year, month, 1).format(DateTimeFormatter.ofPattern("MMMM"));
-            summary.setText(String.format("Report Period: %s %d\n" +
+            long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(from, to) + 1;
+            summary.setText(String.format("Report Period: %s to %s\n" +
                             "Total Clinic Visits: %d\n" +
                             "Service Types Offered: %d\n" +
                             "Average Visits per Day: %.2f",
-                    monthName, year, totalVisits, data.size(),
-                    (double) totalVisits / LocalDate.of(year, month, 1).lengthOfMonth()));
+                    from, to, totalVisits, data.size(),
+                    (double) totalVisits / daysBetween));
 
         } catch (SQLException e) {
             showError("Error generating report: " + e.getMessage());
@@ -636,12 +587,21 @@ public class ReportsController {
 
     // Inner class for report data
     public static class ReportData {
-        public String field1, field2, field3;
+        public String field1, field2, field3, field4, field5, field6;
 
         public ReportData(String field1, String field2, String field3) {
             this.field1 = field1;
             this.field2 = field2;
             this.field3 = field3;
+        }
+
+        public ReportData(String field1, String field2, String field3, String field4, String field5, String field6) {
+            this.field1 = field1;
+            this.field2 = field2;
+            this.field3 = field3;
+            this.field4 = field4;
+            this.field5 = field5;
+            this.field6 = field6;
         }
     }
 }
