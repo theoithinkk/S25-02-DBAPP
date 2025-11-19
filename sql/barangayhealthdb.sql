@@ -254,6 +254,41 @@ INSERT INTO `restock_inventory` VALUES (2,3,10,4,'2025-11-18 12:21:33','');
 UNLOCK TABLES;
 
 --
+-- Table structure for table `inventorymovement`
+--
+
+DROP TABLE IF EXISTS `inventorymovement`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `inventorymovement` (
+  `movement_id` int NOT NULL AUTO_INCREMENT,
+  `item_id` int NOT NULL,
+  `movement_type` enum('RESTOCK','ISSUE','SERVICE') NOT NULL,
+  `quantity` int NOT NULL,
+  `actor_id` int NOT NULL,
+  `resident_id` int DEFAULT NULL,
+  `movement_date` datetime NOT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`movement_id`),
+  KEY `item_id` (`item_id`),
+  KEY `actor_id` (`actor_id`),
+  KEY `resident_id` (`resident_id`),
+  CONSTRAINT `inventorymovement_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `clinicinventory` (`item_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `inventorymovement_ibfk_2` FOREIGN KEY (`actor_id`) REFERENCES `healthpersonnel` (`personnel_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `inventorymovement_ibfk_3` FOREIGN KEY (`resident_id`) REFERENCES `residents` (`resident_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inventorymovement`
+--
+
+LOCK TABLES `inventorymovement` WRITE;
+/*!40000 ALTER TABLE `inventorymovement` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inventorymovement` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `serviceinventory`
 --
 
