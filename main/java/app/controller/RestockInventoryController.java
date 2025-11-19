@@ -1,7 +1,7 @@
 package app.controller;
 
 import app.dao.HealthPersonnelDAO;
-import app.dao.RestockInventoryDAO;
+import app.dao.InventoryMovementDAO;
 import app.model.ClinicInventory;
 import app.model.HealthPersonnel;
 import app.dao.ClinicInventoryDAO;
@@ -123,9 +123,9 @@ public class RestockInventoryController {
             // Update stock in clinicinventory table
             inventoryDAO.addQuantity(selectedItem.getItemId(), quantity);
 
-            // Log restock in restock_inventory table
-            RestockInventoryDAO restockDAO = new RestockInventoryDAO();
-            restockDAO.insertRestockRecord(
+            // Log restock in inventorymovement table
+            InventoryMovementDAO movementDAO = new InventoryMovementDAO();
+            movementDAO.insertRestockMovement(
                     selectedItem.getItemId(),
                     quantity,
                     restocker.getPersonnelId(),
